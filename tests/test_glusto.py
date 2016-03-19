@@ -1,7 +1,8 @@
 """ test glusto basic functionality """
 import unittest
+import xmlrunner
 
-from glusto.glusto import Glusto as g
+from glusto.core import Glusto as g
 
 class TestGlustoBasics(unittest.TestCase):
     """Glusto basics test class"""
@@ -43,6 +44,12 @@ class TestGlustoBasics(unittest.TestCase):
         rcode, _, _ = g.run("localhost", "cat /etc/fstab")
         self.assertEqual(rcode, 0)
 
+    @unittest.skip("Example test skip")
+    def test_skip_me(self):
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
+        rcode, _, _ = g.run("localhost", "cat /etc/hosts")
+        self.assertEqual(rcode, 0)
+
     def tearDown(self):
         print("Tearing Down: %s" % self.id())
 
@@ -55,4 +62,7 @@ class TestGlustoBasics(unittest.TestCase):
 if __name__ == '__main__':
     #unittest.main(verbosity=2)
     suite = unittest.TestLoader().loadTestsFromTestCase(TestGlustoBasics)
-    unittest.TextTestRunner().run(suite)
+    #test_runner = unittest.TextTestRunner(verbosity=2)
+    test_runner = xmlrunner.XMLTestRunner(output='/tmp/glustoreports')
+    test_runner.run(suite)
+    #results.testsRun
