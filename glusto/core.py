@@ -1,121 +1,81 @@
-""" glusto brains """
-from pprint import PrettyPrinter
+# Copyright 2014 Jonathan Holloway <loadtheaccumulator@gmail.com>
+#
+# This module is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This software is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this software. If not, see <http://www.gnu.org/licenses/>.
+#
 
-from plumbum import SshMachine
+"""The brains of the Glusto toolset.
+
+Import at the top of each module leveraging the glusto tools.
+
+Example:
+    To use Glusto in a module::
+
+        from glusto.core import Glusto as g
 
 
-class Glusto(object):
+Glusto inherits from multiple classes providing configuration,
+remote connection, and logging functionality and presents them in a single
+global Class object. Glusto also acts a global class for maintaining state
+across multiple modules and classes.
+
+"""
+import logging
+import os
+
+from glusto.configurable import Configurable
+from glusto.connectible import Connectible
+from glusto.colorfiable import Colorfiable
+
+
+class Glusto(Configurable, Connectible, Colorfiable):
     """Glusto class
     The locker for all things Glusto
     """
-    config = {}
-    _ssh_connections = {}
-    use_ssh = True
-    use_controlpersist = True
-    user = "jhollowa"
     #config["ssh_keyfile"] = "~/.ssh/id_rsa"
+    # TODO: figure which of these are class and config parameters
+#    config["nodes"] = ['192.168.1.221', '192.168.1.222',
+#                       '192.168.1.223', '192.168.1.224']
+#    config['clients'] = ['192.168.1.225']
+    # TODO: keep glusto dumb and leave nodes in config. ???
+    config = {}
+    nodes = []
+    clients = []
 
-    def __init__(self):
-        """ Might not need an instance yet """
-        return None
+    # TODO: load default config(s)
+    # TODO: add ability to log to STDOUT instead of logfile
+    # setup logging
+    log = logging.getLogger('glustolog')
+    log.propagate = False
 
-    @classmethod
-    def _get_ssh_connection(cls, node, user):
-        """Setup an SshMachine connection for non-rpyc connections"""
-        ssh_opts = ()
-        ssh_opts += ('-T',
-                     '-oPasswordAuthentication=no',
-                     '-oStrictHostKeyChecking=no',
-                     '-oPort=22',
-                     '-oConnectTimeout=10')
+    # Create file handler for logger
+    # TODO: set logfile from config (with default)
+    _logfile = config.get('logfile', '/tmp/glusto.log')
+    if not os.path.exists(_logfile):
+        _logdir = os.path.dirname(_logfile)
+        if not os.path.exists(_logdir):
+            os.makedirs(_logfile)
+    _logfh = logging.FileHandler(_logfile)
 
-        keyfile = None
-        if 'ssh_keyfile' in cls.config:
-            keyfile = cls.config['ssh_keyfile']
+    # Set log string format for logger
+    # TODO: set log string format from config (with default)
+    _formatter = logging.Formatter('%(asctime)s %(levelname)s '
+                                   '(%(funcName)s) %(message)s')
+    _logfh.setFormatter(_formatter)
 
-            ssh_opts += ('-o', 'IdentityFile=%s' % keyfile)
+    # Add handler to logger
+    log.addHandler(_logfh)
 
-        if cls.use_controlpersist:
-            ssh_opts += ('-oControlMaster=auto',
-                         '-oControlPersist=4h',
-                         '-oControlPath=~/.ssh/glusto-ssh-%r@%h:%p')
-
-        #cls.show_object(ssh_opts)
-
-        conn_name = "%s@%s" % (user, node)
-        # if no existing connection, create one
-        if conn_name not in cls._ssh_connections:
-            # we already have plumbum imported for rpyc, so let's use it
-            ssh = SshMachine(node, user, ssh_opts=ssh_opts)
-            cls._ssh_connections[conn_name] = ssh
-        else:
-            ssh = cls._ssh_connections[conn_name]
-
-        if ssh:
-            return ssh
-
-        print("oops. did not get ssh for %s", conn_name)
-        return None
-
-    @classmethod
-    def run(cls, host, command, user=None):
-        """
-        if isinstance(hosts, str):
-            ssh = cls._get_ssh_connection(hosts, user)
-
-
-        results = {}
-        for host in hosts:
-            ssh = cls._get_ssh_connection(host, user)
-            results[ssh] = "result from %s on %s" % (command, ssh)
-        """
-        if not user:
-            user = cls.user
-
-        if cls.use_ssh:
-            ctlpersist = ''
-            if cls.use_controlpersist:
-                ctlpersist = " (cp)"
-
-            # output command
-            print("%s@%s%s: %s" % (user, host, ctlpersist, command))
-            # run the command
-            ssh = cls._get_ssh_connection(host, user)
-            #p = ssh.popen(command)
-
-            p = ssh.popen(command)
-            stdout, stderr = p.communicate()
-            retcode = p.returncode
-
-            # output command results
-            print("RETCODE: %s" % retcode)
-            if stdout:
-                print("STDOUT...\n%s" % stdout)
-            if stderr:
-                print("STDERR...\n%s" % stderr)
-
-            return (retcode, stdout, stderr)
-
-    @classmethod
-    def list_ssh_connections(cls):
-        for name in cls._ssh_connections.keys():
-            print (name)
-
-    @classmethod
-    def get_ssh_connections(cls):
-        return cls._ssh_connections
-
-    @classmethod
-    def _read_configs(cls):
-        pass
-
-    @classmethod
-    def log_object(cls, obj):
-        pp = PrettyPrinter()
-        # TODO: change this to logging
-        pp.pprint(obj)
-
-    @classmethod
-    def show_object(clscls, obj):
-        pp = PrettyPrinter()
-        pp.pprint(obj)
+    # Set log level
+    # TODO: set level from config (with default)
+    log.setLevel(logging.DEBUG)
