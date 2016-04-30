@@ -36,9 +36,10 @@ import os
 from glusto.configurable import Configurable
 from glusto.connectible import Connectible
 from glusto.colorfiable import Colorfiable
+from glusto.loggable import Loggable
 
 
-class Glusto(Configurable, Connectible, Colorfiable):
+class Glusto(Configurable, Connectible, Colorfiable, Loggable):
     """Glusto class
     The locker for all things Glusto
     """
@@ -52,30 +53,9 @@ class Glusto(Configurable, Connectible, Colorfiable):
     nodes = []
     clients = []
 
-    # TODO: load default config(s)
-    # TODO: add ability to log to STDOUT instead of logfile
-    # setup logging
-    log = logging.getLogger('glustolog')
-    log.propagate = False
+    # TODO: figure out how we want to do this with cli options
+    # TODO: call this after configs are read to be more effective
+    # TODO: do this by default or force to be from main() or other importer
+    # create default log
+    log = Loggable.create_log()
 
-    # Create file handler for logger
-    # TODO: set logfile from config (with default)
-    _logfile = config.get('logfile', '/tmp/glusto.log')
-    if not os.path.exists(_logfile):
-        _logdir = os.path.dirname(_logfile)
-        if not os.path.exists(_logdir):
-            os.makedirs(_logfile)
-    _logfh = logging.FileHandler(_logfile)
-
-    # Set log string format for logger
-    # TODO: set log string format from config (with default)
-    _formatter = logging.Formatter('%(asctime)s %(levelname)s '
-                                   '(%(funcName)s) %(message)s')
-    _logfh.setFormatter(_formatter)
-
-    # Add handler to logger
-    log.addHandler(_logfh)
-
-    # Set log level
-    # TODO: set level from config (with default)
-    log.setLevel(logging.DEBUG)
