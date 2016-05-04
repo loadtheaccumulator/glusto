@@ -174,6 +174,8 @@ class Connectible(object):
     @classmethod
     @contextmanager
     def run_background(cls, host, command, user=None):
+        """Run a command in the background and return without results.
+        """
         if not user:
             user = cls.user
 
