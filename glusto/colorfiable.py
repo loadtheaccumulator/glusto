@@ -1,4 +1,4 @@
-# Copyright 2014 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,8 +13,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
+"""All things ANSI color text output.
+
+NOTE:
+    Colorfiable is inherited by the Glusto class
+    and not designed to be instantiated.
+"""
+
 
 class Colorfiable(object):
+    """Defines and displays ANSI-compatible colors for string formatting."""
     # TODO: insert pep8/pylint ignore (python is all about readability, right?)
 
     # ANSI Background Bitwise Constants
@@ -67,7 +75,7 @@ class Colorfiable(object):
     # Glusto Bitwise Aliases
     COLOR_COMMAND = BOLD | DKGRAY
     COLOR_STDOUT =  BOLD | BG_LTGRAY | BLACK
-    COLOR_STDERR =   BOLD | RED
+    COLOR_STDERR =  BOLD | RED
     COLOR_RCODE =   BOLD | BLUE
 
     _ANSI = {}
@@ -124,8 +132,15 @@ class Colorfiable(object):
     def colorfy(cls, color, message):
         """Applies ANSI terminal colors and attributes to strings.
 
-        e.g.,
+        Example:
             g.colorfy(g.BG_YELLOW | g.RED | g.BOLD, 'Bold red on yellow text')
+
+        Args:
+            color (int): Bitwise value(s) for color settings.
+            message (str): String to wrap in the specified color.
+
+        Returns:
+            A color formatted string.
         """
         ansi_list = []
         for i in range(0, len(cls._ANSI) - 1):

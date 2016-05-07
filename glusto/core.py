@@ -16,19 +16,16 @@
 
 """The brains of the Glusto toolset.
 
-Import at the top of each module leveraging the glusto tools.
-
-Example:
-    To use Glusto in a module::
-
-        from glusto.core import Glusto as g
-
-
 Glusto inherits from multiple classes providing configuration,
 remote connection, and logging functionality and presents them in a single
 global Class object. Glusto also acts a global class for maintaining state
 across multiple modules and classes.
 
+Example:
+    To use Glusto in a module,
+    import at the top of each module leveraging the glusto tools.::
+
+        from glusto.core import Glusto as g
 """
 import logging
 import os
@@ -40,9 +37,7 @@ from glusto.loggable import Loggable
 
 
 class Glusto(Configurable, Connectible, Colorfiable, Loggable):
-    """Glusto class
-    The locker for all things Glusto
-    """
+    """The locker for all things Glusto."""
     #config["ssh_keyfile"] = "~/.ssh/id_rsa"
     # TODO: figure which of these are class and config parameters
 #    config["nodes"] = ['192.168.1.221', '192.168.1.222',

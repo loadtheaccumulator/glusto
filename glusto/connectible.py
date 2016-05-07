@@ -13,8 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
+"""All things remote connection and local shell.
 
-"""All things remote connection and local shell"""
+NOTE:
+    Connectible is inherited by the Glusto class
+    and not designed to be instantiated.
+"""
 import subprocess
 
 from plumbum import SshMachine
@@ -22,7 +26,10 @@ from decorator import contextmanager
 
 
 class Connectible(object):
+    """The class provding remote connections and local commands."""
+
     _ssh_connections = {}
+    """The dictionary of ssh connections used by the inheriting class"""
     # TODO: config override
     use_ssh = True
     use_controlpersist = True
@@ -31,7 +38,16 @@ class Connectible(object):
 
     @classmethod
     def _get_ssh_connection(cls, host, user=None):
-        """Setup an SshMachine connection for non-rpyc connections"""
+        """Setup an SshMachine connection.
+
+        Args:
+            host (str): Hostname of the system.
+            user (optional[str]): User to use for connection.
+
+        Returns:
+            An ssh connection object on success.
+            None on failure.
+        """
         if not user:
             user = cls.user
 
@@ -59,7 +75,6 @@ class Connectible(object):
         # if no existing connection, create one
         if conn_name not in cls._ssh_connections:
             cls.log.debug("Creating connection: %s" % conn_name)
-            # we already have plumbum imported for rpyc, so let's use it
             try:
                 ssh = SshMachine(host, user, ssh_opts=ssh_opts)
             except:
@@ -78,6 +93,10 @@ class Connectible(object):
 
     @classmethod
     def run_test(cls, host=None, command=None, user=None, mode=None):
+        """testing using a single method for all connection methods
+        and either automatically figuring out which needs to be used and/or
+        make it an argument.
+        """
         if not host or mode == 'local':
             cls.run_local(command)
         else:
@@ -85,7 +104,24 @@ class Connectible(object):
 
     @classmethod
     def run(cls, host, command, user=None):
+        """Run a command on a remote host via ssh.
+
+        Args:
+            host (str): The hostname of the system.
+            command (str): The command to run on the system.
+            user (optional[str]): The user to use for connection.
+
+        Returns:
+            A tuple consisting of the command return code, stdout, and stderr.
+            None on error.
+
+        Example:
+            To run the uname command on a remote host named "bunkerhill"::
+
+                >>> from glusto.core import Glusto as g
+                >>> results = g.run("bunkerhill", "uname -a")
         """
+        '''
         if isinstance(hosts, str):
             ssh = cls._get_ssh_connection(hosts, user)
 
@@ -94,7 +130,7 @@ class Connectible(object):
         for host in hosts:
             ssh = cls._get_ssh_connection(host, user)
             results[ssh] = "result from %s on %s" % (command, ssh)
-        """
+        '''
         if not user:
             user = cls.user
 
@@ -122,6 +158,18 @@ class Connectible(object):
 
     @classmethod
     def _log_results(cls, identifier, retcode, stdout, stderr):
+        """Logs the return code, stdout, and stderr returned from a command.
+
+        Args:
+            identifier (str): A representative name for the messages to be
+                displayed in the log entry.
+            retcode (str): the return code from the command resuls.
+            stdout (str): the stdout from the command results.
+            stderr (str): the stderr from the command results.
+
+        Returns:
+            Nothing
+        """
         # output command results
         cls.log.debug(cls.colorfy(cls.COLOR_RCODE, "RETCODE (%s): %s" %
                                   (identifier, retcode)))
@@ -135,9 +183,43 @@ class Connectible(object):
     @classmethod
     def run_async(cls, host, command, user=None):
         """Run remote commands asynchronously.
-        NOTE: runs commands asynchronously, but blocks on async_communicate()
-                and reads output sequentially. This might not be a good fit
-                for run-and-forget commands"""
+
+        Args:
+            host (str): The hostname of the system.
+            command (str): The command to run on the system.
+            user (optional[str]): The user to use for connection.
+
+        Returns:
+            An open connection descriptor to be used by the calling function.
+            None on error.
+
+        Example:
+            To run a command asynchronously on remote hosts
+            named "bunkerhill" and "breedshill"...::
+
+                >>> from glusto.core import Glusto as g
+
+                >>> command = "ls -R /etc"
+                >>> proc1 = g.run_async("bunkerhill", command)
+                >>> proc2 = g.run_async("breedshill", command)
+
+                >>> results1 = proc1.async_communicate()
+                >>> results2 = proc2.async_communicate()
+
+            This can also be used to run a command against the same system
+            asynchronously as different users...::
+
+                >>> command = "ls -R /etc"
+                >>> proc1 = g.run_async("breedshill", command, user="howe")
+                >>> proc2 = g.run_async("breedshill", command, user="pigot")
+
+                >>> results1 = proc1.async_communicate()
+                >>> results2 = proc2.async_communicate()
+
+        Note:
+            run_async() runs commands asynchronously, but blocks on
+            async_communicate() and reads output sequentially.
+            This might not be a good fit for run-and-forget commands."""
         if not user:
             user = cls.user
 
@@ -174,7 +256,17 @@ class Connectible(object):
     @classmethod
     @contextmanager
     def run_background(cls, host, command, user=None):
-        """Run a command in the background and return without results.
+        """(Experimental) Run a command in the background and return
+        without results.
+
+        Args:
+            host (str): The hostname of the system.
+            command (str): The command to run on the system.
+            user (optional[str]): The user to use for connection.
+
+        Returns:
+            A tuple consisting of the command return code, stdout, and stderr.
+            None on error.
         """
         if not user:
             user = cls.user
@@ -203,6 +295,20 @@ class Connectible(object):
 
     @classmethod
     def run_local(cls, command):
+        """Run a command on the local management system.
+
+        Args:
+            command (str): Command to run locally.
+
+        Returns:
+            A tuple consisting of the command return code, stdout, and stderr.
+
+        Example:
+            To run a command locally...::
+
+                >>> from glusto.core import Glusto as g
+                >>> retcode, stdout, stderr = g.run_local("uname -a")
+        """
         # output command
         cls.log.info("local: %s" % command)
 
@@ -219,6 +325,22 @@ class Connectible(object):
 
     @classmethod
     def run_serial(cls, hosts, command, user=None):
+        """Sequentially runs a command against a list of hosts.
+
+        Args:
+
+
+        Returns:
+            A dictionary of tuples containing returncode, stdout, and stderr.
+            Labeled by the host.
+
+        Example:
+            To run a command against a list of hosts...::
+
+                >>> from glusto.core import Glusto as g
+                >>> hosts = ["bunkerhill", "breedshill"]
+                >>> results = g.run_serial(hosts, "ls -Rail /etc")
+        """
         results = {}
         for host in hosts:
             rcode, rout, rerr = cls.run(host, command, user)
@@ -229,6 +351,17 @@ class Connectible(object):
 
     @classmethod
     def upload(cls, host, localpath, remotepath, user=None):
+        """Uploads a file to a remote system.
+
+        Args:
+            host (str): Hostname of the remote system.
+            localpath (str): The source path for the file on the local system.
+            remotepath (str): The target path on the remote server.
+            user (optional[str]): The user to use for the remote connection.
+
+        Returns:
+            None on failure.
+        """
         # TODO: consider a noclobber option to backup existing files
 
         if not user:
@@ -245,6 +378,17 @@ class Connectible(object):
 
     @classmethod
     def download(cls, host, remotepath, localpath, user=None):
+        """Uploads a file to a remote system.
+
+        Args:
+            host (str): Hostname of the remote system.
+            remotepath (str): The source path on the remote server.
+            localpath (str): The target path for the file on the local system.
+            user (optional[str]): The user to use for the remote connection.
+
+        Returns:
+            None on failure.
+        """
         # TODO: consider a noclobber option to backup existing files
 
         if not user:
@@ -260,10 +404,21 @@ class Connectible(object):
         ssh.download(remotepath, localpath)
 
     @classmethod
-    def transfer(cls, sourcehost, targethost,
-                 sourcefile, targetfile, user=None):
+    def transfer(cls, sourcehost, sourcefile,
+                 targethost, targetfile, user=None):
         """Transfer a file between remote systems (scp)
-        Requires keys to be set up between remote systems."""
+        Requires keys to be set up between remote systems.
+
+        Args:
+            sourcehost (str): Hostname of the remote system copying from.
+            sourcefile (str): The source path on a remote system.
+            targethost (str): Hostname of the remote system copying to.
+            targetfile (str): The target path for the file on a remote system.
+            user (optional[str]): The user to use for the remote connection.
+
+        Returns:
+            Nothing
+        """
 
         if not user:
             user = cls.user
@@ -275,11 +430,18 @@ class Connectible(object):
 
     @classmethod
     def list_ssh_connections(cls):
+        """Display the list of existing ssh connections on stdout."""
         for name in cls._ssh_connections.keys():
             print (name)
 
     @classmethod
     def get_ssh_connections(cls):
+        """Retrieves the dictionary of ssh connections.
+
+        Returns:
+            A dictionary of ssh connections.
+        """
         return cls._ssh_connections
 
 # TODO: add color logging to all methods with retcode, rout, rerr
+# TODO: check connections to see if they are current.
