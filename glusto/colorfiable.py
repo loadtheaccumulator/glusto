@@ -74,9 +74,13 @@ class Colorfiable(object):
 
     # Glusto Bitwise Aliases
     COLOR_COMMAND = BOLD | DKGRAY
+    """Constant for command strings (BOLD | DKGRAY)"""
     COLOR_STDOUT =  BOLD | BG_LTGRAY | BLACK
+    """Constant for stdout (BOLD | BG_LTGRAY | BLACK)"""
     COLOR_STDERR =  BOLD | RED
+    """Constant for stderr (BOLD | RED)"""
     COLOR_RCODE =   BOLD | BLUE
+    """Constant for command return code (BOLD | BLUE)"""
 
     _ANSI = {}
 
@@ -132,15 +136,15 @@ class Colorfiable(object):
     def colorfy(cls, color, message):
         """Applies ANSI terminal colors and attributes to strings.
 
-        Example:
-            g.colorfy(g.BG_YELLOW | g.RED | g.BOLD, 'Bold red on yellow text')
-
         Args:
             color (int): Bitwise value(s) for color settings.
             message (str): String to wrap in the specified color.
 
         Returns:
             A color formatted string.
+
+        Example:
+            >>> g.colorfy(g.BG_YELLOW | g.RED | g.BOLD, 'Bold red on yellow text')
         """
         ansi_list = []
         for i in range(0, len(cls._ANSI) - 1):

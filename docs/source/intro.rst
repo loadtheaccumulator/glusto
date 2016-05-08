@@ -1,7 +1,13 @@
 .. _introduction:
 
-Glusto is a framework designed to provide features common to a remote
-distributed Gluster environment.
+Glusto is a framework designed to provide features commonly used in a
+remote/distributed test environment.
+
+It started out as a port of some shell ssh functions I had written
+and was meant for use in PyUnit* tests for Gluster.
+
+I don't see much reason it could not be used with other Python test frameworks.
+Feel free to give it a go, and please let me know how it works out.
 
 How to Use Glusto
 =================
