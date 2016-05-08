@@ -1,4 +1,5 @@
-.. _introduction:
+Glusto
+======
 
 Glusto is a framework designed to provide features commonly used in a
 remote/distributed test environment.
@@ -9,15 +10,14 @@ and was meant for use in PyUnit* tests for Gluster.
 I don't see much reason it could not be used with other Python test frameworks.
 Feel free to give it a go, and please let me know how it works out.
 
-How to Use Glusto
-=================
+#### How to Use Glusto
 
 Import at the top of each module leveraging the glusto tools.
 
 Example:
     To use Glusto in a module::
 
-        from glusto.core import Glusto as g
+        >>> from glusto.core import Glusto as g
 
 
 Glusto inherits from multiple classes providing configuration,
@@ -26,7 +26,7 @@ presenting them in a single global Class object.
 Glusto also acts a global class for maintaining state across
 multiple modules and classes.
 
-.. note:: It is no longer necessary to say "Glusto Importo!" out loud
-   before executing scripts using the Glusto module.
-
-   The import statement is more than sufficient.
+Note:
+    It is no longer necessary to say "Glusto Importo!" out loud
+    before executing scripts using the Glusto module. The import statement is 
+    more than sufficient.
