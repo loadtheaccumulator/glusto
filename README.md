@@ -1,29 +1,32 @@
-# README #
+.. _introduction:
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Glusto is a framework designed to provide features commonly used in a
+remote/distributed test environment.
 
-### What is this repository for? ###
+It started out as a port of some shell ssh functions I had written
+and was meant for use in PyUnit* tests for Gluster.
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+I don't see much reason it could not be used with other Python test frameworks.
+Feel free to give it a go, and please let me know how it works out.
 
-### How do I get set up? ###
+How to Use Glusto
+=================
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+Import at the top of each module leveraging the glusto tools.
 
-### Contribution guidelines ###
+Example:
+    To use Glusto in a module::
 
-* Writing tests
-* Code review
-* Other guidelines
+        from glusto.core import Glusto as g
 
-### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+Glusto inherits from multiple classes providing configuration,
+remote connection, ANSI color output, and logging functionality,
+presenting them in a single global Class object.
+Glusto also acts a global class for maintaining state across
+multiple modules and classes.
+
+.. note:: It is no longer necessary to say "Glusto Importo!" out loud
+   before executing scripts using the Glusto module.
+
+   The import statement is more than sufficient.
