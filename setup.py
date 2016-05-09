@@ -11,5 +11,6 @@ setup(name='glusto',
         'console_scripts': [
             'glusto = glusto.main:main',
         ]
-    }
+    },
+    install_requires=['plumbum']
 )
