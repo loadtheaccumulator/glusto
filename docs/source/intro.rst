@@ -10,7 +10,7 @@ I don't see much reason it could not be used with other Python test frameworks.
 Feel free to give it a go, and please let me know how it works out.
 
 How to Use Glusto
-=================
+-----------------
 
 Import at the top of each module leveraging the glusto tools.
 
@@ -27,6 +27,5 @@ Glusto also acts a global class for maintaining state across
 multiple modules and classes.
 
 .. note:: It is no longer necessary to say "Glusto Importo!" out loud
-   before executing scripts using the Glusto module.
-
-   The import statement is more than sufficient.
+   before executing scripts using the Glusto module. The import statement is
+   more than sufficient.

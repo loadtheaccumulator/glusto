@@ -116,7 +116,7 @@ class Connectible(object):
             None on error.
 
         Example:
-            To run the uname command on a remote host named "bunkerhill"::
+            To run the uname command on a remote host named "bunkerhill"...
 
                 >>> from glusto.core import Glusto as g
                 >>> results = g.run("bunkerhill", "uname -a")
@@ -195,7 +195,7 @@ class Connectible(object):
 
         Example:
             To run a command asynchronously on remote hosts
-            named "bunkerhill" and "breedshill"...::
+            named "bunkerhill" and "breedshill"...
 
                 >>> from glusto.core import Glusto as g
 
@@ -207,7 +207,7 @@ class Connectible(object):
                 >>> results2 = proc2.async_communicate()
 
             This can also be used to run a command against the same system
-            asynchronously as different users...::
+            asynchronously as different users...
 
                 >>> command = "ls -R /etc"
                 >>> proc1 = g.run_async("breedshill", command, user="howe")
@@ -304,7 +304,7 @@ class Connectible(object):
             A tuple consisting of the command return code, stdout, and stderr.
 
         Example:
-            To run a command locally...::
+            To run a command locally...
 
                 >>> from glusto.core import Glusto as g
                 >>> retcode, stdout, stderr = g.run_local("uname -a")
@@ -335,7 +335,7 @@ class Connectible(object):
             Labeled by the host.
 
         Example:
-            To run a command against a list of hosts...::
+            To run a command against a list of hosts...
 
                 >>> from glusto.core import Glusto as g
                 >>> hosts = ["bunkerhill", "breedshill"]
