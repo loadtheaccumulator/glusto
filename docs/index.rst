@@ -8,7 +8,8 @@ Welcome to Glusto's documentation!
 
 .. include:: source/intro.rst
 
-Contents:
+Contents
+========
 
 .. toctree::
    :maxdepth: 2

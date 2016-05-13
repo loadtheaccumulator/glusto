@@ -1,12 +1,13 @@
 .. _introduction:
 
 Glusto is a framework designed to provide features commonly used in a
-remote/distributed test environment.
+remote/distributed environment.
 
 It started out as a port of some shell ssh functions I had written
-and was meant for use in PyUnit* tests for Gluster.
+and was meant for use in PyUnit* tests and config scripts for Gluster.
 
-I don't see much reason it could not be used with other Python test frameworks.
+I've removed the Gluster specifics from this package, and I don't see reason
+why it could not be used with other Python test frameworks or scripts.
 Feel free to give it a go, and please let me know how it works out.
 
 How to Use Glusto
@@ -29,3 +30,10 @@ multiple modules and classes.
 .. note:: It is no longer necessary to say "Glusto Importo!" out loud
    before executing scripts using the Glusto module. The import statement is
    more than sufficient.
+
+TODO
+~~~~
+* add some config handling
+* better docs and more examples
+
+

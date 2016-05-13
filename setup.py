@@ -1,8 +1,8 @@
 from setuptools import setup
 
 setup(name='glusto',
-    version='0.1.0',
-    description='Gluster Object-oriented Framework',
+    version='0.1',
+    description='Gluster Object-oriented Python Framework',
     author='Jonathan Holloway',
     author_email='loadtheaccumulator@gmail.com',
     url='http://github.com/loadtheaccumulator/glusto',
