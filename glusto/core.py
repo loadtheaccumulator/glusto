@@ -27,8 +27,6 @@ Example:
 
         from glusto.core import Glusto as g
 """
-import logging
-import os
 
 from glusto.configurable import Configurable
 from glusto.connectible import Connectible
@@ -38,19 +36,10 @@ from glusto.loggable import Loggable
 
 class Glusto(Configurable, Connectible, Colorfiable, Loggable):
     """The locker for all things Glusto."""
-    #config["ssh_keyfile"] = "~/.ssh/id_rsa"
-    # TODO: figure which of these are class and config parameters
-#    config["nodes"] = ['192.168.1.221', '192.168.1.222',
-#                       '192.168.1.223', '192.168.1.224']
-#    config['clients'] = ['192.168.1.225']
-    # TODO: keep glusto dumb and leave nodes in config. ???
-    config = {}
-    nodes = []
-    clients = []
 
     # TODO: figure out how we want to do this with cli options
     # TODO: call this after configs are read to be more effective
     # TODO: do this by default or force to be from main() or other importer
     # create default log
+    glustolog = Loggable.create_log()
     log = Loggable.create_log()
-

@@ -59,24 +59,23 @@ class Loggable(object):
             if not os.path.exists(_logdir):
                 os.makedirs(_logfile)
         _logfh = logging.FileHandler(_logfile)
-    
+
         # Set log string format for logger
         # TODO: set log string format from config (with default)
         _formatter = logging.Formatter('%(asctime)s %(levelname)s '
                                        '(%(funcName)s) %(message)s')
         _logfh.setFormatter(_formatter)
-    
+
         # Add handler to logger
         log.addHandler(_logfh)
-    
+
         # Set log level
         # TODO: verify all of the available options
         # TODO: catch illegal options???
-        _level = {'DEBUG':logging.DEBUG,
-                  'INFO':logging.INFO,
-                  'WARNING':logging.WARNING,
-                  'CRITICAL':logging.CRITICAL}[level]
+        _level = {'DEBUG': logging.DEBUG,
+                  'INFO': logging.INFO,
+                  'WARNING': logging.WARNING,
+                  'CRITICAL': logging.CRITICAL}[level]
         log.setLevel(_level)
 
         return log
-
