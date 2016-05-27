@@ -94,7 +94,8 @@ class Configurable(object):
             Uses custom GDumper class to strip Python object formatting.
             This is not a utility function for serialization.
 
-        Note: ini expects a list. This enables forcing a section order.
+        Note:
+            ini expects a list. This enables forcing a section order.
         """
         # TODO: filter objects not necessary to store
         # TODO: errorcheck these calls

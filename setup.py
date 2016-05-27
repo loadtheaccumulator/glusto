@@ -6,6 +6,12 @@ setup(name='glusto',
     author='Jonathan Holloway',
     author_email='loadtheaccumulator@gmail.com',
     url='http://github.com/loadtheaccumulator/glusto',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Software Development :: Quality Assurance',
+        ],
     packages=['glusto', 'tests'],
     entry_points={
         'console_scripts': [
