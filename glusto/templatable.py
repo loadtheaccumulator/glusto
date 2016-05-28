@@ -34,6 +34,8 @@ class Templatable(object):
             template_filename (str): Fully qualified template filename.
             template_vars (dict): A dictionary of variables.
             output_file (str): Fully qualified output filename.
+            searchpath (str): The root path to begin file searches.
+                Default is the current path.
 
         Returns:
             True if rendering of output file is successful.
@@ -47,5 +49,5 @@ class Templatable(object):
         with open(output_file, 'wb') as fh:
             fh.write(output_text)
 
+        # TODO: return True or False. add error checking above
         return output_text
-        # TODO: write to file (or make this a separate step???)
