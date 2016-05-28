@@ -10,10 +10,11 @@ Submodules
    glusto.configurable
    glusto.connectible
    glusto.core
-   glusto.distro
-   glusto.example_google
    glusto.loggable
    glusto.main
+   glusto.restable
+   glusto.simplesqlable
+   glusto.templatable
 
 Module contents
 ---------------
