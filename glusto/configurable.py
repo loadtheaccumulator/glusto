@@ -93,9 +93,6 @@ class Configurable(object):
         Note:
             Uses custom GDumper class to strip Python object formatting.
             This is not a utility function for serialization.
-
-        Note:
-            ini expects a list. This enables forcing a section order.
         """
         # TODO: filter objects not necessary to store
         # TODO: errorcheck these calls
@@ -204,7 +201,7 @@ class Configurable(object):
         Returns:
             Nothing
 
-        Note:
+        Warning:
             DESTRUCTIVE. This will assign a new dictionary on top of an
             existing config. See update_config().
         """
@@ -221,7 +218,7 @@ class Configurable(object):
         Returns:
             Nothing
 
-        Note:
+        Warning:
             SOMEWHAT DESTRUCTIVE. This will overwrite any previously
             existing objects.
 
@@ -324,7 +321,7 @@ class Intraconfig(object):
         Returns:
             Nothing
 
-        Note:
+        Warning:
             SOMEWHAT DESTRUCTIVE. This will overwrite any previously
             existing objects.
 

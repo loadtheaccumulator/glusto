@@ -10,30 +10,19 @@ I've removed the Gluster specifics from this package, and I don't see reason
 why it could not be used with other Python test frameworks or scripts.
 Feel free to give it a go, and please let me know how it works out.
 
-How to Use Glusto
------------------
-
-Import at the top of each module leveraging the glusto tools.
-
-Example:
-    To use Glusto in a module::
-
-        from glusto.core import Glusto as g
-
-
 Glusto inherits from multiple classes providing configuration,
 remote connection, ANSI color output, and logging functionality,
 presenting them in a single global Class object.
 Glusto also acts a global class for maintaining state across
 multiple modules and classes.
 
+Adding Glusto utilities to a Python module is as simple as an import.
+
+Example:
+    To use Glusto in a module::
+
+        from glusto.core import Glusto as g
+
 .. note:: It is no longer necessary to say "Glusto Importo!" out loud
    before executing scripts using the Glusto module. The import statement is
    more than sufficient.
-
-TODO
-~~~~
-* add some config handling
-* better docs and more examples
-
-

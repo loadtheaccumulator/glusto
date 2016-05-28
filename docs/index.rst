@@ -6,15 +6,28 @@
 Welcome to Glusto's documentation!
 ==================================
 
-.. include:: source/intro.rst
+.. include:: intro.rst
 
-Contents
+User Guide
+----------
+
+.. toctree::
+	:maxdepth: 3
+
+	userguide/install
+	userguide/configuration
+	userguide/import
+	userguide/connectible
+	userguide/todo
+
+API
 ========
 
 .. toctree::
    :maxdepth: 2
 
    source/glusto
+
 
 Indices and tables
 ==================
