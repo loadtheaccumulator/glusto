@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
-""" test glusto basic functionality """
+"""Test glusto config functionality"""
 import unittest
 import xmlrunner
 
@@ -40,7 +40,9 @@ class TestGlustoConfigs(unittest.TestCase):
         cls.config['defaults']['this'] = 'yada1'
         cls.config['defaults']['that'] = 'yada2'
         cls.config['globals'] = {}
-        cls.config['globals']['the other'] = 'yada3'
+        cls.config['globals']['the_other'] = 'yada3'
+        # to test ini substitution
+        cls.config['defaults']['this_and_that'] = '%(this)s and %(that)s'
 
         g.show_config(cls.config)
 
@@ -74,7 +76,7 @@ class TestGlustoConfigs(unittest.TestCase):
         g.show_config(config)
         self.assertEqual(config['defaults']['this'], 'yada1')
         self.assertEqual(config['defaults']['that'], 'yada2')
-        self.assertEqual(config['globals']['the other'], 'yada3')
+        self.assertEqual(config['globals']['the_other'], 'yada3')
 
     def test_ini(self):
         """Testing ini config file(s)"""
@@ -88,7 +90,9 @@ class TestGlustoConfigs(unittest.TestCase):
         g.show_config(config)
         self.assertEqual(config['defaults']['this'], 'yada1')
         self.assertEqual(config['defaults']['that'], 'yada2')
-        self.assertEqual(config['globals']['the other'], 'yada3')
+        self.assertEqual(config['defaults']['this_and_that'],
+                         'yada1 and yada2')
+        self.assertEqual(config['globals']['the_other'], 'yada3')
 
     def test_ini_ordered(self):
         """Testing ordered ini config file(s)"""
@@ -103,7 +107,9 @@ class TestGlustoConfigs(unittest.TestCase):
         g.show_config(config)
         self.assertEqual(config['defaults']['this'], 'yada1')
         self.assertEqual(config['defaults']['that'], 'yada2')
-        self.assertEqual(config['globals']['the other'], 'yada3')
+        self.assertEqual(config['defaults']['this_and_that'],
+                         'yada1 and yada2')
+        self.assertEqual(config['globals']['the_other'], 'yada3')
 
     def tearDown(self):
         """Unittest tearDown override"""

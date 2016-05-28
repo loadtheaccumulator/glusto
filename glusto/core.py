@@ -32,9 +32,10 @@ from glusto.configurable import Configurable
 from glusto.connectible import Connectible
 from glusto.colorfiable import Colorfiable
 from glusto.loggable import Loggable
+from glusto.templateable import Templateable
 
 
-class Glusto(Configurable, Connectible, Colorfiable, Loggable):
+class Glusto(Configurable, Connectible, Colorfiable, Loggable, Templateable):
     """The locker for all things Glusto."""
 
     # TODO: figure out how we want to do this with cli options

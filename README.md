@@ -30,3 +30,8 @@ Note:
     It is no longer necessary to say "Glusto Importo!" out loud
     before executing scripts using the Glusto module. The import statement is 
     more than sufficient.
+
+#### TODO
+* add more config handling
+* better docs and more examples
+

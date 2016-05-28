@@ -13,12 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
-""" test glusto basic functionality """
+"""Test glusto basic functionality"""
 import unittest
 import xmlrunner
 
 from glusto.core import Glusto as g
-# from glusto.volumes import Volumes as v
 
 
 class TestGlustoBasics(unittest.TestCase):
@@ -87,6 +86,7 @@ class TestGlustoBasics(unittest.TestCase):
         rcode, _, _ = g.run(self.masternode, "false")
         self.assertEqual(rcode, 1)
 
+    @unittest.expectedFailure
     def test_expected_fail(self):
         """Testing an expected failure. This test should fail"""
         rcode, _, _ = g.run(self.masternode, "false")
