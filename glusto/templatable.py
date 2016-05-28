@@ -16,13 +16,13 @@
 """All things Jinja templates.
 
 NOTE:
-    Templateable is inherited by the Glusto class
+    Templatable is inherited by the Glusto class
     and not designed to be instantiated.
 """
 import jinja2
 
 
-class Templateable(object):
+class Templatable(object):
     """The class providing Jinja template functionality."""
 
     @staticmethod
