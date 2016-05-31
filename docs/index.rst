@@ -18,6 +18,7 @@ User Guide
 	userguide/configuration
 	userguide/import
 	userguide/connectible
+	userguide/glustocli
 	userguide/todo
 
 API
