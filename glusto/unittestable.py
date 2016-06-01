@@ -20,25 +20,34 @@ NOTE:
     and not designed to be instantiated.
 """
 import unittest
+import sys
 
 
 class Unittestable(object):
     """The class providing Jinja template functionality."""
 
     @staticmethod
-    def load_tests(loader, module_name, class_name, test_list_all,
-                   testcases_ordered):
+    def load_tests(test_class, loader, ordered_testcases):
+        '''Load tests in a specific order.
+        unittest standard feature requires Python2.7
+        '''
+        module_name = test_class.__module__
+        class_name = test_class.__name__
+        prefix = "%s.%s" % (module_name, class_name)
+        print "PREFIX: %s" % prefix
+
         suite = unittest.TestSuite()
         # Add tests that need to be run in a specific order
-        tests = loader.loadTestsFromNames(testcases_ordered)
-        suite.addTests(tests)
-
+        for testcase_name in ordered_testcases:
+            testcase_fullname = "%s.%s" % (prefix, testcase_name)
+            loaded_test = loader.loadTestsFromName(testcase_fullname)
+            suite.addTest(loaded_test)
         # Add the remaining tests
-        #test_list_all = loader.getTestCaseNames(class_name)
+        test_list_all = loader.getTestCaseNames(test_class)
         testcases_remaining = []
         for test_name in test_list_all:
-            full_test_name = "%s.%s.%s" % (module_name, class_name, test_name)
-            if full_test_name not in testcases_ordered:
+            if test_name not in ordered_testcases:
+                full_test_name = "%s.%s" % (prefix, test_name)
                 testcases_remaining.append(full_test_name)
         remaining_tests = loader.loadTestsFromNames(testcases_remaining)
         suite.addTest(remaining_tests)

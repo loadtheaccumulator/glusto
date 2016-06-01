@@ -1,0 +1,32 @@
+unittest:
+  output_junit: false
+
+# DISCOVER TESTS FROM DIRECTORY
+#  discover_tests:
+#    start_dir: 'tests'
+#    # optional
+#    pattern: 'test*.py'
+#    top_level_dir: 'tests'
+
+# LOAD TESTS FROM LIST (SEE unittest_list.yml)
+#  load_tests_from_list: true
+
+# LOAD TESTS FROM MODULE w/ TEST_LOAD ORDERED TESTS
+  load_tests_from_module:
+    module_name: 'tests.test_glusto'
+    use_load_test: true
+
+# LOAD TESTS FROM MODULE w/o TEST_LOAD ORDERED TESTS
+#  load_tests_from_module:
+#    module_name: 'tests.test_glusto'
+#    use_load_test: false
+
+# LOAD TESTS FROM NAME
+#  load_tests_from_name: 'tests.test_glusto'
+#  load_tests_from_name: 'tests.test_glusto.TestGlustoBasics'
+#  load_tests_from_name: 'tests.test_glusto.TestGlustoBasics.test_stdout'
+
+# LOAD TESTS FROM LIST OF NAMES
+#  load_tests_from_names: ['tests.test_glusto',
+#                          'tests.test_glusto_configs',
+#                          'tests.test_glusto.TestGlustoBasics.test_stdout']

@@ -1,0 +1,10 @@
+# example unittest_list config
+
+unittest_list:
+  module_name: 'tests.test_glusto'
+  list: [
+    'TestGlustoBasics.test_stdout',
+    'TestGlustoBasics.test_return_code',
+    'TestGlustoBasics.test_stderr',
+    'TestGlustoBasics.test_expected_fail',
+    ]

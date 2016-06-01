@@ -19,6 +19,7 @@ User Guide
 	userguide/import
 	userguide/connectible
 	userguide/glustocli
+	userguide/unittest
 	userguide/todo
 
 API

@@ -82,12 +82,14 @@ class TestGlustoBasics(unittest.TestCase):
 
     def test_negative_test(self):
         """Testing an expected failure as negative test"""
+        print "Running: %s - %s" % (self.id(), self.shortDescription())
         rcode, _, _ = g.run(self.masternode, "false")
         self.assertEqual(rcode, 1)
 
     @unittest.expectedFailure
     def test_expected_fail(self):
         """Testing an expected failure. This test should fail"""
+        print "Running: %s - %s" % (self.id(), self.shortDescription())
         rcode, _, _ = g.run(self.masternode, "false")
         self.assertEqual(rcode, 0)
 
@@ -103,23 +105,20 @@ class TestGlustoBasics(unittest.TestCase):
         print "Tearing Down Class: %s" % cls.__name__
 
 
-# TODO: will this work with loading specific tests in a list???
 # TODO: move this to another test class (maybe test_glusto_unittest)???
 def load_tests(loader, standard_tests, pattern):
-    print "Loader..."
-    g.show_config(loader)
-    #print "Tests..."
-    #g.show_config(standard_tests)
+    '''Load tests in a specific order.
+    unittest standard feature requires Python2.7
+    '''
     module_name = __name__
-    import sys
-    print sys.modules[__name__]
     class_name = 'TestGlustoBasics'
-    print "LOADING TESTS FROM %s.%s" % (module_name, class_name)
     prefix = "%s.%s" % (module_name, class_name)
     testcases_ordered = ['test_return_code',
                          'test_stdout',
                          'test_stderr']
 
+    suite = g.load_tests(TestGlustoBasics, loader, testcases_ordered)
+    '''
     suite = unittest.TestSuite()
     # Add tests that need to be run in a specific order
     for testcase_name in testcases_ordered:
@@ -133,9 +132,8 @@ def load_tests(loader, standard_tests, pattern):
     for test_name in test_list_all:
         if test_name not in testcases_ordered:
             full_test_name = "%s.%s" % (prefix, test_name)
-            print "full test name: %s" % full_test_name
             testcases_remaining.append(full_test_name)
     remaining_tests = loader.loadTestsFromNames(testcases_remaining)
     suite.addTest(remaining_tests)
-
+    '''
     return suite

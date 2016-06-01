@@ -1,0 +1,40 @@
+{% include 'templates/license.txt' %}
+"""{{module_docstring}}"""
+
+{% for import_item in imports %}{{ import_item }}
+{% endfor %}
+
+class {{testclass.name}}(unittest.TestCase):
+   """{{testclass.docstring}}"""
+
+    @classmethod
+    def setUpClass(cls):
+        """unittest standard setUpClass method
+        Runs before all test_ methods in the class
+        """
+        print "Setting Up Class: %s" % cls.__name__
+        {{setupclass.code}}
+
+    def setUp(self):
+        """unittest standard setUp method
+        Runs before each test_ method
+        """
+        print "Setting Up: %s" % self.id()
+        {{setup.code}}
+
+    def {{test.name}}(self):
+        """{{test.description}}"""
+        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        {{test.code}}
+
+    def tearDown(self):
+        """Unittest tearDown override"""
+        print "Tearing Down: %s" % self.id()
+        {{teardown.code}}
+
+    @classmethod
+    def tearDownClass(cls):
+        """unittest tearDownClass override"""
+        print "Tearing Down Class: %s" % cls.__name__
+        {{teardownclass.code}}
+

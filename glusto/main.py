@@ -18,6 +18,8 @@ import argparse
 from unittest import TestLoader, TestSuite, TextTestRunner
 import xmlrunner
 import importlib
+import inspect
+import sys
 
 from glusto.core import Glusto as g
 
@@ -61,6 +63,9 @@ def main():
     parser.add_argument("-u", "--unittest",
                         help="Run unittests per provided config file.",
                         action="store_true", dest="run_unittest")
+    parser.add_argument("-d", "--discover",
+                        help="Discover unittests from directory",
+                        action="store", dest="discover_dir")
     args = parser.parse_args()
 
     # read config files and update g.config attributes
@@ -83,9 +88,14 @@ def main():
                    "with log level %s", log_name, log_filename, log_level)
 
     # unittest
+    # TODO: functionalize this so it can be used for standalone test scripts
     if args.run_unittest:
         tsuite = TestSuite()
-        unittest_config = g.config.get('unittest', False)
+        if args.discover_dir:
+            unittest_config = {'cli_discover': 'true'}
+        else:
+            unittest_config = g.config.get('unittest', False)
+
         if not unittest_config:
             print ("ERROR: Unittest option requires a unittest configuration.")
             return False
@@ -96,23 +106,24 @@ def main():
         else:
             trunner = TextTestRunner(verbosity=2)
 
-        discover = unittest_config.get('discover')
-        # TODO: Add ability to run multiple discoveries in a single config
+        discover = unittest_config.get('discover_tests')
+        if args.discover_dir:
+            discover = {'start_dir': args.discover_dir}
+        # TODO: ??? Add ability to run multiple discoveries in a single config
         if discover:
-            print "START - RUNNING DISCOVERED TESTS..."
+            g.log.debug('unittest - discover')
             start_dir = discover.get('start_dir', '.')
             pattern = discover.get('pattern', 'test_*')
             top_level_dir = discover.get('top_level_dir', None)
             discovered_tests = TestLoader().discover(start_dir, pattern,
                                                      top_level_dir)
             tsuite.addTests(discovered_tests)
-            print "END - RUNNING DISCOVERED TESTS..."
 
-        run_list = unittest_config.get('run_list')
+        run_list = unittest_config.get('load_tests_from_list')
         # TODO: ability to load multiple lists
-        # TODO: list format more conducive to automation ???
+        # TODO: ??? list format more conducive to automation
         if run_list:
-            print "START - RUNNING LIST OF TESTS..."
+            g.log.debug('unittest - load_tests_from_list')
             unittest_config = g.config['unittest']
             unittest_list = g.config['unittest_list']
             module_name = unittest_list['module_name']
@@ -127,21 +138,46 @@ def main():
             tsuite.addTests(tests_to_run)
             #result = unittest.TestResult()
             #suite.run(result)
-            print "END - RUNNING LIST OF TESTS..."
 
-        run_module = unittest_config.get('run_module')
+        run_module = unittest_config.get('load_tests_from_module')
         if run_module:
-            print "START - RUNNING MODULE (%s)..." % run_module
+            g.log.debug('unittest - load_tests_from_module')
+            module_name = run_module.get('module_name')
+            use_load_test = run_module.get('use_load_test', True)
+
             loader = TestLoader()
-            #test_module_obj = importlib.import_module(run_module)
-            test_module_obj = __import__(run_module, fromlist='TestGlustoBasics')
-            print test_module_obj
-            # FIXME: issue with load_tests in test_glusto needs to be resolved
-            #            using False for now
+
+            # TODO: is there a better way to do this without the dual import?
+            __import__(module_name)
+            class_list = inspect.getmembers(sys.modules[module_name],
+                                            inspect.isclass)
+            # TODO: is __import__ Python3.x friendly???
+            test_module_obj = __import__(module_name,
+                                         fromlist=class_list)
             tests_from_module = loader.loadTestsFromModule(test_module_obj,
-                                                           True)
+                                                           use_load_test)
             tsuite.addTests(tests_from_module)
-            print "END - RUNNING MODULE"
+
+        # Load tests from a name (string)
+        # NOTE: does not use load_test()
+        test_name = unittest_config.get('load_tests_from_name')
+        if test_name:
+            g.log.debug('unittest - load_tests_from_name')
+            # TODO: can we collapse these loader instances into one at top???
+            loader = TestLoader()
+            tests_from_name = loader.loadTestsFromName(test_name)
+            tsuite.addTests(tests_from_name)
+
+        # Load tests from a name (string)
+        # NOTE: only uses load_test() when name is module level
+        #        e.g., tests.test_glusto
+        test_name_list = unittest_config.get('load_tests_from_names')
+        if test_name_list:
+            g.log.debug('unittest - load_tests_from_names')
+            # TODO: can we collapse these loader instances into one at top???
+            loader = TestLoader()
+            tests_from_names = loader.loadTestsFromNames(test_name_list)
+            tsuite.addTests(tests_from_names)
 
         # TODO: Add a skip test option
         trunner.run(tsuite)

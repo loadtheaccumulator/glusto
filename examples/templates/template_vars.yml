@@ -1,0 +1,18 @@
+imports: [import unittest, import xmlrunner, from glusto.core import Glusto as g]
+module_docstring: Test this stuff
+setup: {code: '# code goes here'}
+setupclass: {code: '# code goes here'}
+teardown: {code: '# code goes here'}
+teardownclass: {code: '# code goes here'}
+test: {name: 'test something',
+       description: 'Testing something',
+       code: |
+         ### BEGIN INSERTED CODE
+         config = g.load_configs(["../working/systems.yml",
+                                  "../working/glusto.yml"])
+         g.update_config(config)
+         self.masternode = g.config[\"nodes\"][0]
+         self.client = g.config["clients\"][0]
+         ### END INSERTED CODE
+}
+testclass: {docstring: this is the class docstring, name: GlustoExampleTest}
