@@ -89,7 +89,7 @@ def main():
 
     # unittest
     # TODO: functionalize this so it can be used for standalone test scripts
-    if args.run_unittest:
+    if args.run_unittest or args.discover_dir:
         tsuite = TestSuite()
         if args.discover_dir:
             unittest_config = {'cli_discover': 'true'}

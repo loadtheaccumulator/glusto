@@ -15,6 +15,7 @@ Submodules
    glusto.restable
    glusto.simplesqlable
    glusto.templatable
+   glusto.unittestable
 
 Module contents
 ---------------

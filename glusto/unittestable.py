@@ -20,7 +20,6 @@ NOTE:
     and not designed to be instantiated.
 """
 import unittest
-import sys
 
 
 class Unittestable(object):
@@ -28,8 +27,21 @@ class Unittestable(object):
 
     @staticmethod
     def load_tests(test_class, loader, ordered_testcases):
-        '''Load tests in a specific order.
-        unittest standard feature requires Python2.7
+        '''Load specified tests in a order followed by the remaining tests in
+            the test_class.
+
+        Args:
+            test_class (object): The TestCase class object with test methods.
+            loader (object): The loader object passed from unittests to
+                calling load_tests function.
+            ordered_testcases (list): list of testcase method names in order
+                to be run.
+
+        Return:
+            Returns a unittest.TestSuite() containing loaded tests.
+
+        Note:
+             This feature requires Python2.7 or higher
         '''
         module_name = test_class.__module__
         class_name = test_class.__name__

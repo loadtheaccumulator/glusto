@@ -23,7 +23,7 @@ User Guide
 	userguide/todo
 
 API
-========
+===
 
 .. toctree::
    :maxdepth: 2
