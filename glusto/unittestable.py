@@ -13,17 +13,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
-"""All things Jinja templates.
+"""All things unittest.
 
 NOTE:
-    Templatable is inherited by the Glusto class
+    Unittestable is inherited by the Glusto class
     and not designed to be instantiated.
 """
 import unittest
 
 
 class Unittestable(object):
-    """The class providing Jinja template functionality."""
+    """The class providing unittest functionality."""
 
     @staticmethod
     def load_tests(test_class, loader, ordered_testcases):
