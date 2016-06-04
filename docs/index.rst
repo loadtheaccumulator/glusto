@@ -11,15 +11,22 @@ Welcome to Glusto's documentation!
 User Guide
 ----------
 
+Table of Contents
+~~~~~~~~~~~~~~~~~
 .. toctree::
 	:maxdepth: 3
 
+
 	userguide/install
+	userguide/quickstart
 	userguide/configuration
-	userguide/import
+	userguide/glusto
+	userguide/loggable
 	userguide/connectible
+	userguide/templatable
 	userguide/glustocli
 	userguide/unittest
+	userguide/tutorial
 	userguide/todo
 
 API

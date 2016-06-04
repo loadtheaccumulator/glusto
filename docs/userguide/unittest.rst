@@ -91,7 +91,10 @@ be leveraged for a variety of use cases, so Glusto provides a convenient
 interface to the capability added in Python 2.7.
 
 Add the following example to the test module containing a standard
-unittest.TestCase class::
+unittest.TestCase class.
+
+.. code-block:: python
+    :linenos:
 
     def load_tests(loader, standard_tests, pattern):
 		'''Load tests in specified order'''
