@@ -1,0 +1,10 @@
+# test variables for test_glusto_templates
+
+templates:
+  plain_scalar: Test this stuff
+
+  sequence:
+    - first item
+    - second item
+    - third item
+

@@ -1,0 +1,9 @@
+{% include 'templates/glusto_templates-license.txt' %}
+
+out_templates:
+  plain_scalar: {{ plain_scalar }}
+
+  sequence:
+{% for item in sequence %}    - {{ item }}
+{% endfor %}
+
