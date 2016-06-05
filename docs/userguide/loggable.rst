@@ -55,10 +55,14 @@ If 'STDOUT' is passed as the filename, a log will be added that prints to stdout
 	::
 
 		>>> g.add_log(g.mylog, filename='STDOUT')
+		>>> g.mylog.info('This is a test log entry to stdout.')
+		2016-06-05 10:27:24,175 INFO (<module>) This is a test log entry to stdout.
 
 
-You can confirm there are multiple logfiles attached to the log object, by
-running the following command...
+Show the Logfiles Attached to a Specific Logger
+===============================================
+
+To show a list of the logfiles attached to a logger, use the ``show_logs()`` command.
 
 	::
 
@@ -66,6 +70,27 @@ running the following command...
 		mylog0: /tmp/my.log
 		mylog1: sys.stdout
 
+
+Removing a Log
+==============
+
+If a logfile is no longer needed, remove the logfile from the logger with the ``remove_log()`` command.
+
+	::
+
+		>>> g.show_logs(g.mylog)
+		mylog0: /tmp/my.log
+		mylog1: sys.stdout
+		>>> g.remove_log(g.mylog, 'mylog1')
+
+		>>> g.show_logs(g.mylog)
+		mylog0: /tmp/my.log
+
+To remove all logfiles from a logger, use the ``remove_log`` command without passing a name.
+
+	::
+
+		>>> g.remove_log(g.mylog)
 
 Logging with Color Text
 =======================
@@ -77,11 +102,14 @@ Changing the Color of a String
 
 To wrap a string in color, use the colorfy command.
 
-	::
+::
 
-		>>> print g.colorfy(g.RED, 'This string is RED')
+	>>> print g.colorfy(g.RED, 'This string is RED')
 
 The printed string will be output in the color red and any following text will return to default color.
+
+See the "Available Color Values" below for the full list of Foreground Colors.
+
 
 Changing the Background Color of a String
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,6 +119,8 @@ It is possible to change the background color of a string.
 	::
 
 		>>> print g.colorfy(g.BG_YELLOW, 'This string has a YELLOW background')
+
+See the "Available Color Values" below for the full list of Background Colors.
 
 
 Changing an ANSI Attribute of a String
@@ -102,19 +132,11 @@ It is also possible to make a string bold.
 
 		>>> print g.colorfy(g.BOLD, 'This string is BOLD')
 
-The attribute options include:
-
-* NORMAL
-* BOLD
-* DIM
-* UNDERLINE
-* BLINK
-* REVERSE
-* HIDDEN
-
 .. Warning::
 
 	Mileage may vary depending on the output device.
+
+See the "Available Color Values" below for the full list of Attributes.
 
 
 Combining Colors and Attributes
