@@ -133,11 +133,11 @@ To combine colors and attributes, pass a Bitwise Or'd list to ``colorfy()``.
 
 	Create your own combinations ahead of time for re-use throughout your script.
 
-	::
+		::
 
-		>>> COLOR_ALERT =  g.BOLD | g.RED | g.REVERSE
-		>>> COLOR_WARNING =  g.BOLD | g.RED
-		>>> print '%s %s' %(g.colorfy(COLOR_ALERT, 'WARNING:'), g.colorfy(COLOR_WARNING, 'This is a warning!'))
+			>>> COLOR_ALERT =  g.BOLD | g.RED | g.REVERSE
+			>>> COLOR_WARNING =  g.BOLD | g.RED
+			>>> print '%s %s' %(g.colorfy(COLOR_ALERT, 'WARNING:'), g.colorfy(COLOR_WARNING, 'This is a warning!'))
 
 Send Color Text to the Log
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,8 +145,9 @@ Send Color Text to the Log
 Any of the previously discussed print commands can be replaced with logging
 commands to send the color text to logfiles.
 
-	Example::
-		>>> g.log.debug(g.colorfy(g.BOLD | g. RED | g.BG_YELLOW, 'This string is BOLD and RED on a YELLOW BACKGROUND.'))
+	::
+
+		>>> g.log.debug(g.colorfy(g.BOLD | g.RED | g.BG_YELLOW, 'This string is BOLD and RED on a YELLOW BACKGROUND.'))
 
 .. Enabling Color Logging for Built-In Commands
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -164,3 +165,36 @@ commands to send the color text to logfiles.
 	::
 
 		log_color: False
+
+
+Available Color Values
+~~~~~~~~~~~~~~~~~~~~~~
+
+When using the color values listed in the table below, remember to add the Glusto ``g.`` reference in front of each color value.
+
+	For example, ``g.BG_LTMAGENTA``
+
+
+============  ==========  ==========
+BACKGROUND    FOREGROUND  ATTRIBUTES
+============  ==========  ==========
+BG_DEFAULT    DEFAULT     NORMAL
+BG_BLACK      BLACK       BOLD
+BG_RED        RED         DIM
+BG_GREEN      GREEN       UNDERLINE
+BG_YELLOW     YELLOW      BLINK
+BG_BLUE       BLUE        REVERSE
+BG_MAGENTA    MAGENTA     HIDDEN
+BG_CYAN       CYAN
+BG_LTGRAY     LTGRAY
+BG_DKGRAY     DKGRAY
+BG_LTRED      LTRED
+BG_LTGREEN    LTGREEN
+BG_LTYELLOW   LTYELLOW
+BG_LTBLUE     LTBLUE
+BG_LTMAGENTA  LTMAGENTA
+BG_LTCYAN     LTCYAN
+BG_WHITE      WHITE
+============  ==========  ==========
+
+
