@@ -17,6 +17,7 @@ The Template File
 Template Variables
 ==================
 
+
 Providing Vars Programmatically
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

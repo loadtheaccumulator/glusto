@@ -206,6 +206,19 @@ Config::
 	                          'tests.test_glusto_configs',
 	                          'tests.test_glusto.TestGlustoBasics.test_stdout']
 
+Writing Unittests
+=================
+
+Example Using setUp and tearDown
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``test_glusto_configs.py``
+
+Eample Using setUpClass and tearDownClass
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``test_glusto_templates.py``
+
 .. rubric:: Footnotes
 
 .. [#] http://www.pydev.org/

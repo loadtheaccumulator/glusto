@@ -44,5 +44,5 @@ class Glusto(Configurable, Connectible, Colorfiable, Loggable,
     # TODO: call this after configs are read to be more effective
     # TODO: do this by default or force to be from main() or other importer
     # create default log
-    glustolog = Loggable.create_log()
     log = Loggable.create_log()
+    #log = Loggable.create_log('userlog', filename='/tmp/glusto.log')
