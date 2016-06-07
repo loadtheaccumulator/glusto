@@ -28,12 +28,12 @@ def handle_configs(config_list):
     """Load default and user-specified configuration files"""
 
     # load default config
-    g.glustolog.info("Loading default configuration files.")
+    g.log.info("Loading default configuration files.")
     g.load_config_defaults()
 
     # load user specified configs
     if (config_list):
-        g.glustolog.info("Loading user specified configuration files.")
+        g.log.info("Loading user specified configuration files.")
         config_files = config_list.split()
         config = g.load_configs(config_files)
         g.update_config(config)
@@ -53,7 +53,7 @@ def main():
     Example:
         # glusto run hostname.example.com "uname -a"
     """
-    g.glustolog.info("Starting glusto via main()")
+    g.log.info("Starting glusto via main()")
     print "Starting glusto via main()"
 
     parser = argparse.ArgumentParser(description="Glusto CLI wrapper")
@@ -106,6 +106,10 @@ def main():
         else:
             trunner = TextTestRunner(verbosity=2)
 
+        loader = TestLoader()
+        loader.testMethodPrefix = unittest_config.get('test_method_prefix',
+                                                      'test')
+
         discover = unittest_config.get('discover_tests')
         if args.discover_dir:
             discover = {'start_dir': args.discover_dir}
@@ -115,8 +119,8 @@ def main():
             start_dir = discover.get('start_dir', '.')
             pattern = discover.get('pattern', 'test_*')
             top_level_dir = discover.get('top_level_dir', None)
-            discovered_tests = TestLoader().discover(start_dir, pattern,
-                                                     top_level_dir)
+            discovered_tests = loader.discover(start_dir, pattern,
+                                               top_level_dir)
             tsuite.addTests(discovered_tests)
 
         run_list = unittest_config.get('load_tests_from_list')
@@ -131,7 +135,6 @@ def main():
 
             test_module_obj = importlib.import_module(module_name)
 
-            loader = TestLoader()
             tests_to_run = loader.loadTestsFromNames(test_list,
                                                      test_module_obj)
 
@@ -143,9 +146,9 @@ def main():
         if run_module:
             g.log.debug('unittest - load_tests_from_module')
             module_name = run_module.get('module_name')
-            use_load_test = run_module.get('use_load_test', True)
+            use_load_tests = run_module.get('use_load_tests', True)
 
-            loader = TestLoader()
+            #loader = TestLoader()
 
             # TODO: is there a better way to do this without the dual import?
             __import__(module_name)
@@ -155,7 +158,7 @@ def main():
             test_module_obj = __import__(module_name,
                                          fromlist=class_list)
             tests_from_module = loader.loadTestsFromModule(test_module_obj,
-                                                           use_load_test)
+                                                           use_load_tests)
             tsuite.addTests(tests_from_module)
 
         # Load tests from a name (string)
@@ -164,7 +167,6 @@ def main():
         if test_name:
             g.log.debug('unittest - load_tests_from_name')
             # TODO: can we collapse these loader instances into one at top???
-            loader = TestLoader()
             tests_from_name = loader.loadTestsFromName(test_name)
             tsuite.addTests(tests_from_name)
 
@@ -175,14 +177,13 @@ def main():
         if test_name_list:
             g.log.debug('unittest - load_tests_from_names')
             # TODO: can we collapse these loader instances into one at top???
-            loader = TestLoader()
             tests_from_names = loader.loadTestsFromNames(test_name_list)
             tsuite.addTests(tests_from_names)
 
         # TODO: Add a skip test option
         trunner.run(tsuite)
 
-    g.glustolog.info("Ending glusto via main()")
+    g.log.info("Ending glusto via main()")
     print "Ending glusto via main()"
 
 

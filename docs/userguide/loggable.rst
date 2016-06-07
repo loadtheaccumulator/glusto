@@ -92,6 +92,7 @@ To remove all logfiles from a logger, use the ``remove_log`` command without pas
 
 		>>> g.remove_log(g.mylog)
 
+
 Logging with Color Text
 =======================
 

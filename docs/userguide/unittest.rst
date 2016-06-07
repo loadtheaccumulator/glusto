@@ -7,7 +7,10 @@ Glusto imported in the test module. This makes it possible to combine
 tests that do not require any of the Glusto functionality with Glusto-savvy
 test cases.
 
-Glusto also supports running test cases in a number of ways.
+Running Unittests with Glusto
+=============================
+
+Glusto supports running test cases in a number of ways.
 
 * Using the Python interpreter interactive mode to execute commands manually.
 * Running an individual script at the command-line via ``if __name__ == '__main__':`` logic.
@@ -22,7 +25,7 @@ Each of the above options is documented below.
 	All of the examples are based on the samples provided in the ``examples`` directory installed with the glusto package.
 
 Running Unittests via the Python Interpreter Interactive Mode
-=============================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Running the tests via the Python interpreter can come in handy while developing
 and debugging tests scripts.
@@ -59,12 +62,12 @@ To run tests via the Python interpreter...
 
 
 Running Unittests with the CLI Option
-=====================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The simplest and most direct way to run unittests with Glusto is via the
 glusto cli discover option.
 
-The discover (-d,--discover) option accepts a directory name and the unittest
+The discover (*-d,--discover*) option accepts a directory name and the unittest
 module discover feature [#]_ searches the directory and subdirectories for modules
 with a name matching ```test*.py```.
 
@@ -77,8 +80,9 @@ Example::
 
 	# glusto -d 'tests' -c 'examples/systems.yml'
 
+
 Running Tests in a Specific Order
-=================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 One of the most argued elements of unit testing is creating a relationship
 between test cases by specifying an order where one has to be run before the
@@ -111,7 +115,7 @@ Glusto and running tests in order.
 
 
 Running Unittests with the Configuration Options
-================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If more control over discovery options, or the ability to select tests at the
 module or test case level is required, you can use config files to specify
@@ -124,17 +128,38 @@ To run tests with information from config files, use the -u option::
 Configuring Glusto for Unittests
 ================================
 
+Along with the simple discovery method at the CLI, Glusto supports more granular
+control over Unittests via configuration files.
 
 Base Unittest Options
 ~~~~~~~~~~~~~~~~~~~~~
 
-Config::
+Configuration items that control options Glusto-wide can be configured.
 
-	unittest:
-	  output_junit: false
+output_junit
+............
+
+The ``output_junit`` option writes the test results in junit xml format.
+
+	::
+
+		unittest:
+	  		output_junit: false
+
+test_method_prefix
+...........
+
+The ``test_method_prefix`` option changes the name prefix used by unittest to discover tests.
+
+	::
+		unittest:
+			test_method_prefix: 'rhgs'
+
 
 Discover Tests from a Directory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Discovery via config is similar to the CLI, but offers additional options.
 
 Config::
 
@@ -147,6 +172,8 @@ Config::
 
 Load Tests from a List
 ~~~~~~~~~~~~~~~~~~~~~~
+
+To run a specific set of tests, Glusto supports configuring a list.
 
 Config (unittest.yml)::
 
@@ -169,35 +196,67 @@ Config (unittest_list.yml)::
 Load Tests from a Module
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
+To limit test list to only those in a specific module, use the ``load_tests_from_module`` option.
+Tests are discovered automatically and run in alphabetical order.
+
+
 Config::
 
 	# LOAD TESTS FROM MODULE w/ TEST_LOAD ORDERED TESTS
 	  load_tests_from_module:
 	    module_name: 'tests.test_glusto'
-	    use_load_test: true
+	    use_load_tests: false
 
 Load Tests from a Module with Ordered Test List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To limit the test list to a specific module and specify an order, set the ``use_load_test`` option to ``true``.
 
 Config::
 
 	# LOAD TESTS FROM MODULE w/o TEST_LOAD ORDERED TESTS
 	  load_tests_from_module:
 	    module_name: 'tests.test_glusto'
-	    use_load_test: false
+	    use_load_tests: true
 
-Load Tests Using a Name
-~~~~~~~~~~~~~~~~~~~~~~~
+.. Note::
+
+	When setting ``use_load_tests: true`` it is necessary to add a ``load_tests()`` method to your test script.
+	For more information on the load_tests() method, please see the "*Running Tests in a Specific Order*" section earlier in this doc.
+
+Load a Test Using a Name
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+To limit the test to a specific test module, class, or method, use the ``load_tests_from_name`` option.
 
 Config::
 
 	# LOAD TESTS FROM NAME
-	  load_tests_from_name: 'tests.test_glusto'
-	  load_tests_from_name: 'tests.test_glusto.TestGlustoBasics'
 	  load_tests_from_name: 'tests.test_glusto.TestGlustoBasics.test_stdout'
+
+When providing a module, the list is created from all tests in the module.
+
+	::
+
+		load_tests_from_name: 'tests.test_glusto'
+
+When providing a class, the list is created from all tests in the class.
+
+	::
+
+		load_tests_from_name: 'tests.test_glusto_configs'
+
+When providing a method, only that method is run.
+
+	::
+
+		load_tests_from_name: 'tests.test_glusto.TestGlustoBasics.test_stdout'
+
 
 Load Tests from a List of Names
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To limit the test to a list of names described above, use the ``load_tests_from_names`` option.
 
 Config::
 
@@ -205,6 +264,8 @@ Config::
 	  load_tests_from_names: ['tests.test_glusto',
 	                          'tests.test_glusto_configs',
 	                          'tests.test_glusto.TestGlustoBasics.test_stdout']
+
+The list will be composed of all tests combined.
 
 Writing Unittests
 =================
@@ -214,8 +275,8 @@ Example Using setUp and tearDown
 
 ``test_glusto_configs.py``
 
-Eample Using setUpClass and tearDownClass
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example Using setUpClass and tearDownClass
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``test_glusto_templates.py``
 
