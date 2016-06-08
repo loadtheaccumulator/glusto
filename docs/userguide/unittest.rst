@@ -136,24 +136,22 @@ Base Unittest Options
 
 Configuration items that control options Glusto-wide can be configured.
 
-output_junit
-............
+	**output_junit**
+	The ``output_junit`` option writes the test results in junit xml format.
 
-The ``output_junit`` option writes the test results in junit xml format.
+		::
 
-	::
+			unittest:
+			    output_junit: false
 
-		unittest:
-	  		output_junit: false
+	**test_method_prefix**
+	The ``test_method_prefix`` option changes the name prefix used by unittest to discover tests.
 
-test_method_prefix
-...........
+		::
 
-The ``test_method_prefix`` option changes the name prefix used by unittest to discover tests.
+			unittest:
+			    test_method_prefix: 'rhgs'
 
-	::
-		unittest:
-			test_method_prefix: 'rhgs'
 
 
 Discover Tests from a Directory
