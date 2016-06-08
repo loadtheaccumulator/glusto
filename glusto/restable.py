@@ -149,3 +149,4 @@ class Restable(object):
         return (retcode, restout, resterr)
 
 # TODO: add authentication capability
+# TODO: fix docstring return formatting
