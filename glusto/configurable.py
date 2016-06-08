@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
-from __builtin__ import classmethod
+from __builtin__ import classmethod, staticmethod
 """All things configuration.
 
 NOTE:
@@ -155,6 +155,20 @@ class Configurable(object):
             return config
 
         return None
+
+    @staticmethod
+    def load_yaml_string(yaml_string):
+        """Reads a yaml formatted string into a dictionary
+
+        Args:
+            yaml_string (str): A string containing yaml formatted text.
+
+        Returns:
+            Dictionary on success.
+        """
+        config = yaml.safe_load(yaml_string)
+
+        return config
 
     @staticmethod
     def load_configs(filelist):

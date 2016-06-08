@@ -66,3 +66,23 @@ The returned tuple consists of the return code, the response output, and the res
 .. Note::
 
 	The return code is the standard HTTP code returned by the web server on server response error (e.g., 404), otherwise returns zero for a successful request.
+
+Using the Request Response as Config
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The output of the response will be in string format.
+
+If the string is yaml formatted text, it can be converted into a dictionary object
+using the ``load_yaml_string()`` method.
+
+	::
+
+		>>> g.rest_get('http://192.168.1.112:8081/clusters')
+		(0, '{"clusters":["e2effa75a5a50560c3250b67cf71b465"]}\n', None)
+		>>> rcode, rout, rerr = g.rest_get('http://192.168.1.112:8081/clusters')[1]
+		>>> config = g.load_yaml_string(rout)
+		>>> config
+		{'clusters': ['e2effa75a5a50560c3250b67cf71b465']}
+		>>> config['clusters']
+		['e2effa75a5a50560c3250b67cf71b465']
+
