@@ -148,8 +148,6 @@ def main():
             module_name = run_module.get('module_name')
             use_load_tests = run_module.get('use_load_tests', True)
 
-            #loader = TestLoader()
-
             # TODO: is there a better way to do this without the dual import?
             __import__(module_name)
             class_list = inspect.getmembers(sys.modules[module_name],
@@ -187,6 +185,5 @@ def main():
     print "Ending glusto via main()"
 
 
-# TODO: remove print statements (or swap for log debug/info)
 if __name__ == '__main__':
     main()

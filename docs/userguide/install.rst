@@ -16,8 +16,8 @@ On the system where Glusto is to be installed, change directory and clone the re
 		# cd workspace
 		# git clone https://github.com/loadtheaccumulator/glusto.git
 
-Installing Glusto
-=================
+Installing Glusto from a Git Clone
+==================================
 
 To install the Glusto package via setuptools.
 
@@ -32,4 +32,13 @@ To install the Glusto package via setuptools.
 	::
 
 		# python setuptools.py
+
+Installing Glusto Directly from Git via Pip
+===========================================
+
+The ``pip`` command can install directly from the Glusto project repo on github.com.
+
+	::
+
+		# pip install --upgrade git+git://github.com/loadtheaccumulator/glusto.git
 

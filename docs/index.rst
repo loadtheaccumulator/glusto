@@ -23,6 +23,7 @@ Table of Contents
 	userguide/glusto
 	userguide/loggable
 	userguide/connectible
+	userguide/configurable
 	userguide/templatable
 	userguide/glustocli
 	userguide/unittest

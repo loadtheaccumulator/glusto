@@ -21,6 +21,7 @@ NOTE:
     and not designed to be instantiated.
 """
 import yaml
+import json
 import os
 import ConfigParser
 
@@ -144,6 +145,8 @@ class Configurable(object):
         Returns:
             Dict of configuration items.
         """
+
+        # TODO: allow format to be specified (see store_config)
         if os.path.exists(filename):
             file_extension = Configurable._get_filename_extension(filename)
 
@@ -167,6 +170,20 @@ class Configurable(object):
             Dictionary on success.
         """
         config = yaml.safe_load(yaml_string)
+
+        return config
+
+    @staticmethod
+    def load_json_string(json_string):
+        """Reads a json formatted string into a dictionary
+
+        Args:
+            json_string (str): A string containing json formatted text.
+
+        Returns:
+            Dictionary on success.
+        """
+        config = json.loads(json_string)
 
         return config
 
@@ -319,7 +336,8 @@ class Intraconfig(object):
 
             >>> from glusto.configurable import Intraconfig
             >>> class MyClass(Intraconfig):
-            >>>     myattribute = "this and that"
+            >>>    def __init__(self):
+            >>>        self.myattribute = "this and that"
 
         To use Intraconfig to output MyClass as yaml::
 
@@ -373,4 +391,22 @@ class Intraconfig(object):
             Nothing
         """
         config = Configurable.load_config(filename)
-        self.set_config(config)
+        self.update_config(config)
+
+    def store_config(self, filename, config_type=None, order=None):
+        """Writes attributes of a class instance to a file in a config format.
+            Automatically detects format based on filename extension.
+
+        Args:
+            filename (str): Filename for output of configuration.
+            config_type (optional[str]): The type of config file.
+                Use when extension needs to differ from actual type.
+                (e.g., .conf instead of .yml)
+        Returns:
+            Nothing
+
+        Note:
+            Uses custom GDumper class to strip Python object formatting.
+            This is not a utility function for serialization.
+        """
+        Configurable.store_config(self, filename, config_type, order)

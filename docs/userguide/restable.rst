@@ -72,6 +72,9 @@ Using the Request Response as Config
 
 The output of the response will be in string format.
 
+YAML Formatted Text
+...................
+
 If the string is yaml formatted text, it can be converted into a dictionary object
 using the ``load_yaml_string()`` method.
 
@@ -79,10 +82,22 @@ using the ``load_yaml_string()`` method.
 
 		>>> g.rest_get('http://192.168.1.112:8081/clusters')
 		(0, '{"clusters":["e2effa75a5a50560c3250b67cf71b465"]}\n', None)
-		>>> rcode, rout, rerr = g.rest_get('http://192.168.1.112:8081/clusters')[1]
-		>>> config = g.load_yaml_string(rout)
-		>>> config
-		{'clusters': ['e2effa75a5a50560c3250b67cf71b465']}
-		>>> config['clusters']
-		['e2effa75a5a50560c3250b67cf71b465']
 
+		>>> rcode, rout, rerr = g.rest_get('http://192.168.1.112:8081/clusters')[1]
+		>>> g.load_yaml_string(rout)
+		{'clusters': ['e2effa75a5a50560c3250b67cf71b465']}
+
+JSON Formatted Text
+...................
+
+If the string is json formatted text, it can be converted into a dictionary object
+using the ``load_json_string()`` method.
+
+	::
+
+		>>> g.rest_get('http://192.168.1.112:8081/clusters')
+		(0, '{"clusters":["e2effa75a5a50560c3250b67cf71b465"]}\n', None)
+
+		>>> rcode, rout, rerr = g.rest_get('http://192.168.1.112:8081/clusters')[1]
+		>>> g.load_json_string(out)
+		{u'clusters': [u'e2effa75a5a50560c3250b67cf71b465']}
