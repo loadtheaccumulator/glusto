@@ -31,6 +31,10 @@ Note:
     before executing scripts using the Glusto module. The import statement is 
     more than sufficient.
 
+#### User Guide
+
+The User Guide is hosted on Read the Docs @ http://glusto.readthedocs.io/en/latest/
+
 #### TODO
 * add more config handling
 * better docs and more examples
