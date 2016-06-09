@@ -299,4 +299,4 @@ To store the attributes of a class instance, use the inherited ``store_config()`
 .. Warning::
 
 	Glusto will currently throw errors when using Instaconfig to store INI formatted config to file.
-	The best way to store in INI format would be to form your config data, and use ``g.store_config()``.
+	Currently, the best way to store in INI format would be to form your config data, and then use ``g.store_config()``.
