@@ -177,6 +177,12 @@ To store the INI formatted object, pass it to the ``store_config()`` method.
 		this = yada
 		that = yada yada
 
+.. Note::
+
+	Due to the nature of Python not maintaining order in certain objects,
+	the order of the sections may not be the order in the dictionary being passed.
+	To maintain section order, you will need to use the ``order`` parameter.
+
 
 Storing the INI Formatted Config in a Specific Order
 ....................................................
