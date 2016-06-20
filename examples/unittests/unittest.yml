@@ -12,12 +12,12 @@ unittest:
 # LOAD TESTS FROM LIST (SEE unittest_list.yml)
 #  load_tests_from_list: true
 
-# LOAD TESTS FROM MODULE w/ TEST_LOAD ORDERED TESTS
+# LOAD TESTS FROM MODULE w/ LOAD_TESTS ORDERED TESTS
   load_tests_from_module:
     module_name: 'tests.test_glusto'
     use_load_tests: true
 
-# LOAD TESTS FROM MODULE w/o TEST_LOAD ORDERED TESTS
+# LOAD TESTS FROM MODULE w/o LOAD_TESTS ORDERED TESTS
 #  load_tests_from_module:
 #    module_name: 'tests.test_glusto'
 #    use_load_tests: false
