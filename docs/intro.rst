@@ -11,10 +11,10 @@ why it could not be used with other Python test frameworks or scripts.
 Feel free to give it a go, and please let me know how it works out.
 
 Glusto inherits from multiple classes providing configuration,
-remote connection, ANSI color output, and logging functionality,
+remote connection, ANSI color output, logging, and unittest functionality,
 presenting them in a single global Class object.
-Glusto also acts a global class for maintaining state across
-multiple modules and classes.
+Glusto also acts a global class for maintaining state and configuration data
+across multiple modules and classes.
 
 Adding Glusto utilities to a Python module is as simple as an import.
 
