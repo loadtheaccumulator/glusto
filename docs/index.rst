@@ -18,7 +18,6 @@ Table of Contents
 
 
 	userguide/install
-	userguide/quickstart
 	userguide/configuration
 	userguide/glusto
 	userguide/loggable
@@ -28,8 +27,11 @@ Table of Contents
 	userguide/glustocli
 	userguide/unittest
 	userguide/restable
-	userguide/tutorial
 	userguide/todo
+
+..	userguide/quickstart
+..	userguide/tutorial
+
 
 API
 ===

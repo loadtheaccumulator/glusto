@@ -33,8 +33,8 @@ class TestGlustoBasics(unittest.TestCase):
         Runs before each test_ method
         """
         print "Setting Up: %s" % self.id()
-        config = g.load_configs(["../working/systems.yml",
-                                 "../working/glusto.yml"])
+        config = g.load_configs(["../examples/systems.yml",
+                                 "../examples/glusto.yml"])
         g.update_config(config)
 
         self.masternode = g.config["nodes"][0]
