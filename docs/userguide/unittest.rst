@@ -268,6 +268,29 @@ The list will be composed of all tests combined.
 Writing Unittests
 =================
 
+Glusto's unit test features are based on the Python unittest module.
+The unittest module provides a simple class structure that makes testcase
+development rather robust without modification.
+
+To use the ``unittest`` module for creating a testcase, import the ``unittest`` module
+and create a subclass of ``unittest.TestCase``.
+
+.. code-block:: python
+    :linenos:
+
+	import unittest
+
+	class MyTestClass(unittest.TestCase)
+
+The base class for ``unittest`` is ``unittest.TestCase``. It consists of several
+automatically called methods that are designed to be overridden to provide your own functionality.
+
+.. Note::
+
+	In the future, I will look at integrating some PyTest or other frameworks,
+	but don't have an immediate need.
+
+
 Example Using setUp and tearDown
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
