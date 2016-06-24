@@ -1,4 +1,4 @@
-# Copyright 2014 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
