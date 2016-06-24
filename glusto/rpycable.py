@@ -124,6 +124,14 @@ class Rpycable(object):
         return None
 
     @classmethod
+    def rpyc_create_connections(cls, hosts, user=None, num_instances=1):
+        for i in range(1, num_instances + 1):
+            for host in hosts:
+                cls.rpyc_get_connection(host, user=user, instance=i)
+
+        # TODO: what to return here???
+
+    @classmethod
     def rpyc_list_connections(cls):
         """Display the list of existing ssh connections on stdout."""
         for name in cls._rpyc_connections.keys():
@@ -171,5 +179,18 @@ class Rpycable(object):
             del cls._rpyc_connections[key]
             connection.close()
 
+    @classmethod
+    def rpyc_close_deployed_servers(cls):
+        cls.rpyc_close_connections()
+
+        for key in cls._deployed_servers.keys():
+            print "closing rpyc deployed server %s" % key
+            server = cls._deployed_servers[key]
+            del cls._deployed_servers[key]
+            server.close()
+
+# TODO: rpyc_close_deployed_server
+
+# TODO: docstrings
 # TODO: log instead of print
 # TODO: more robust error checking
