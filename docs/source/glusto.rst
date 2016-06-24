@@ -13,6 +13,7 @@ Submodules
    glusto.loggable
    glusto.main
    glusto.restable
+   glusto.rpycable
    glusto.simplesqlable
    glusto.templatable
    glusto.unittestable

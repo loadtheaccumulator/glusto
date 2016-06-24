@@ -29,6 +29,7 @@ Table of Contents
 	userguide/restable
 	userguide/todo
 
+..  userguide/rpycable
 ..	userguide/quickstart
 ..	userguide/tutorial
 
