@@ -13,7 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
-from __builtin__ import classmethod
 """All things rpyc connection.
 
 NOTE:
@@ -26,6 +25,9 @@ WARNING:
     against a system running the same version of Python.
     (see rpyc module install docs for more information)
 """
+import inspect
+import types
+
 from rpyc.utils.zerodeploy import DeployedServer
 
 
@@ -325,6 +327,32 @@ class Rpycable(object):
         print "closing rpyc connection %s" % name
         del cls._deployed_servers[name]
         deployed_server.close()
+
+    @classmethod
+    def rpyc_define_module(cls, connection, local_module):
+        """Define a local module on the remote system
+
+        Args:
+            connection (obj): An rpyc connection object.
+            local_module (obj): The module object being defined on the remote.
+
+        Returns:
+            A callable module object representing the remote defined
+        """
+        sourcecode = inspect.getsource(local_module)
+        members = inspect.getmembers(local_module)
+        remote_module = types.ModuleType('remote_module', 'remote module')
+
+        connection.execute(sourcecode)
+        for name, lobject in members:
+            try:
+                robject = connection.namespace[name]
+                setattr(remote_module, name, robject)
+            except:
+                pass
+
+        return remote_module
+
 
 # TODO: log instead of print
 # TODO: more robust error checking

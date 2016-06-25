@@ -218,6 +218,34 @@ The first call will block on the first connection, while the second call runs
 in parallel on the other connection.
 
 
+Running Local Code on the Remote System
+=======================================
+
+Normally, a module already needs to reside on the remote system or be
+transferred at runtime to be called. Glusto leverages a feature of RPyC to
+define a local module on the remote system without the extra step of transferring
+a file into the remote PYTHONPATH.
+
+This feature makes it simple to create module files of commonly used function,
+class, and method snippets for use on remote servers without the need to package,
+distribute, and install on each remote server ahead of time.
+
+To define a local module on the remote system, use the ``rpyc_define_module()``.
+
+	Local module script named ``mymodule`` with a function called ``get_uname``::
+
+		>>> import mymodule
+		>>> connection = g.rpyc_get_connection('192.168.1.221')
+		>>> r = g.rpyc_define_module(connection)
+		>>> r.get_uname()
+		('Linux', 'rhserver1', '2.6.32-431.29.2.el6.x86_64', '#1 SMP Sun Jul 27 15:55:46 EDT 2014', 'x86_64')
+
+
+Going Ape with Monkey-Patching
+==============================
+
+Monkey-patching with RPyC can be a useful feature.
+
 Monkey-patching Standard Out
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -234,6 +262,40 @@ To wire the remote stdout to the local stdout...
 		>>> conn.execute("print 'Hello, World!'")
 		Hello, World!
 
+Going Ape with Monkey-Patching
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Monkey-patching can be used to make lengthy or often-used remote calls appear local.
+
+	An oversimplified example::
+		# Monkey-patching the remote to a local object
+		>>> conn = g.rpyc_get_connection('192.168.1.221')
+		>>> r_uname = conn.modules.os.uname
+		>>> r_uname()
+		('Linux', 'rhserver1', '2.6.32-431.29.2.el6.x86_64', '#1 SMP Sun Jul 27 15:55:46 EDT 2014', 'x86_64')
+
+		# Calling the local uname method
+		>>> import os
+		>>> os.uname()
+		('Linux', 'mylaptop', '4.4.9-300.fc23.x86_64', '#1 SMP Wed May 4 23:56:27 UTC 2016', 'x86_64')
+
+	A slightly better example::
+
+		>>> # create a function unaware of remote vs local
+		>>> def collect_os_data(os_object):
+		...     print os_object.uname()
+		...     print os_object.getlogin()
+		...
+
+		>>> # pass it the local object
+		>>> collect_os_data(os)
+		('Linux', 'mylaptop', '4.4.9-300.fc23.x86_64', '#1 SMP Wed May 4 23:56:27 UTC 2016', 'x86_64')
+		loadtheaccumulator
+
+		>>> # pass it the remote object
+		>>> collect_os_data(ros)
+		('Linux', 'rhserver1', '2.6.32-431.29.2.el6.x86_64', '#1 SMP Sun Jul 27 15:55:46 EDT 2014', 'x86_64')
+		root
 
 Closing Connections
 ===================
@@ -281,9 +343,9 @@ To remove all cached connections, use the ``rpyc_close_connections()`` method.
 Undeploying the RPyC Server
 ===========================
 
-With the RPyC ZeroDeploy automated setup, the RPyC server process running on the
+With the RPyC Zero-Deploy automated setup, the RPyC server process running on the
 remote system does not stop when a connection is closed. To stop that process,
-it is necessary to close the deployed server connection setup by ZeroDeploy.
+it is necessary to close the deployed server connection setup by Zero-Deploy.
 
 To list the deployed servers, use the ``rpyc_list_deployed_servers()`` method.
 
@@ -327,7 +389,7 @@ To close all deployed servers, use the ``rpyc_close_deployed_servers()`` method.
 
 .. Note::
 
-	Glusto leverages the RPyC ZeroDeploy methodology which copies the RPyC
+	Glusto leverages the RPyC Zero-Deploy methodology which copies the RPyC
 	server files to the remote and sets up the SSH tunnel automatically.
 	This can add overhead when the first ``g.rpyc_get_connection()`` call to a
 	remote server is made. The time lag is negligible on the LAN or short
