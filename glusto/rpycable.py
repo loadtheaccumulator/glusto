@@ -344,7 +344,7 @@ class Rpycable(object):
         remote_module = types.ModuleType('remote_module', 'remote module')
 
         connection.execute(sourcecode)
-        for name, lobject in members:
+        for name, _ in members:
             try:
                 robject = connection.namespace[name]
                 setattr(remote_module, name, robject)
