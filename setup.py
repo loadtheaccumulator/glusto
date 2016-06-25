@@ -18,5 +18,5 @@ setup(name='glusto',
             'glusto = glusto.main:main',
         ]
     },
-    install_requires=['plumbum', 'decorator']
+    install_requires=['plumbum', 'decorator', 'rpyc']
 )
