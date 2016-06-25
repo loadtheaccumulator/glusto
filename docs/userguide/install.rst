@@ -42,3 +42,14 @@ The ``pip`` command can install directly from the Glusto project repo on github.
 
 		# pip install --upgrade git+git://github.com/loadtheaccumulator/glusto.git
 
+Uninstalling
+============
+
+What?! But, why?!
+
+To uninstall glusto, use the ``pip`` command.
+
+	::
+
+		# pip uninstall glusto
+

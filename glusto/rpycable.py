@@ -24,7 +24,7 @@ WARNING:
     Rpyc breaks in mixed Python 2.x/3.x environments.
     When using rpyc, you will only be able to successfully make rpyc calls
     against a system running the same version of Python.
-    (see rpyc module docs for more information)
+    (see rpyc module install docs for more information)
 """
 from rpyc.utils.zerodeploy import DeployedServer
 
@@ -47,7 +47,7 @@ class Rpycable(object):
         return connection_name
 
     @classmethod
-    def _rpyc_get_deployed_server(cls, name, ssh_connection):
+    def _rpyc_get_deployed_server(cls, name, ssh_connection=None):
         print "getting deployed server"
         if name not in cls._deployed_servers:
             deployed_server = DeployedServer(ssh_connection)
@@ -113,9 +113,6 @@ class Rpycable(object):
             print("Retrieved connection from cache: %s" % conn_name)
             classic_connection = cls._rpyc_connections[conn_name]
 
-        #print classic_connection.modules.os.environ
-        #print cls._rpyc_connections[conn_name].modules.os.environ
-
         if classic_connection:
             return classic_connection
 
@@ -129,7 +126,12 @@ class Rpycable(object):
             for host in hosts:
                 cls.rpyc_get_connection(host, user=user, instance=i)
 
-        # TODO: what to return here???
+        # TODO: what to return here. a dictionary of connections created ???
+
+    @classmethod
+    def rpyc_get_connections(cls):
+
+        return cls._rpyc_connections
 
     @classmethod
     def rpyc_list_connections(cls):
@@ -185,11 +187,25 @@ class Rpycable(object):
 
         for key in cls._deployed_servers.keys():
             print "closing rpyc deployed server %s" % key
-            server = cls._deployed_servers[key]
+            deployed_server = cls._deployed_servers[key]
             del cls._deployed_servers[key]
-            server.close()
+            deployed_server.close()
 
-# TODO: rpyc_close_deployed_server
+    @classmethod
+    def rpyc_close_deployed_server(cls, host=None, user=None):
+        name = cls._rpyc_get_connection_name(host, user)
+        ds_search = '%s:' % name
+
+        for rpyckey in cls._rpyc_connections.keys():
+            if ds_search in rpyckey:
+                connection = cls._rpyc_connections[rpyckey]
+                del cls._rpyc_connections[rpyckey]
+                connection.close()
+
+        deployed_server = cls._rpyc_get_deployed_server(name)
+        print "closing rpyc connection %s" % name
+        del cls._deployed_servers[name]
+        deployed_server.close()
 
 # TODO: docstrings
 # TODO: log instead of print

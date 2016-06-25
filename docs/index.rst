@@ -22,6 +22,7 @@ Table of Contents
 	userguide/glusto
 	userguide/loggable
 	userguide/connectible
+	userguide/rpycable
 	userguide/configurable
 	userguide/templatable
 	userguide/glustocli
@@ -29,7 +30,6 @@ Table of Contents
 	userguide/restable
 	userguide/todo
 
-..  userguide/rpycable
 ..	userguide/quickstart
 ..	userguide/tutorial
 
