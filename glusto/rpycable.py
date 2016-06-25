@@ -36,6 +36,17 @@ class Rpycable(object):
 
     @classmethod
     def _rpyc_get_connection_name(cls, host, user=None, instance=None):
+        """Create a name for the connection.
+
+        Args:
+            host (str): The hostname or IP of the remote system.
+            user (str): A user on the remote system. Default: root
+            instance (int): The number of the instance when multiple
+                connections are used.
+
+        Returns:
+            A string representing the name for the connection.
+        """
         if not user:
             user = cls.user
 
@@ -48,6 +59,15 @@ class Rpycable(object):
 
     @classmethod
     def _rpyc_get_deployed_server(cls, name, ssh_connection=None):
+        """Create and cache a deployed server object.
+
+        Args:
+            name (str): The name for the deployed server cache.
+            ssh_connection (obj): An ssh_connection object.
+
+        Returns:
+            A new or cached deployed_server object.
+        """
         print "getting deployed server"
         if name not in cls._deployed_servers:
             deployed_server = DeployedServer(ssh_connection)
@@ -64,6 +84,15 @@ class Rpycable(object):
 
     @classmethod
     def _rpyc_get_classic_connection(cls, name, deployed_server):
+        """Create and cache an rpyc classic connection object.
+
+        Args:
+            name (str): The name for the classic connection cache.
+            deployed_server (obj): A deployed server object.
+
+        Returns:
+            A new or cached classic connection object.
+        """
         print "getting classic connection"
         if name not in cls._rpyc_connections:
             classic_connection = deployed_server.classic_connect()
@@ -79,8 +108,17 @@ class Rpycable(object):
 
     @classmethod
     def rpyc_get_connection(cls, host, user=None, instance=1):
-        """Setup a connection via rpyc"""
+        """Setup and cache a connection via rpyc.
 
+        Args:
+            host (str): The hostname or IP of the remote system.
+            user (str): A user on the remote system. Default: root
+            instance (int): The number of the instance when multiple
+                connections are used.
+
+        Returns:
+            A new or cached rpyc connection object.
+        """
         conn_name = cls._rpyc_get_connection_name(host, user, instance)
         deployed_server_name = cls._rpyc_get_connection_name(host, user)
         classic_connection = None
@@ -122,6 +160,16 @@ class Rpycable(object):
 
     @classmethod
     def rpyc_create_connections(cls, hosts, user=None, num_instances=1):
+        """Setup and cache multiple connections via rpyc.
+
+        Args:
+            host (str): The hostname or IP of the remote system.
+            user (str): A user on the remote system. Default: root
+            num_isntances (int): The number of the instances to create.
+
+        Returns:
+            Nothing.
+        """
         for i in range(1, num_instances + 1):
             for host in hosts:
                 cls.rpyc_get_connection(host, user=user, instance=i)
@@ -130,12 +178,26 @@ class Rpycable(object):
 
     @classmethod
     def rpyc_get_connections(cls):
+        """Get the connection dictionary.
 
+        Args:
+            None
+
+        Returns:
+            The dictionary of rpyc connections.
+        """
         return cls._rpyc_connections
 
     @classmethod
     def rpyc_list_connections(cls):
-        """Display the list of existing ssh connections on stdout."""
+        """Display the list of existing ssh connections on stdout.
+
+        Args:
+            None
+
+        Returns:
+            Nothing
+        """
         for name in cls._rpyc_connections.keys():
             print (name)
 
@@ -146,7 +208,17 @@ class Rpycable(object):
 
     @classmethod
     def rpyc_check_connection(cls, host, user=None, instance=1):
+        """Check whether a connection is open or closed.
 
+        Args:
+            host (str): The hostname or IP of the remote system.
+            user (str): A user on the remote system. Default: root
+            instance (int): The number of the instance when multiple
+                connections are used.
+
+        Returns:
+            Nothing
+        """
         conn_name = cls._rpyc_get_connection_name(host, user, instance)
 
         connection = cls.rpyc_get_connection(host, user, instance)
@@ -157,6 +229,17 @@ class Rpycable(object):
 
     @classmethod
     def rpyc_ping_connection(cls, host, user=None, instance=1):
+        """Ping an rpyc connection.
+
+        Args:
+            host (str): The hostname or IP of the remote system.
+            user (str): A user on the remote system. Default: root
+            instance (int): The number of the instance when multiple
+                connections are used.
+
+        Returns:
+            True if pingable. False if does not ping.
+        """
         connection = cls.rpyc_get_connection(host, user, instance)
         try:
             connection.ping()
@@ -167,6 +250,17 @@ class Rpycable(object):
 
     @classmethod
     def rpyc_close_connection(cls, host=None, user=None, instance=1):
+        """Close an rpyc connection.
+
+        Args:
+            host (str): The hostname or IP of the remote system.
+            user (str): A user on the remote system. Default: root
+            instance (int): The number of the instance when multiple
+                connections are used.
+
+        Returns:
+            Nothing.
+        """
         connection = cls.rpyc_get_connection(host, user, instance)
         name = cls._rpyc_get_connection_name(host, user, instance)
         print "closing rpyc connection %s" % name
@@ -175,6 +269,14 @@ class Rpycable(object):
 
     @classmethod
     def rpyc_close_connections(cls):
+        """Close all rpyc connections.
+
+        Args:
+            None
+
+        Returns:
+            Nothing
+        """
         for key in cls._rpyc_connections.keys():
             print "closing rpyc connection %s" % key
             connection = cls._rpyc_connections[key]
@@ -183,6 +285,14 @@ class Rpycable(object):
 
     @classmethod
     def rpyc_close_deployed_servers(cls):
+        """Close all deployed server connections.
+
+        Args:
+            None
+
+        Returns:
+            Nothing
+        """
         cls.rpyc_close_connections()
 
         for key in cls._deployed_servers.keys():
@@ -193,6 +303,15 @@ class Rpycable(object):
 
     @classmethod
     def rpyc_close_deployed_server(cls, host=None, user=None):
+        """Close a deployed server connection.
+
+        Args:
+            host (str): The hostname or IP of the remote system.
+            user (str): A user on the remote system. Default: root
+
+        Returns:
+            Nothing.
+        """
         name = cls._rpyc_get_connection_name(host, user)
         ds_search = '%s:' % name
 
@@ -207,6 +326,5 @@ class Rpycable(object):
         del cls._deployed_servers[name]
         deployed_server.close()
 
-# TODO: docstrings
 # TODO: log instead of print
 # TODO: more robust error checking
