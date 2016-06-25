@@ -337,7 +337,7 @@ class Rpycable(object):
             local_module (obj): The module object being defined on the remote.
 
         Returns:
-            A callable module object representing the remote defined
+            A module object representing the local module defined on remote
         """
         sourcecode = inspect.getsource(local_module)
         members = inspect.getmembers(local_module)
