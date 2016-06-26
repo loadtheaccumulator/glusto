@@ -20,10 +20,10 @@ Table of Contents
 	userguide/install
 	userguide/configuration
 	userguide/glusto
-	userguide/loggable
 	userguide/connectible
 	userguide/rpycable
 	userguide/configurable
+	userguide/loggable
 	userguide/templatable
 	userguide/glustocli
 	userguide/unittest
