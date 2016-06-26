@@ -27,6 +27,7 @@ Table of Contents
 	userguide/templatable
 	userguide/glustocli
 	userguide/unittest
+	userguide/pytest_nosetest
 	userguide/restable
 	userguide/todo
 
