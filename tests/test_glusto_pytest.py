@@ -90,7 +90,7 @@ class TestGlustoBasicsPyTest(unittest.TestCase):
         rcode, _, _ = g.run(self.masternode, "false")
         self.assertEqual(rcode, 1)
 
-    @unittest.expectedFailure
+    @pytest.mark.xfail
     def test_expected_fail(self):
         """Testing an expected failure. This test should fail"""
         print "Running: %s - %s" % (self.id(), self.shortDescription())

@@ -16,6 +16,7 @@
 """Glusto CLI wrapper"""
 import argparse
 from unittest import TestLoader, TestSuite, TextTestRunner
+import pytest
 import xmlrunner
 import importlib
 import inspect
@@ -66,6 +67,9 @@ def main():
     parser.add_argument("-d", "--discover",
                         help="Discover unittests from directory",
                         action="store", dest="discover_dir")
+    parser.add_argument("-t", "--pytest",
+                        help="Run tests using the pytest framework",
+                        action="store", dest="run_pytest")
     args = parser.parse_args()
 
     # read config files and update g.config attributes
@@ -180,6 +184,12 @@ def main():
 
         # TODO: Add a skip test option
         trunner.run(tsuite)
+
+    if args.run_pytest:
+        print "pytest: %s" % args.run_pytest
+        #options = args.run_pytest.split(':', 2)[1]
+        #options = ['-t', 'tests']
+        pytest.main(args.run_pytest)
 
     g.log.info("Ending glusto via main()")
     print "Ending glusto via main()"

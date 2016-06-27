@@ -1,8 +1,18 @@
 Working with PyTest and Nose
 ----------------------------
 
+It is easy to integrate Glusto capability into a PyTest or Nose formatted test script.
+Simply add the import to the script and all of the Glusto methods are available.
+
+	::
+
+		import pytest
+		from glusto.core import Glusto as g
+
+
 The Glusto command-line utility currently wraps the PyUnit mechanism for discovering
-and running tests. PyUnit tests using Glusto can also run under PyTest and Nose.
+and running tests. PyUnit tests using Glusto can also run under PyTest and, with
+some exceptions, Nose.
 
 .. Note::
 
@@ -14,6 +24,7 @@ and running tests. PyUnit tests using Glusto can also run under PyTest and Nose.
 	three popular test frameworks. 
 
 The following examples use the tests included in the ``tests`` directory.
+
 
 PyTest
 ======
@@ -72,7 +83,9 @@ they make (e.g., ignoring test order with load_tests).
 
 		============== 17 passed, 2 skipped, 2 xfailed in 2.85 seconds ========
 
-The above demonstrates that py.test handles the unittest format very well.
+PyTest supports running PyUnit and Nose tests, so it's simple to leverage PyTest
+features, such as markers, in a PyUnit script. See the ``test_glusto_pytest.py``
+script for an example of combining PyTest marker features in a unittest.
 
 	A test run of only tests with a py.test formatted marker *response*::
 
@@ -136,7 +149,6 @@ Apparently Nose ignores the py.test markers and did not skip a test in the py.te
 Glusto for Good Measure
 =======================
 
-
 	::
 
 		$ glusto -d 'tests'
@@ -150,23 +162,13 @@ Glusto for Good Measure
 		OK (skipped=1, expected failures=2)
 
 
-Not surprisingly, the ``unittest`` module does not recognize the PyTest skip marker.
-
-
-Known Difficulties to Tackle in the Near Future
-===============================================
-
-*Configuration Files*
-	Using configuration files that are passed at the Glusto command-line and not
-	specifically hardcoded into test scripts is difficult when not following the
-	unittest format.
+Not surprisingly, the ``unittest`` module does not recognize the PyTest skip marker,
+so it is currently necessary to run PyTest-savvy scripts with the ``py.test`` command.
 
 
 To Do
 =====
 
-* Add examples of PyTest and Nose specific test scripts.
-* Add some comparison/contrast between the features of each.
-
+* Add examples of PyTest and Nose specific test scripts using Glusto calls.
 
 *more on this subject later...*

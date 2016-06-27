@@ -118,6 +118,8 @@ To see the options available, use the ``--help`` option.
 		  -u, --unittest        Run unittests per provided config file.
 		  -d DISCOVER_DIR, --discover DISCOVER_DIR
 		                        Discover unittests from directory
+          -t RUN_PYTEST, --pytest RUN_PYTEST
+                                Run tests using the pytest framework
 
 By default, the ``glusto`` command will read the default config files in the ``/etc/glusto/`` directory
 
@@ -137,11 +139,14 @@ By default, the ``glusto`` command will read the default config files in the ``/
 		Ending glusto via main()
 
 
-Options for Running Unittests
+Options for Running Unit Tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To run unit tests via the Glusto CLI Utility, see the examples and link to
 additional documentation below.
+
+Running PyUnit Tests
+++++++++++++++++++++
 
 Example::
 
@@ -149,3 +154,11 @@ Example::
 	# glusto -c 'examples/unittests/unittest.yml examples/unittests/unittest_list.yml examples/systems.yml' -u
 
 For more information on working with unit tests, see `Unittests and Glusto <unittest.html#unittests_and_glusto>`__
+
+Running PyTest Tests
+++++++++++++++++++++
+
+Example::
+
+    # glusto -c 'examples/systems.yml' --pytest='-v -x tests -m response'
+
