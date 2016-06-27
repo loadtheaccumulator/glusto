@@ -155,7 +155,7 @@ Glusto for Good Measure
 		Starting glusto via main()
 
 		...
-	
+
 		----------------------------------------------------------------------
 		Ran 21 tests in 2.522s
 		
@@ -168,6 +168,8 @@ so it is currently necessary to run PyTest-savvy scripts with the ``py.test`` co
 
 To Do
 =====
+
+* split this out and merge into individual test framework pages
 
 * Add examples of PyTest and Nose specific test scripts using Glusto calls.
 

@@ -211,16 +211,16 @@ class Configurable(object):
 
     @classmethod
     def load_config_defaults(cls):
-        # TODO: discover list of files named "/etc/glusto/defaults*"
-        config_list = ["/etc/glusto/defaults.yml",
-                       "/etc/glusto/defaults.ini"]
+        if os.path.exists('/etc/glusto'):
+            # TODO: discover list of files named "/etc/glusto/defaults*"
+            config_list = ["/etc/glusto/defaults.yml",
+                           "/etc/glusto/defaults.ini"]
 
-        config = cls.load_configs(config_list)
+            config = cls.load_configs(config_list)
 
-        cls.update_config(config)
-        # TODO: handle the ini defaults more gracefully
-        defaults = config.get('defaults')
-        if defaults:
+            cls.update_config(config)
+            # TODO: handle the ini defaults more gracefully
+            defaults = config.get('defaults')
             cls.update_config(defaults)
 
     @classmethod

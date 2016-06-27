@@ -17,6 +17,7 @@
 import argparse
 from unittest import TestLoader, TestSuite, TextTestRunner
 import pytest
+import nose
 import xmlrunner
 import importlib
 import inspect
@@ -70,6 +71,9 @@ def main():
     parser.add_argument("-t", "--pytest",
                         help="Run tests using the pytest framework",
                         action="store", dest="run_pytest")
+    parser.add_argument("-n", "--nosetests",
+                        help="Run tests using the nose framework",
+                        action="store", dest="run_nosetests")
     args = parser.parse_args()
 
     # read config files and update g.config attributes
@@ -187,9 +191,14 @@ def main():
 
     if args.run_pytest:
         print "pytest: %s" % args.run_pytest
-        #options = args.run_pytest.split(':', 2)[1]
-        #options = ['-t', 'tests']
         pytest.main(args.run_pytest)
+
+    if args.run_nosetests:
+        print "nosetests: %s" % args.run_nosetests
+        argv = ['glusto']
+        argv = args.run_nosetests.split(' ')
+        argv.insert(0, 'glusto')
+        nose.run(argv=argv)
 
     g.log.info("Ending glusto via main()")
     print "Ending glusto via main()"

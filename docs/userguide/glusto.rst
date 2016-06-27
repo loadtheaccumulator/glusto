@@ -150,8 +150,8 @@ Running PyUnit Tests
 
 Example::
 
-	# glusto -c 'examples/systems.yml' -u -d 'tests'
-	# glusto -c 'examples/unittests/unittest.yml examples/unittests/unittest_list.yml examples/systems.yml' -u
+	$ glusto -c 'examples/systems.yml' -u -d 'tests'
+	$ glusto -c 'examples/unittests/unittest.yml examples/unittests/unittest_list.yml examples/systems.yml' -u
 
 For more information on working with unit tests, see `Unittests and Glusto <unittest.html#unittests_and_glusto>`__
 
@@ -160,5 +160,15 @@ Running PyTest Tests
 
 Example::
 
-    # glusto -c 'examples/systems.yml' --pytest='-v -x tests -m response'
+    $ glusto -c 'examples/systems.yml' --pytest='-v -x tests -m response'
 
+For more information on working with unit tests, see `Unittests and Glusto <pytest.html>`__
+
+Running Nose Tests
+++++++++++++++++++
+
+Example::
+
+	$ glusto -c 'examples/systems.yml' --nosetests='-v -w tests'
+
+For more information on working with unit tests, see `Unittests and Glusto <nosetests.rst>`__

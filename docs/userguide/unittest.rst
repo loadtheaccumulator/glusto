@@ -1,5 +1,5 @@
-Unittests and Glusto
---------------------
+PyUnit (unittest) and Glusto
+----------------------------
 
 Glusto plugs into the Python unittest module methodology and can run
 test modules with the Glusto features imported or existing scripts without
@@ -300,6 +300,11 @@ Example Using setUpClass and tearDownClass
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``test_glusto_templates.py``
+
+To Do
+=====
+
+* Expand the Writing Test Cases section with more examples.
 
 .. rubric:: Footnotes
 
