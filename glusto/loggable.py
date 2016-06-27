@@ -37,7 +37,7 @@ class Loggable(object):
 
     @classmethod
     def create_log(cls, name='glustolog', filename='/tmp/glusto.log',
-                   level='INFO', allow_multiple=False):
+                   level='DEBUG', allow_multiple=False):
         """Creates a log object using the Python "logging" module.
 
         Args:
@@ -73,7 +73,7 @@ class Loggable(object):
         else:
             _logfh = logging.FileHandler(_logfile)
         num_handlers = len(log.handlers)
-        # TODO: handle name conflict when a lgo has been removed
+        # TODO: handle name conflict when a log has been removed
         # TODO: catch "OSError: [Errno 13] Permission denied: '/var/log/t.log'"
         # TODO: catch "IOError: [Errno 21] Is a directory: '/tmp/log/test.log'"
         handler_name = "%s%i" % (name, num_handlers)
