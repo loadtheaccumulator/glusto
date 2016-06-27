@@ -219,8 +219,9 @@ class Configurable(object):
 
         cls.update_config(config)
         # TODO: handle the ini defaults more gracefully
-        defaults = config['defaults']
-        cls.update_config(defaults)
+        defaults = config.get('defaults')
+        if defaults:
+            cls.update_config(defaults)
 
     @classmethod
     def set_config(cls, config):
