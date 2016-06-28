@@ -24,12 +24,12 @@ templates:
     description: 'Testing something'
     code: |
       ### BEGIN INSERTED CODE
-      config = g.load_configs(["../working/systems.yml",
-                              "../working/glusto.yml"])
-      g.update_config(config)
-      self.masternode = g.config[\"nodes\"][0]
-      self.client = g.config["clients\"][0]
-      ### END INSERTED CODE
+              config = g.load_configs(["../working/systems.yml",
+                                      "../working/glusto.yml"])
+              g.update_config(config)
+              self.masternode = g.config[\"nodes\"][0]
+              self.client = g.config["clients\"][0]
+              ### END INSERTED CODE
 
   testclass:
     docstring: this is the class docstring

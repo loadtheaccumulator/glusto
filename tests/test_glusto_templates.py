@@ -34,7 +34,8 @@ class TestGlustoTemplates(unittest.TestCase):
                            'glusto_templates-vars.yml')
         config = g.load_config(cls.config_file)
         g.show_config(config)
-        g.update_config(config)
+        if config:
+            g.update_config(config)
 
         cls.template_vars = g.config['templates']
         cls.template_file = ('templates/'

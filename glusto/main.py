@@ -58,7 +58,11 @@ def main():
     g.log.info("Starting glusto via main()")
     print "Starting glusto via main()"
 
-    parser = argparse.ArgumentParser(description="Glusto CLI wrapper")
+    epilog = ('NOTE: If encountering an "unknown option" issue '
+              'with the -t and -n options, use param=\'args\' syntax.'
+              '(e.g., -t="-v -x tests")')
+    parser = argparse.ArgumentParser(description="Glusto CLI wrapper",
+                                     epilog=epilog)
     parser.add_argument("-c", "--config",
                         help="Config file(s) to read.",
                         action="store", dest="config_list")
@@ -69,10 +73,10 @@ def main():
                         help="Discover unittests from directory",
                         action="store", dest="discover_dir")
     parser.add_argument("-t", "--pytest",
-                        help="Run tests using the pytest framework",
+                        help="Run tests using the pytest framework.",
                         action="store", dest="run_pytest")
     parser.add_argument("-n", "--nosetests",
-                        help="Run tests using the nose framework",
+                        help="Run tests using the nose framework.",
                         action="store", dest="run_nosetests")
     args = parser.parse_args()
 

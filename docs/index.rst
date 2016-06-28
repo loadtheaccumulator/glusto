@@ -25,7 +25,6 @@ Table of Contents
 	userguide/configurable
 	userguide/loggable
 	userguide/templatable
-	userguide/glustocli
 	userguide/unittest
 	userguide/pytest
 	userguide/nosetests
@@ -35,7 +34,7 @@ Table of Contents
 
 ..	userguide/quickstart
 ..	userguide/tutorial
-
+..	userguide/glustocli
 
 API
 ===
