@@ -1,4 +1,4 @@
-# Copyright 2014 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
-
 """The brains of the Glusto toolset.
 
 Glusto inherits from multiple classes providing configuration,
@@ -36,11 +35,15 @@ from glusto.templatable import Templatable
 from glusto.unittestable import Unittestable
 from glusto.restable import Restable
 from glusto.rpycable import Rpycable
+from glusto.carteplex import carteclass
 
 
 class Glusto(Configurable, Connectible, Colorfiable, Loggable,
              Templatable, Unittestable, Restable, Rpycable):
     """The locker for all things Glusto."""
+
+    # make the carteplex decorator available via the class import
+    carteclass = carteclass
 
     # TODO: figure out how we want to do this with cli options
     # TODO: call this after configs are read to be more effective

@@ -40,9 +40,6 @@ def handle_configs(config_list):
         config = g.load_configs(config_files)
         g.update_config(config)
 
-    # XXX: remove me
-    g.show_config(g.config)
-
 
 def main():
     """Entry point console script for setuptools.
