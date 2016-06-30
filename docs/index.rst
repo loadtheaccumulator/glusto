@@ -29,6 +29,7 @@ Table of Contents
 	userguide/pytest
 	userguide/nosetests
 	userguide/pytest_nosetest
+	userguide/carteplex
 	userguide/restable
 	userguide/todo
 

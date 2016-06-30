@@ -6,6 +6,7 @@ Submodules
 
 .. toctree::
 
+   glusto.carteplex
    glusto.colorfiable
    glusto.configurable
    glusto.connectible

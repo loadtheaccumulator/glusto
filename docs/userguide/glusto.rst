@@ -6,10 +6,9 @@ Using Glusto in a Module
 
 To use Glusto in a module, import the Glusto class at the top of each module leveraging the glusto tools.
 
-Example:
-    To use Glusto in a module::
+	::
 
-        from glusto.core import Glusto as g
+		from glusto.core import Glusto as g
 
 This provides access to all of the functionality of Glusto via the ``g`` object
 created by the import statement.
@@ -142,7 +141,7 @@ By default, the ``glusto`` command will read the default config files in the ``/
 
 
 Options for Running Unit Tests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To run unit tests via the Glusto CLI Utility, see the examples and links to
 additional documentation below.

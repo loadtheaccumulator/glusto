@@ -35,19 +35,18 @@ from glusto.templatable import Templatable
 from glusto.unittestable import Unittestable
 from glusto.restable import Restable
 from glusto.rpycable import Rpycable
-from glusto.carteplex import carteclass
+from glusto.carteplex import CarteTestClass
 
 
 class Glusto(Configurable, Connectible, Colorfiable, Loggable,
              Templatable, Unittestable, Restable, Rpycable):
     """The locker for all things Glusto."""
 
-    # make the carteplex decorator available via the class import
-    carteclass = carteclass
+    # make the carteclass decorator available via the Glusto class import
+    CarteTestClass = CarteTestClass
 
     # TODO: figure out how we want to do this with cli options
     # TODO: call this after configs are read to be more effective
     # TODO: do this by default or force to be from main() or other importer
     # create default log
     log = Loggable.create_log()
-    #log = Loggable.create_log('userlog', filename='/tmp/glusto.log')

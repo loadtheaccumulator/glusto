@@ -5,3 +5,5 @@ glusto
    :maxdepth: 4
 
    glusto
+   setup
+   tests

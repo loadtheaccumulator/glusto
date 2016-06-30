@@ -1,20 +1,21 @@
 .. _introduction:
 
 Glusto is a framework designed to provide features commonly used in a
-remote/distributed environment.
+remote/distributed environment via a single and easy-to-access object.
 
 It started out as a port of some shell ssh functions I had written
 and was meant for use in PyUnit* tests and config scripts for Gluster.
 
-I've removed the Gluster specifics from this package, and I don't see reason
-why it could not be used with other Python test frameworks or scripts.
-Feel free to give it a go, and please let me know how it works out.
+I've removed the Gluster specifics from this package. Feel free to give it a
+go, and please let me know how it works out.
 
-Glusto inherits from multiple classes providing configuration,
-remote connection, ANSI color output, logging, and unittest functionality,
-presenting them in a single global Class object.
-Glusto also acts as a global class for maintaining state and configuration data
-across multiple modules and classes.
+Some of the key concepts and features of Glusto:
+
+* Glusto inherits from multiple classes providing configuration (yaml, json, ini), remote connection (SSH, SCP, RPyC), ANSI color output, logging, and unit test functionality (PyUnit, PyTest, Nose)--presenting them in a single global Class object.
+
+* Glusto also acts as a global class for maintaining state and configuration data across multiple modules and classes.
+
+* Glusto provides a wrapper utility (``/usr/bin/glusto``) to help make configuration files available to test cases from the command-line.
 
 Adding Glusto utilities to a Python module is as simple as an import.
 
