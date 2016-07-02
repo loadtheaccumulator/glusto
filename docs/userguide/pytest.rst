@@ -16,7 +16,7 @@ Use the ``-t=`` or ``--pytest=`` parameter followed by the options normally pass
 		========================= test session starts ============================================
 		platform linux2 -- Python 2.7.11, pytest-2.9.2, py-1.4.31, pluggy-0.3.1 -- /usr/bin/python
 		cachedir: .cache
-		rootdir: /home/jholloway/Dropbox/glusto, inifile: 
+		rootdir: glusto, inifile: 
 		collected 21 items 
 
 		tests/test_glusto_pytest.py::TestGlustoBasicsPyTest::test_return_code PASSED
@@ -45,7 +45,7 @@ Running PyTest from Python Interactive Interpreter
 		========================== test session starts ===========================================
 		platform linux2 -- Python 2.7.11, pytest-2.9.2, py-1.4.31, pluggy-0.3.1 -- /usr/bin/python
 		cachedir: .cache
-		rootdir: /home/jholloway/Dropbox/glusto, inifile: 
+		rootdir: glusto, inifile: 
 		collected 21 items 
 		
 		tests/test_glusto_pytest.py::TestGlustoBasicsPyTest::test_return_code PASSED

@@ -110,7 +110,7 @@ class Configurable(object):
     @staticmethod
     def _load_ini(filename):
         """Reads an ini file into a dictionary"""
-        ini_config = ConfigParser.SafeConfigParser()
+        ini_config = ConfigParser.SafeConfigParser(allow_no_value=True)
         ini_config.read(filename)
 
         # loop through the config sections
@@ -134,13 +134,16 @@ class Configurable(object):
         return config
 
     @staticmethod
-    def load_config(filename):
+    def load_config(filename, config_type=None):
         """Reads a config from file.
         Defaults to yaml, but will detect other config formats based on
         filename extension. Currently reads yaml and ini files.
 
         Args:
             filename (str): Filename of configuration to be read.
+            config_type (optional[str]): The type of config file.
+                Use when extension needs to differ from actual type.
+                (e.g., .conf instead of .yml)
 
         Returns:
             Dict of configuration items.
@@ -149,6 +152,8 @@ class Configurable(object):
         # TODO: allow format to be specified (see store_config)
         if os.path.exists(filename):
             file_extension = Configurable._get_filename_extension(filename)
+            if config_type:
+                file_extension = config_type
 
             if file_extension == "ini":
                 config = Configurable._load_ini(filename)

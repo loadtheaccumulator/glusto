@@ -200,7 +200,7 @@ Run the Tests
    ==================================================================================== test session starts =====================================================================================
    platform linux2 -- Python 2.7.11, pytest-2.9.2, py-1.4.31, pluggy-0.3.1 -- /usr/bin/python
    cachedir: .cache
-   rootdir: /home/jholloway/Dropbox/glusto, inifile: 
+   rootdir: glusto, inifile: 
    collected 18 items 
 
    tests_gluster/test_gluster_runsauto.py::MyGlusterTest_distributed_nfs::test_gluster1 PASSED

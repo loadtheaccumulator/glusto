@@ -236,7 +236,7 @@ Not that the need would arise, but the capability to run all three in a single c
 		pytest: -x tests -m response
 		==================================================================================== test session starts =====================================================================================
 		platform linux2 -- Python 2.7.11, pytest-2.9.2, py-1.4.31, pluggy-0.3.1
-		rootdir: /home/jholloway/Dropbox/glusto, inifile: 
+		rootdir: glusto, inifile: 
 		collected 21 items 
 
 		tests/test_glusto_pytest.py ...
@@ -267,7 +267,7 @@ Not that the need would arise, but the capability to run all three in a single c
 		FAIL: Testing an expected failure. This test should fail
 		----------------------------------------------------------------------
 		Traceback (most recent call last):
-		  File "/home/jholloway/Dropbox/glusto/tests/test_glusto_pytest.py", line 98, in test_expected_fail
+		  File "glusto/tests/test_glusto_pytest.py", line 98, in test_expected_fail
 		    self.assertEqual(rcode, 0)
 		AssertionError: 1 != 0
 		-------------------- >> begin captured stdout << ---------------------

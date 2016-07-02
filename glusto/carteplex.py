@@ -83,12 +83,22 @@ class CarteTestClass(object):
             if self.limits[i] == 'ALL':
                 self.limits[i] = self.available_options[i]
 
+        print
+        print "available_options:"
+        print self.available_options
+        print "selections:"
+        print self.selections
+        print "limits:"
+        print self.limits
+
         intersect_set = []
         for i in range(0, len(self.selections)):
             selection_set = sets.Set(self.selections[i])
             intersect_set.append(selection_set.intersection(self.limits[i]))
 
         self.iterables = list(intersect_set)
+        print "Iterables"
+        print self.iterables
 
         print "module name: %s" % __name__
         print "object name: %s" % obj.__name__
@@ -125,3 +135,10 @@ class CarteTestClass(object):
         class_module.load_tests = load_tests
 
         return obj
+
+# TODO: remove print statements.
+# TODO: graceful handling of missing attributes.
+# TODO: pull all __init__ instance vars from configs if wanted.
+# TODO: methods and functions
+# TODO: full pathname should reflect test module and not glusto.carteplex
+# TODO: load carteplex attributes from default config file

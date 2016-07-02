@@ -45,7 +45,7 @@ Use the ``-n=`` or ``--nostests=`` parameter followed by the options normally pa
 		FAIL: Testing an expected failure. This test should fail
 		----------------------------------------------------------------------
 		Traceback (most recent call last):
-		  File "/home/jholloway/Dropbox/glusto/tests/test_glusto_pytest.py", line 98, in test_expected_fail
+		  File "glusto/tests/test_glusto_pytest.py", line 98, in test_expected_fail
 		    self.assertEqual(rcode, 0)
 		AssertionError: 1 != 0
 		-------------------- >> begin captured stdout << ---------------------
