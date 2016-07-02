@@ -1,4 +1,4 @@
-# Copyright 2014 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2014,2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@ NOTE:
     Configurable is inherited by the Glusto class
     and not designed to be instantiated.
 """
+import os
 import yaml
 import json
-import os
 import ConfigParser
 
 
@@ -64,6 +64,7 @@ class Configurable(object):
         """
         config = ConfigParser.RawConfigParser()
         if order:
+            # TODO: replace this with an ordered dict ???
             for section_name in order:
                 config.add_section(section_name)
                 for item_key, item_value in obj[section_name].iteritems():
@@ -76,6 +77,12 @@ class Configurable(object):
 
         with open(filename, 'wb') as configfile:
             config.write(configfile)
+
+    @staticmethod
+    def _store_json(obj, filename):
+        """Write an object to a json formatted config file."""
+        configfd = file(filename, 'w')
+        json.dump(obj, configfd, indent=4, separators=(',', ':'))
 
     @staticmethod
     def store_config(obj, filename, config_type=None, order=None):
@@ -104,6 +111,8 @@ class Configurable(object):
 
         if config_type == "ini":
             Configurable._store_ini(obj, filename, order)
+        elif config_type == "json":
+            Configurable._store_json(obj, filename)
         else:
             Configurable._store_yaml(obj, filename)
 
@@ -116,11 +125,9 @@ class Configurable(object):
         # loop through the config sections
         config = {}
         for section in ini_config.sections():
-            #print section
             config[section] = {}
             for key, value in ini_config.items(section):
                 config[section].update({key: value})
-                #print "%s: %s" % (key, value)
 
         return config
 
@@ -130,6 +137,14 @@ class Configurable(object):
         configfd = file(filename, 'r')
         config = yaml.load(configfd)
         # TODO: does yaml.load return None or empty dict?
+
+        return config
+
+    @staticmethod
+    def _load_json(filename):
+        """Read a json formatted file into a dictionary"""
+        configfd = file(filename, 'r')
+        config = json.load(configfd)
 
         return config
 
@@ -148,8 +163,6 @@ class Configurable(object):
         Returns:
             Dict of configuration items.
         """
-
-        # TODO: allow format to be specified (see store_config)
         if os.path.exists(filename):
             file_extension = Configurable._get_filename_extension(filename)
             if config_type:
@@ -157,6 +170,8 @@ class Configurable(object):
 
             if file_extension == "ini":
                 config = Configurable._load_ini(filename)
+            elif config_type == "json":
+                config = Configurable._load_json(filename)
             else:
                 config = Configurable._load_yaml(filename)
 
@@ -311,6 +326,20 @@ class Configurable(object):
             Nothing
         """
         cls.config = {}
+
+    @staticmethod
+    def show_file(filename):
+        """Reads a file and prints the output.
+
+        Args:
+            filename (str): Name fo the file to display.
+
+        Returns:
+            Nothing
+        """
+        fd = file(filename, 'r')
+        data = fd.read()
+        print data
 
 
 class GDumper(yaml.Dumper):
