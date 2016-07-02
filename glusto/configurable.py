@@ -332,7 +332,7 @@ class Configurable(object):
         """Reads a file and prints the output.
 
         Args:
-            filename (str): Name fo the file to display.
+            filename (str): Name of the file to display.
 
         Returns:
             Nothing
