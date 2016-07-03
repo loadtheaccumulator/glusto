@@ -16,7 +16,7 @@ other functionality.
 	Carteplex is a new feature to meet a very specific use case. Currently,
 	the unittest and PyTest loaders/runners work without issue. The Nose runner
 	currently chokes on the load_test function. The goal, of course, is to keep
-	it generic and make it work with across the test frameworks. Working on it.
+	it generic and make it work across the test frameworks. Working on it.
 
 
 Using Carteplex
