@@ -13,7 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
-from __builtin__ import classmethod, staticmethod
 """All things configuration.
 
 NOTE:
@@ -24,6 +23,7 @@ import os
 import yaml
 import json
 import ConfigParser
+import urllib
 
 
 class Configurable(object):
@@ -31,6 +31,16 @@ class Configurable(object):
 
     config = {}
     """The default class attribute for storing configurations."""
+
+    @staticmethod
+    def is_url(filename):
+        if (filename.startswith('file://') or
+            (filename.startswith('http://') or
+             filename.startswith('https://'))):
+
+            return True
+
+        return False
 
     @staticmethod
     def _get_filename_extension(filename):
@@ -46,6 +56,28 @@ class Configurable(object):
         file_extension = extension.replace('.', '')
 
         return file_extension
+
+    @staticmethod
+    def _get_file_descriptor(filename):
+        """Get a file descriptor from either a file or url.
+
+        Args:
+            filename (str): The filename
+
+        Returns:
+            A file descriptor object.
+        """
+        if Configurable.is_url(filename):
+            # TODO: can urllib handle https://
+            httpfd = urllib.urlopen(filename)
+
+            return httpfd
+        else:
+            fd = file(filename, 'r')
+
+            return fd
+
+        return None
 
     @staticmethod
     def _store_yaml(obj, filename):
@@ -102,25 +134,35 @@ class Configurable(object):
             Uses custom GDumper class to strip Python object formatting.
             This is not a utility function for serialization.
         """
-        # TODO: filter objects not necessary to store
+        # TODO: filter objects not necessary to store ???
         # TODO: errorcheck these calls
-        if not config_type:
-            file_extension = Configurable._get_filename_extension(filename)
-            config_type = file_extension
-        # TODO: Handle format override
+        file_extension = Configurable._get_filename_extension(filename)
+        if config_type:
+            file_extension = config_type
 
-        if config_type == "ini":
-            Configurable._store_ini(obj, filename, order)
-        elif config_type == "json":
+        if file_extension == "ini":
+            Configurable._store_ini(obj, filename)
+        elif file_extension == "json":
             Configurable._store_json(obj, filename)
-        else:
+        elif file_extension == "yaml" or file_extension == "yml":
             Configurable._store_yaml(obj, filename)
+        else:
+            print "Filetype not recognized"
+            # TODO: serialize the object and store! make serialized a type
+            return False
+
+        return None
 
     @staticmethod
     def _load_ini(filename):
         """Reads an ini file into a dictionary"""
         ini_config = ConfigParser.SafeConfigParser(allow_no_value=True)
-        ini_config.read(filename)
+
+        if Configurable.is_url(filename):
+            fd = Configurable._get_file_descriptor(filename)
+            ini_config.readfp(fd)
+        else:
+            ini_config.read(filename)
 
         # loop through the config sections
         config = {}
@@ -134,7 +176,7 @@ class Configurable(object):
     @staticmethod
     def _load_yaml(filename):
         """Reads a yaml formatted file into a dictionary"""
-        configfd = file(filename, 'r')
+        configfd = Configurable._get_file_descriptor(filename)
         config = yaml.load(configfd)
         # TODO: does yaml.load return None or empty dict?
 
@@ -143,8 +185,16 @@ class Configurable(object):
     @staticmethod
     def _load_json(filename):
         """Read a json formatted file into a dictionary"""
-        configfd = file(filename, 'r')
+        configfd = Configurable._get_file_descriptor(filename)
         config = json.load(configfd)
+
+        return config
+
+    @staticmethod
+    def _load_text(filename):
+        """Read a text file into a string"""
+        configfd = Configurable._get_file_descriptor(filename)
+        config = configfd.read()
 
         return config
 
@@ -152,7 +202,7 @@ class Configurable(object):
     def load_config(filename, config_type=None):
         """Reads a config from file.
         Defaults to yaml, but will detect other config formats based on
-        filename extension. Currently reads yaml and ini files.
+        filename extension. Currently reads yaml, json, ini, and text files.
 
         Args:
             filename (str): Filename of configuration to be read.
@@ -163,17 +213,22 @@ class Configurable(object):
         Returns:
             Dict of configuration items.
         """
-        if os.path.exists(filename):
+        file_is_url = False
+        if Configurable.is_url(filename):
+            file_is_url = True
+        if os.path.exists(filename) or file_is_url:
             file_extension = Configurable._get_filename_extension(filename)
             if config_type:
                 file_extension = config_type
 
             if file_extension == "ini":
                 config = Configurable._load_ini(filename)
-            elif config_type == "json":
+            elif file_extension == "json":
                 config = Configurable._load_json(filename)
-            else:
+            elif file_extension == "yaml" or file_extension == "yml":
                 config = Configurable._load_yaml(filename)
+            else:
+                config = Configurable._load_text(filename)
 
             return config
 
@@ -337,7 +392,7 @@ class Configurable(object):
         Returns:
             Nothing
         """
-        fd = file(filename, 'r')
+        fd = Configurable._get_file_descriptor(filename)
         data = fd.read()
         print data
 
@@ -359,7 +414,7 @@ class GDumper(yaml.Dumper):
         return ''
 
 
-# TODO: see if Python3 makes possible for Configuration to handle all objects
+# TODO: see if Python3 makes possible for Configurable to handle all objects
 class Intraconfig(object):
     """Class to provide instances with simple configuration
     utility and introspection in yaml config format.
@@ -445,3 +500,5 @@ class Intraconfig(object):
             This is not a utility function for serialization.
         """
         Configurable.store_config(self, filename, config_type, order)
+
+# TODO: only import what is needed
