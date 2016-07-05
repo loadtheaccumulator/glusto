@@ -5,6 +5,12 @@ Glusto currently reads configuration files in yaml, json, or ini format.
 It looks in ``/etc/glusto`` for ``defaults.yml``, ``defaults.yaml``, ``defaults.json`` and ``defaults.ini``.
 You can provide any or all at the same time.
 
+.. Note::
+
+	It is currently necessary to create the ``/etc/glusto`` directory manually
+	and populate it with ``defaults.`` files. Automatic creation of the defaults
+	directory, a default ``defaults.yml``, and sample configs is upcoming.
+
 defaults.yml or defaults.yaml::
 
 	keyfile: "~/ssh/id_rsa"
