@@ -27,11 +27,13 @@ To install the Glusto package via setuptools.
 
 		# cd glusto
 
+# Run the glusto tests before installing 
+                $ python setup.py test
+
 #. Run the setuptools script.
 
 	::
-
-		# python setuptools.py
+		$ python setup.py install
 
 Installing Glusto Directly from Git via Pip
 ===========================================
