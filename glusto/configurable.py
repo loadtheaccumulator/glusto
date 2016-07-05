@@ -289,6 +289,8 @@ class Configurable(object):
         if os.path.exists('/etc/glusto'):
             # TODO: discover list of files named "/etc/glusto/defaults*"
             config_list = ["/etc/glusto/defaults.yml",
+                           "/etc/glusto/defaults.yaml",
+                           "/etc/glusto/defaults.json",
                            "/etc/glusto/defaults.ini"]
 
             config = cls.load_configs(config_list)
@@ -296,7 +298,8 @@ class Configurable(object):
             cls.update_config(config)
             # TODO: handle the ini defaults more gracefully
             defaults = config.get('defaults')
-            cls.update_config(defaults)
+            if defaults:
+                cls.update_config(defaults)
 
     @classmethod
     def set_config(cls, config):
