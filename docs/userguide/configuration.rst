@@ -47,5 +47,6 @@ For example, this line from the above defaults.ini config::
 
 .. Note::
 
-	It is also possible to pass additional configuration files at the command-line
-	via the ``-c`` option. See `Using Config Files with Glusto <configurable.html#using_config_files_with_glusto>`_ for more information.
+	It is also possible to pass additional configuration files at the command-line, in IDLE, or from within script.
+	via the ``-c`` option. See `Using Config Files with Glusto <configurable.html#using-config-files-with-glusto>`_ and
+	`Using the Glusto CLI Utility <glusto.html#using-the-glusto-cli-utility>`_ for more information.
