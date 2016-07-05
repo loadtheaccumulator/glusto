@@ -31,7 +31,7 @@ To install the Glusto package via setuptools.
 
 	::
 
-		# python setuptools.py
+		# python setup.py
 
 Installing Glusto Directly from Git via Pip
 ===========================================
