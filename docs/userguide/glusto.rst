@@ -154,7 +154,7 @@ Running PyUnit Tests
 		$ glusto -c 'examples/systems.yml' -u -d 'tests'
 		$ glusto -c 'examples/unittests/unittest.yml examples/unittests/unittest_list.yml examples/systems.yml' -u
 
-For more information on working with unit tests, see `Unittests and Glusto <unittest.html#unittests_and_glusto>`__
+For more information on working with unit tests, see `Unittests and Glusto <unittest.html>`__
 
 Running PyTest Tests
 ++++++++++++++++++++
@@ -163,7 +163,7 @@ Running PyTest Tests
 
 	    $ glusto -c 'examples/systems.yml' --pytest='-v -x tests -m response'
 
-For more information on working with unit tests, see `Unittests and Glusto <pytest.html>`__
+For more information on working with unit tests, see `PyTest and Glusto <pytest.html>`__
 
 Running Nose Tests
 ++++++++++++++++++
@@ -172,7 +172,7 @@ Running Nose Tests
 
 		$ glusto -c 'examples/systems.yml' --nosetests='-v -w tests'
 
-For more information on working with unit tests, see `Unittests and Glusto <nosetests.rst>`__
+For more information on working with unit tests, see `Nose and Glusto <nosetests.rst>`__
 
 Running Different Frameworks in a Single Run
 ++++++++++++++++++++++++++++++++++++++++++++

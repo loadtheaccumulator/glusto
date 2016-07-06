@@ -54,3 +54,41 @@ To run a command on the local system::
 	>>> g.run_local('uname -a')
 	(0, 'Linux localhost 4.4.9-300.fc23.x86_64 #1 SMP Wed May 4 23:56:27 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux\n', '')
 
+
+Transferring Files To and From Remote Systems
+=============================================
+
+Glusto provides methods to call SShMachine's upload and download commands,
+as well as a method to transfer a file directly between remote systems.
+
+Uploading a File
+~~~~~~~~~~~~~~~~
+
+To upload a file to a remote system, use the ``upload`` method.
+
+	::
+
+		>>> g.upload('server01.example.com', '/etc/localfile.txt', '/tmp/localfile_remotecopy.txt')
+
+Downloading a File
+~~~~~~~~~~~~~~~~~~
+
+To download a file from a remote system, use the ``download`` method.
+
+	::
+
+		>>> g.download('server01.examples.com', '/etc/remotefile.txt', '/tmp/remotefile_localcopy.txt')
+
+
+Transferring a File from Remote to Remote
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To transfer a file directly from a remote system to another remote system,
+without having to first download to the local system and then upload to the remote,
+use the ``transfer`` method.
+
+	::
+
+		>>> g.transfer('server01.example.com', '/etc/remote1file.txt', 'server02.example.com', '/tmp/remote1file_remote2copy.txt')
+
+
