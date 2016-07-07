@@ -55,6 +55,73 @@ To run a command on the local system::
 	(0, 'Linux localhost 4.4.9-300.fc23.x86_64 #1 SMP Wed May 4 23:56:27 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux\n', '')
 
 
+Run a Command on More than One Host
+===================================
+
+Glusto provides convenience methods to run commands against multiple hosts.
+
+Run a Command Serially on Multiple Servers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To run a command against a list of hosts, use the ``run_serial()`` method.
+The command will be run against the hosts one after another.
+
+	::
+
+	>>> hosts = ["breedshill.example.com", "bunkerhill.example.com"]
+	>>> results = g.run_serial(hosts, 'uname -a')
+
+The command will be run against the hosts one after another.
+
+
+Run a Command in Parallel
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To run a command against a list of hosts in parallel, use the ``run_parallel()`` method.
+The command will be run against the hosts at the same time.
+
+	::
+
+    >>> command = "uname -a"
+    >>> results = g.run_parallel(hosts, 'uname -a')
+	{'192.168.1.221':
+		(0, 'Linux rhserver1 2.6.32-431.29.2.el6.x86_64 #1 SMP Sun Jul 27 15:55:46 EDT 2014 x86_64 x86_64 x86_64 GNU/Linux\n', ''),
+	'192.168.1.222':
+		(0, 'Linux rhserver2 2.6.32-431.29.2.el6.x86_64 #1 SMP Sun Jul 27 15:55:46 EDT 2014 x86_64 x86_64 x86_64 GNU/Linux\n', '')}
+
+
+Run a Command Asynchronously
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``run_parallel`` method is a convenience method and runs the same command against
+a list of systems using the same user. It is possible to use the underlying
+``run_async`` command directly to run a variety of combinations asynchronously.
+
+An example of how ``run_parallel`` uses ``run_async``::
+
+    >>> command = "uname -a"
+    >>> proc1 = g.run_async("bunkerhill", command)
+    >>> proc2 = g.run_async("breedshill", command)
+
+    >>> results1 = proc1.async_communicate()
+    >>> results2 = proc2.async_communicate()
+
+To asynchronously run the same command against the same server as a different user::
+
+    >>> command = "uname -a; echo $USER"
+    >>> proc1 = g.run_async("breedshill", command, user="howe")
+    >>> proc2 = g.run_async("breedshill", command, user="pigot")
+
+    >>> results1 = proc1.async_communicate()
+    >>> results2 = proc2.async_communicate()
+
+.. Note::
+
+    run_async() runs commands asynchronously, but blocks on
+    async_communicate() and reads output sequentially.
+    This might not be a good fit for run-and-forget commands.
+
+
 Transferring Files To and From Remote Systems
 =============================================
 
@@ -64,20 +131,20 @@ as well as a method to transfer a file directly between remote systems.
 Uploading a File
 ~~~~~~~~~~~~~~~~
 
-To upload a file to a remote system, use the ``upload`` method.
+To upload a file to a remote system, use the ``upload()`` method.
 
 	::
 
-		>>> g.upload('server01.example.com', '/etc/localfile.txt', '/tmp/localfile_remotecopy.txt')
+	>>> g.upload('server01.example.com', '/etc/localfile.txt', '/tmp/localfile_remotecopy.txt')
 
 Downloading a File
 ~~~~~~~~~~~~~~~~~~
 
-To download a file from a remote system, use the ``download`` method.
+To download a file from a remote system, use the ``download()`` method.
 
 	::
 
-		>>> g.download('server01.examples.com', '/etc/remotefile.txt', '/tmp/remotefile_localcopy.txt')
+	>>> g.download('server01.examples.com', '/etc/remotefile.txt', '/tmp/remotefile_localcopy.txt')
 
 
 Transferring a File from Remote to Remote
@@ -89,6 +156,6 @@ use the ``transfer`` method.
 
 	::
 
-		>>> g.transfer('server01.example.com', '/etc/remote1file.txt', 'server02.example.com', '/tmp/remote1file_remote2copy.txt')
+	>>> g.transfer('server01.example.com', '/etc/remote1file.txt', 'server02.example.com', '/tmp/remote1file_remote2copy.txt')
 
 

@@ -31,7 +31,8 @@ class Connectible(object):
     _ssh_connections = {}
     """The dictionary of ssh connections used by the inheriting class"""
     # TODO: config override
-    use_ssh = True
+    # TODO: which of these do we really need?
+    #use_ssh = True
     use_controlpersist = True
     user = "root"
     #log_color = True
@@ -69,8 +70,6 @@ class Connectible(object):
                          '-oControlPersist=4h',
                          '-oControlPath=~/.ssh/glusto-ssh-%r@%h:%p')
 
-        #cls.show_object(ssh_opts)
-
         conn_name = "%s@%s" % (user, host)
         # if no existing connection, create one
         if conn_name not in cls._ssh_connections:
@@ -90,17 +89,6 @@ class Connectible(object):
 
         print("oops. did not get ssh for %s", conn_name)
         return None
-
-    @classmethod
-    def run_test(cls, host=None, command=None, user=None, mode=None):
-        """testing using a single method for all connection methods
-        and either automatically figuring out which needs to be used and/or
-        make it an argument.
-        """
-        if not host or mode == 'local':
-            cls.run_local(command)
-        else:
-            cls.run(host, command, user)
 
     @classmethod
     def run(cls, host, command, user=None):
@@ -223,10 +211,8 @@ class Connectible(object):
         if not user:
             user = cls.user
 
-        if cls.use_ssh:
-            ctlpersist = ''
-            if cls.use_controlpersist:
-                ctlpersist = " (cp)"
+        if cls.use_controlpersist:
+            ctlpersist = " (cp)"
 
             # output command
             cls.log.info(cls.colorfy(cls.COLOR_COMMAND, "%s@%s%s: %s" %
@@ -271,10 +257,8 @@ class Connectible(object):
         if not user:
             user = cls.user
 
-        if cls.use_ssh:
-            ctlpersist = ''
-            if cls.use_controlpersist:
-                ctlpersist = " (cp)"
+        if cls.use_controlpersist:
+            ctlpersist = " (cp)"
 
         # output command
         cls.log.info("%s@%s%s: %s" % (user, host, ctlpersist, command))
@@ -328,7 +312,9 @@ class Connectible(object):
         """Sequentially runs a command against a list of hosts.
 
         Args:
-
+            hosts (list): A list of hostnames to run command against.
+            command (str): The command to run on the system.
+            user (optional[str]): The user to use for connection.
 
         Returns:
             A dictionary of tuples containing returncode, stdout, and stderr.
@@ -346,6 +332,47 @@ class Connectible(object):
             rcode, rout, rerr = cls.run(host, command, user)
 
             results[host] = (rcode, rout, rerr)
+
+        return results
+
+    @classmethod
+    def run_parallel(cls, hosts, command, user=None):
+        """Sequentially runs a command against a list of hosts.
+
+        Args:
+            hosts (list): A list of hostnames to run command against.
+            command (str): The command to run on the system.
+            user (optional[str]): The user to use for connection.
+
+        Returns:
+            A dictionary of tuples containing returncode, stdout, and stderr.
+            Labeled by the host.
+
+        Example:
+            To run a command against a list of hosts in parallel...
+
+                >>> from glusto.core import Glusto as g
+                >>> hosts = ["bunkerhill", "breedshill"]
+                >>> results = g.run_serial(hosts, "ls -Rail /etc")
+        """
+        '''
+        results = {}
+        for host in hosts:
+            rcode, rout, rerr = cls.run(host, command, user)
+
+            results[host] = (rcode, rout, rerr)
+
+        return results
+        '''
+        results = {}
+        rasyncs = {}
+        # run the commands async and record the returned communicate object
+        for host in hosts:
+            rasyncs[host] = cls.run_async(host, command, user)
+
+        # loop through communicate() calls and record results
+        for host, proc in rasyncs.items():
+            results[host] = proc.async_communicate()
 
         return results
 
@@ -429,13 +456,13 @@ class Connectible(object):
         cls.run(sourcehost, command)
 
     @classmethod
-    def list_ssh_connections(cls):
+    def ssh_list_connections(cls):
         """Display the list of existing ssh connections on stdout."""
         for name in cls._ssh_connections.keys():
             print (name)
 
     @classmethod
-    def get_ssh_connections(cls):
+    def ssh_get_connections(cls):
         """Retrieves the dictionary of ssh connections.
 
         Returns:
