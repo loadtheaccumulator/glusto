@@ -238,45 +238,6 @@ class Connectible(object):
         p.async_communicate = async_communicate
         return p
 
-    # TODO: do we need the contextmanager method for doing this?
-    @classmethod
-    @contextmanager
-    def run_background(cls, host, command, user=None):
-        """(Experimental) Run a command in the background and return
-        without results.
-
-        Args:
-            host (str): The hostname of the system.
-            command (str): The command to run on the system.
-            user (optional[str]): The user to use for connection.
-
-        Returns:
-            A tuple consisting of the command return code, stdout, and stderr.
-            None on error.
-        """
-        if not user:
-            user = cls.user
-
-        if cls.use_controlpersist:
-            ctlpersist = " (cp)"
-
-        # output command
-        cls.log.info("%s@%s%s: %s" % (user, host, ctlpersist, command))
-        # run the command
-        ssh = cls._get_ssh_connection(host, user)
-
-        p = ssh.popen(command)
-        print "pre-yield"
-        try:
-            yield
-        except Exception:
-            p.kill()
-        print "post-yield"
-        stdout, stderr = p.communicate()
-        retcode = p.returncode
-        # TODO: add return capability and test for hangs
-        print retcode, stdout, stderr
-
     @classmethod
     def run_local(cls, command):
         """Run a command on the local management system.
@@ -469,6 +430,41 @@ class Connectible(object):
             A dictionary of ssh connections.
         """
         return cls._ssh_connections
+
+    @classmethod
+    def ssh_close_connection(cls, host, user=None):
+        """Close an SshMachine connection.
+
+        Args:
+            host (str): Hostname of the system.
+            user (optional[str]): User to use for connection.
+
+        Returns:
+            Nothing
+        """
+        if not user:
+            user = cls.user
+
+        conn_name = "%s@%s" % (user, host)
+        connection = cls._get_ssh_connection(host, user)
+        del cls._ssh_connections[conn_name]
+        connection.close()
+
+    @classmethod
+    def ssh_close_connections(cls):
+        """Close all ssh connections.
+
+        Args:
+            None
+
+        Returns:
+            Nothing
+        """
+        for key in cls._ssh_connections.keys():
+            print "closing ssh connection %s" % key
+            connection = cls._ssh_connections[key]
+            del cls._ssh_connections[key]
+            connection.close()
 
 # TODO: add color logging to all methods with retcode, rout, rerr
 # TODO: check connections to see if they are current.

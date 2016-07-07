@@ -71,8 +71,6 @@ The command will be run against the hosts one after another.
 	>>> hosts = ["breedshill.example.com", "bunkerhill.example.com"]
 	>>> results = g.run_serial(hosts, 'uname -a')
 
-The command will be run against the hosts one after another.
-
 
 Run a Command in Parallel
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,12 +80,12 @@ The command will be run against the hosts at the same time.
 
 	::
 
-    >>> command = "uname -a"
-    >>> results = g.run_parallel(hosts, 'uname -a')
-	{'192.168.1.221':
-		(0, 'Linux rhserver1 2.6.32-431.29.2.el6.x86_64 #1 SMP Sun Jul 27 15:55:46 EDT 2014 x86_64 x86_64 x86_64 GNU/Linux\n', ''),
-	'192.168.1.222':
-		(0, 'Linux rhserver2 2.6.32-431.29.2.el6.x86_64 #1 SMP Sun Jul 27 15:55:46 EDT 2014 x86_64 x86_64 x86_64 GNU/Linux\n', '')}
+	    >>> command = "uname -a"
+	    >>> results = g.run_parallel(hosts, 'uname -a')
+		{'192.168.1.221':
+			(0, 'Linux rhserver1 2.6.32-431.29.2.el6.x86_64 #1 SMP Sun Jul 27 15:55:46 EDT 2014 x86_64 x86_64 x86_64 GNU/Linux\n', ''),
+		'192.168.1.222':
+			(0, 'Linux rhserver2 2.6.32-431.29.2.el6.x86_64 #1 SMP Sun Jul 27 15:55:46 EDT 2014 x86_64 x86_64 x86_64 GNU/Linux\n', '')}
 
 
 Run a Command Asynchronously
@@ -157,5 +155,46 @@ use the ``transfer`` method.
 	::
 
 	>>> g.transfer('server01.example.com', '/etc/remote1file.txt', 'server02.example.com', '/tmp/remote1file_remote2copy.txt')
+
+
+Listing SSH Connections
+=======================
+
+To see a list of the current SSH connections, use the ``ssh_list_connections()`` method.
+
+	::
+
+		>>> g.ssh_list_connections()
+		root@192.168.1.222
+		root@192.168.1.223
+		root@192.168.1.221
+		root@192.168.1.224
+
+Closing Connections
+===================
+
+It is typically not necessary to close a connection. Connections are cached for
+quick re-use and SSH connections should close at program exit. Should the need arise...
+
+Closing a Connection
+~~~~~~~~~~~~~~~~~~~~
+
+To close a connection use the ``ssh_close_connection()`` method.
+
+	::
+
+	>>> g.ssh_close_connection('192.168.1.221')
+	>>> g.ssh_close_connection('192.168.1.221', user='george')
+
+
+Close All Connections
+~~~~~~~~~~~~~~~~~~~~~
+
+To close all connections use the ``ssh_close_connections()`` method.
+
+	::
+
+	>>> g.ssh_close_connections()
+
 
 
