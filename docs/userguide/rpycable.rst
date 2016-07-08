@@ -311,7 +311,7 @@ To check a connection is still available, use the ``rpyc_ping_connection()`` met
 .. Note::
 
 	Pinging a connection gets the connection from cache, but if the connection
-	was not established before the ping it will be opened--followed by the ping.
+	was not established before the ping, it will be opened--followed by the ping.
 
 
 Closing Connections
