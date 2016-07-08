@@ -26,10 +26,9 @@ for more information on configuring Glusto for specific SSH keys.
 Setting up Connections
 ======================
 
-Unlike the SSH connections that are created when you make a call to ``run()``
-or the other SSH calls, the RPyC connection needs to be created and is then
-available for use in RPyC calls. After the connection is made, it is cached for
-use by subsequent RPyC calls.
+Unlike the SSH connections that are created automatically when you use ``run()``
+or the other SSH methods, the RPyC connection needs to be created before it can
+be used. After the connection is made, it is cached for use by subsequent RPyC calls.
 
 Setting up a Single Connection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -230,7 +229,7 @@ This feature makes it simple to create module files of commonly used function,
 class, and method snippets for use on remote servers without the need to package,
 distribute, and install on each remote server ahead of time.
 
-To define a local module on the remote system, use the ``rpyc_define_module()``.
+To define a local module on the remote system, use the ``rpyc_define_module()`` method.
 
 	Local module script named ``mymodule`` with a function called ``get_uname``::
 
@@ -262,12 +261,13 @@ To wire the remote stdout to the local stdout...
 		>>> conn.execute("print 'Hello, World!'")
 		Hello, World!
 
-Going Ape with Monkey-Patching
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Re-wiring Local and Remote
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Monkey-patching can be used to make lengthy or often-used remote calls appear local.
 
 	An oversimplified example::
+
 		# Monkey-patching the remote to a local object
 		>>> conn = g.rpyc_get_connection('192.168.1.221')
 		>>> r_uname = conn.modules.os.uname
@@ -297,6 +297,23 @@ Monkey-patching can be used to make lengthy or often-used remote calls appear lo
 		('Linux', 'rhserver1', '2.6.32-431.29.2.el6.x86_64', '#1 SMP Sun Jul 27 15:55:46 EDT 2014', 'x86_64')
 		root
 
+
+Checking Connections
+====================
+
+To check a connection is still available, use the ``rpyc_ping_connection()`` method.
+
+	::
+
+		>>> g.rpyc_ping_connection()
+		connection is alive
+
+.. Note::
+
+	Pinging a connection gets the connection from cache, but if the connection
+	was not established before the ping it will be opened--followed by the ping.
+
+
 Closing Connections
 ===================
 
@@ -304,6 +321,14 @@ On occasion, it might be necessary to remove a connection from the cache (e.g.,
 when a cached connection is no longer needed or when looping through
 connections to execute the same command against all connections and an unwanted
 connection is in the list).
+
+.. Warning::
+
+	Closing a connection directly without using the methods discussed in this
+	section will leave a connection definition in the connection dictionary.
+	You will want to close rpyc connections via these methods to avoid
+	unnecessary cleanup. It will also guarantee any future features are handled
+	correctly upon close.
 
 Closing a Single Connection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
