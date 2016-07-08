@@ -4,9 +4,6 @@ Using Config Files with Glusto
 Glusto currently supports loading and storing configs in YAML, INI, and JSON format.
 File format can be specified explicitly or Glusto can determine the format based on file extension.
 
-.. Note::
-
-	JSON capability is currently limited to loading from a string--with full functionality coming shortly.
 
 Loading Config Files
 ====================
