@@ -70,13 +70,13 @@ class Rpycable(object):
         Returns:
             A new or cached deployed_server object.
         """
-        print "getting deployed server"
+        cls.log.debug("getting deployed server")
         if name not in cls._deployed_servers:
             deployed_server = DeployedServer(ssh_connection)
             cls._deployed_servers[name] = deployed_server
-            print "cached deployed server %s" % name
+            cls.log.debug("cached deployed server %s" % name)
         else:
-            print "getting deployed server %s from cache" % name
+            cls.log.debug("getting deployed server %s from cache" % name)
             deployed_server = cls._deployed_servers[name]
 
         if deployed_server:
@@ -95,11 +95,11 @@ class Rpycable(object):
         Returns:
             A new or cached classic connection object.
         """
-        print "getting classic connection"
+        cls.log.debug("getting classic connection")
         if name not in cls._rpyc_connections:
             classic_connection = deployed_server.classic_connect()
             cls._rpyc_connections[name] = classic_connection
-            print 'Cached connection for %s' % name
+            cls.log.debug('Cached connection for %s' % name)
         else:
             classic_connection = cls._rpyc_connections[name]
 
@@ -125,38 +125,38 @@ class Rpycable(object):
         deployed_server_name = cls._rpyc_get_connection_name(host, user)
         classic_connection = None
 
-        print "Conn name: %s" % conn_name
+        cls.log.debug("Conn name: %s" % conn_name)
         # if no existing connection, create one
         if conn_name not in cls._rpyc_connections:
-            print("Creating rpyc connection: %s" % conn_name)
+            cls.log.debug("Creating rpyc connection: %s" % conn_name)
             ssh_connection = cls._get_ssh_connection(host, user)
 
             if ssh_connection:
-                print "deployed server setup"
+                cls.log.debug("deployed server setup")
                 deployed_server = \
                     cls._rpyc_get_deployed_server(deployed_server_name,
                                                   ssh_connection)
 
                 if deployed_server:
-                    print "class connect"
+                    cls.log.debug("class connect")
                     classic_connection = \
                         cls._rpyc_get_classic_connection(conn_name,
                                                          deployed_server)
 
                     if not classic_connection:
-                        print "Classic rpyc connection failed"
+                        cls.log.error("Classic rpyc connection failed")
                 else:
-                    print "Deploying rpyc failed"
+                    cls.log.error("Deploying rpyc failed")
             else:
-                print "SSH Connection Failed"
+                cls.log.error("SSH Connection Failed")
         else:
-            print("Retrieved connection from cache: %s" % conn_name)
+            cls.log.debug("Retrieved connection from cache: %s" % conn_name)
             classic_connection = cls._rpyc_connections[conn_name]
 
         if classic_connection:
             return classic_connection
 
-        print("oops. did not get rpyc for %s", conn_name)
+        cls.log.error("oops. did not get rpyc for %s", conn_name)
 
         return None
 
@@ -167,7 +167,7 @@ class Rpycable(object):
         Args:
             host (str): The hostname or IP of the remote system.
             user (str): A user on the remote system. Default: root
-            num_isntances (int): The number of the instances to create.
+            num_instances (int): The number of the instances to create.
 
         Returns:
             Nothing.
@@ -246,8 +246,10 @@ class Rpycable(object):
         try:
             connection.ping()
 
+            print "connection is alive"
             return True
         except:
+            print "connection is dead"
             return False
 
     @classmethod
@@ -265,7 +267,7 @@ class Rpycable(object):
         """
         connection = cls.rpyc_get_connection(host, user, instance)
         name = cls._rpyc_get_connection_name(host, user, instance)
-        print "closing rpyc connection %s" % name
+        cls.log.debug("closing rpyc connection %s" % name)
         del cls._rpyc_connections[name]
         connection.close()
 
@@ -280,7 +282,7 @@ class Rpycable(object):
             Nothing
         """
         for key in cls._rpyc_connections.keys():
-            print "closing rpyc connection %s" % key
+            cls.log.debug("closing rpyc connection %s" % key)
             connection = cls._rpyc_connections[key]
             del cls._rpyc_connections[key]
             connection.close()
@@ -298,7 +300,7 @@ class Rpycable(object):
         cls.rpyc_close_connections()
 
         for key in cls._deployed_servers.keys():
-            print "closing rpyc deployed server %s" % key
+            cls.log.debug("closing rpyc deployed server %s" % key)
             deployed_server = cls._deployed_servers[key]
             del cls._deployed_servers[key]
             deployed_server.close()
@@ -324,7 +326,7 @@ class Rpycable(object):
                 connection.close()
 
         deployed_server = cls._rpyc_get_deployed_server(name)
-        print "closing rpyc connection %s" % name
+        cls.log.debug("closing rpyc connection %s" % name)
         del cls._deployed_servers[name]
         deployed_server.close()
 
