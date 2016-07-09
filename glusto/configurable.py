@@ -24,6 +24,7 @@ import yaml
 import json
 import ConfigParser
 import urllib
+from collections import OrderedDict
 
 
 class Configurable(object):
@@ -86,7 +87,7 @@ class Configurable(object):
         yaml.dump(obj, configfd, Dumper=GDumper)
 
     @staticmethod
-    def _store_ini(obj, filename, order=None):
+    def _store_ini(obj, filename):
         """Write an object to an ini formatted config file.
         Currently uses the Legacy 2.x API with implicit get/set.
 
@@ -95,17 +96,10 @@ class Configurable(object):
             up to the developer to format the object accordingly.
         """
         config = ConfigParser.RawConfigParser()
-        if order:
-            # TODO: replace this with an ordered dict ???
-            for section_name in order:
-                config.add_section(section_name)
-                for item_key, item_value in obj[section_name].iteritems():
-                    config.set(section_name, item_key, item_value)
-        else:
-            for section_key in obj:
-                config.add_section(section_key)
-                for item_key, item_value in obj[section_key].iteritems():
-                    config.set(section_key, item_key, item_value)
+        for section_key in obj:
+            config.add_section(section_key)
+            for item_key, item_value in obj[section_key].iteritems():
+                config.set(section_key, item_key, item_value)
 
         with open(filename, 'wb') as configfile:
             config.write(configfile)
@@ -117,7 +111,7 @@ class Configurable(object):
         json.dump(obj, configfd, indent=4, separators=(',', ':'))
 
     @staticmethod
-    def store_config(obj, filename, config_type=None, order=None):
+    def store_config(obj, filename, config_type=None):
         """Writes an object to a file format.
             Automatically detects format based on filename extension.
 
@@ -159,15 +153,15 @@ class Configurable(object):
         ini_config = ConfigParser.SafeConfigParser(allow_no_value=True)
 
         if Configurable.is_url(filename):
-            fd = Configurable._get_file_descriptor(filename)
-            ini_config.readfp(fd)
+            configfd = Configurable._get_file_descriptor(filename)
+            ini_config.readfp(configfd)
         else:
             ini_config.read(filename)
 
         # loop through the config sections
-        config = {}
+        config = OrderedDict()
         for section in ini_config.sections():
-            config[section] = {}
+            config[section] = OrderedDict()
             for key, value in ini_config.items(section):
                 config[section].update({key: value})
 
@@ -177,26 +171,34 @@ class Configurable(object):
     def _load_yaml(filename):
         """Reads a yaml formatted file into a dictionary"""
         configfd = Configurable._get_file_descriptor(filename)
-        config = yaml.load(configfd)
-        # TODO: does yaml.load return None or empty dict?
+        if configfd:
+            config = yaml.load(configfd)
 
-        return config
+            return config
+
+        return None
 
     @staticmethod
     def _load_json(filename):
         """Read a json formatted file into a dictionary"""
         configfd = Configurable._get_file_descriptor(filename)
-        config = json.load(configfd)
+        if configfd:
+            config = json.load(configfd)
 
-        return config
+            return config
+
+        return None
 
     @staticmethod
     def _load_text(filename):
         """Read a text file into a string"""
         configfd = Configurable._get_file_descriptor(filename)
-        config = configfd.read()
+        if configfd:
+            config = configfd.read()
 
-        return config
+            return config
+
+        return None
 
     @staticmethod
     def load_config(filename, config_type=None):
