@@ -148,7 +148,7 @@ class Loggable(object):
                 filename = handler.baseFilename
 
             level = logging.getLevelName(handler.level)
-            print "... %s: %s (%s)" % (name, filename, level)
+            print "- %s: %s (%s)" % (name, filename, level)
 
     @classmethod
     def disable_log_levels(cls, level):

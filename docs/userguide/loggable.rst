@@ -68,8 +68,8 @@ To show a list of the logfiles attached to a logger, use the ``show_logs()`` com
 
 		>>> g.show_logs(g.mylog)
 		Log:  mylog
-		... mylog1: /tmp/my.log (WARNING)
-		... mylog2: /tmp/my_other.log (CRITICAL)
+		- mylog1: /tmp/my.log (WARNING)
+		- mylog2: /tmp/my_other.log (CRITICAL)
 
 
 
@@ -82,13 +82,13 @@ If a logfile is no longer needed, remove the logfile from the logger with the ``
 
 		>>> g.show_logs(g.mylog)
 		Log: mylog
-		... mylog1: /tmp/my.log
-		... mylog2: sys.stdout
+		- mylog1: /tmp/my.log
+		- mylog2: sys.stdout
 		>>> g.remove_log(g.mylog, 'mylog1')
 
 		>>> g.show_logs(g.mylog)
 		Log: mylog
-		... mylog1: /tmp/my.log
+		- mylog1: /tmp/my.log
 
 To remove all logfiles from a logger, use the ``remove_log`` command without passing a name.
 
@@ -106,15 +106,15 @@ To change the level of an existing log, use the ``set_log_level()`` method.
 
 		>>> g.show_logs(g.log)
 		Log:  glustolog
-		... glustolog1: /tmp/glusto.log (DEBUG)
-		... glustolog2: /tmp/testtrunc.log (INFO)
+		- glustolog1: /tmp/glusto.log (DEBUG)
+		- glustolog2: /tmp/testtrunc.log (INFO)
 
 		>>> g.set_log_level('glustolog', 'glustolog2', 'WARNING')
 
 		>>> g.show_logs(g.log)
 		Log:  glustolog
-		... glustolog1: /tmp/glusto.log (DEBUG)
-		... glustolog2: /tmp/testtrunc.log (WARNING)
+		- glustolog1: /tmp/glusto.log (DEBUG)
+		- glustolog2: /tmp/testtrunc.log (WARNING)
 
 
 Changing the Filename of an Existing Log Handler
@@ -126,15 +126,15 @@ To change the level of an existing log, use the ``set_log_filename()`` method.
 
 		>>> g.show_logs(g.log)
 		Log:  glustolog
-		... glustolog1: /tmp/glusto.log (DEBUG)
-		... glustolog2: /tmp/testtrunc.log (INFO)
+		- glustolog1: /tmp/glusto.log (DEBUG)
+		- glustolog2: /tmp/testtrunc.log (INFO)
 
 		>>> g.set_log_filename('glustolog', 'glustolog2', '/tmp/my.log')
 
 		>>> g.show_logs(g.log)
 		Log:  glustolog
-		... glustolog1: /tmp/glusto.log (DEBUG)
-		... glustolog2: /tmp/my.log (WARNING)
+		- glustolog1: /tmp/glusto.log (DEBUG)
+		- glustolog2: /tmp/my.log (WARNING)
 
 
 Clearing a Log
@@ -146,8 +146,8 @@ To empty a logfile, use the ``clear_log()`` method.
 
 		>>> g.show_logs(g.log)
 		Log:  glustolog
-		... glustolog1: /tmp/glusto.log (DEBUG)
-		... glustolog2: /tmp/testtrunc.log (INFO)
+		- glustolog1: /tmp/glusto.log (DEBUG)
+		- glustolog2: /tmp/testtrunc.log (INFO)
 		>>> g.clear_log('glustolog', 'glustolog2')
 
 
