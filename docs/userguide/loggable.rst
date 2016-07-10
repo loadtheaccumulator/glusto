@@ -6,7 +6,7 @@ Default Logging
 ===============
 
 By default, a logging object (``glustolog``) is setup by Glusto.
-Both are initially pointed at the same logfile (``/tmp/glusto.log``)
+It writes to ``/tmp/glusto.log``
 
 The ``glustolog`` object is designed for use by Glusto itself.
 If you need a log that is independent of the events logged by Glusto, you can
@@ -67,8 +67,10 @@ To show a list of the logfiles attached to a logger, use the ``show_logs()`` com
 	::
 
 		>>> g.show_logs(g.mylog)
-		mylog0: /tmp/my.log
-		mylog1: sys.stdout
+		Log:  mylog
+		... mylog1: /tmp/my.log (WARNING)
+		... mylog2: /tmp/my_other.log (CRITICAL)
+
 
 
 Removing a Log
@@ -79,18 +81,98 @@ If a logfile is no longer needed, remove the logfile from the logger with the ``
 	::
 
 		>>> g.show_logs(g.mylog)
-		mylog0: /tmp/my.log
-		mylog1: sys.stdout
+		Log: mylog
+		... mylog1: /tmp/my.log
+		... mylog2: sys.stdout
 		>>> g.remove_log(g.mylog, 'mylog1')
 
 		>>> g.show_logs(g.mylog)
-		mylog0: /tmp/my.log
+		Log: mylog
+		... mylog1: /tmp/my.log
 
 To remove all logfiles from a logger, use the ``remove_log`` command without passing a name.
 
 	::
 
 		>>> g.remove_log(g.mylog)
+
+
+Changing the Level of an Existing Log Handler
+=============================================
+
+To change the level of an existing log, use the ``set_log_level()`` method.
+
+	::
+
+		>>> g.show_logs(g.log)
+		Log:  glustolog
+		... glustolog1: /tmp/glusto.log (DEBUG)
+		... glustolog2: /tmp/testtrunc.log (INFO)
+
+		>>> g.set_log_level('glustolog', 'glustolog2', 'WARNING')
+
+		>>> g.show_logs(g.log)
+		Log:  glustolog
+		... glustolog1: /tmp/glusto.log (DEBUG)
+		... glustolog2: /tmp/testtrunc.log (WARNING)
+
+
+Changing the Filename of an Existing Log Handler
+================================================
+
+To change the level of an existing log, use the ``set_log_filename()`` method.
+
+	::
+
+		>>> g.show_logs(g.log)
+		Log:  glustolog
+		... glustolog1: /tmp/glusto.log (DEBUG)
+		... glustolog2: /tmp/testtrunc.log (INFO)
+
+		>>> g.set_log_filename('glustolog', 'glustolog2', '/tmp/my.log')
+
+		>>> g.show_logs(g.log)
+		Log:  glustolog
+		... glustolog1: /tmp/glusto.log (DEBUG)
+		... glustolog2: /tmp/my.log (WARNING)
+
+
+Clearing a Log
+==============
+
+To empty a logfile, use the ``clear_log()`` method.
+
+	::
+
+		>>> g.show_logs(g.log)
+		Log:  glustolog
+		... glustolog1: /tmp/glusto.log (DEBUG)
+		... glustolog2: /tmp/testtrunc.log (INFO)
+		>>> g.clear_log('glustolog', 'glustolog2')
+
+
+Temporarily Disable Logging
+===========================
+
+There might be times when suspending logging at a certain level is necessary.
+For example, if a particular function tends to spam the log.
+
+To suspend logging at a specific level, use the ``disable_log_levels()`` method.
+
+	::
+
+		>>> g.disable_log_levels('WARNING')
+
+.. Note::
+
+	This will suspend logging for the specific level and all levels below it
+	across all logs.
+
+To resume logging at the previously defined levels, use the ``reset_log_levels()`` method.
+
+	::
+
+		>>> g.reset_log_levels()
 
 
 Logging with Color Text

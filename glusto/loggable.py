@@ -71,7 +71,7 @@ class Loggable(object):
         else:
             _logfh = logging.FileHandler(_logfile)
 
-        # TODO: make this re-use deleted numbers
+        # TODO: make this re-use deleted numbers and track per log
         # num_handlers = len(log.handlers)
         cls.handler_counter += 1
 
@@ -151,7 +151,7 @@ class Loggable(object):
             print "... %s: %s (%s)" % (name, filename, level)
 
     @classmethod
-    def disable_log_level(cls, level):
+    def disable_log_levels(cls, level):
         """Disable level (and lower) across all logs and handlers.
         Handy if a method continually spams the logs.
         Use reset_log_level() to return to normal logging.
@@ -161,7 +161,7 @@ class Loggable(object):
             See Python logging module docs for more information.
 
         Args:
-            level (str): String name for the log level
+            level (str): String name for the top log level to disable.
 
         Returns:
             Nothing
@@ -169,7 +169,7 @@ class Loggable(object):
         logging.disable(logging.getLevelName(level))
 
     @classmethod
-    def reset_log_level(cls):
+    def reset_log_levels(cls):
         """Reset logs to current handler levels.
         Convenience method to undo disable_log_level()
 
@@ -200,3 +200,50 @@ class Loggable(object):
             if handler.name == handler_name:
                 handler.level = logging.getLevelName(level)
                 break
+
+    @classmethod
+    def set_log_filename(cls, log_name, handler_name, filename):
+        """Change the logfile name for a specific handler.
+        Use show_logs() to get the list of log and handler names.
+
+        Args:
+            log_name (str): The name of the log.
+            handler_name (str): The name of the specific log handler.
+            filename (str): The path/filename to log to.
+
+        Returns:
+            Nothing
+
+        .. Note::
+
+            Nothing in logging docs mentions this method (close and set
+            baseFilename) over removing the handler and creating a new handler
+            with the new filename. Research and correct if needed.
+            Caveat emptor.
+        """
+        filename = os.path.abspath(filename)
+        log = logging.getLogger(log_name)
+        for handler in log.handlers:
+            if handler.name == handler_name:
+                handler.close()
+                handler.baseFilename = filename
+                break
+
+    @classmethod
+    def clear_log(cls, log_name, handler_name):
+        """Empties an existing log file
+
+        Args:
+            log_name (str): The name of the log.
+            handler_name (str): The name of the specific log handler.
+
+        Returns:
+            Nothing
+        """
+        log = logging.getLogger(log_name)
+        for handler in log.handlers:
+            if handler.name == handler_name:
+                handler.close()
+                fd = open(handler.baseFilename, 'r+')
+                fd.truncate()
+                fd.close()
