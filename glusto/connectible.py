@@ -357,7 +357,7 @@ class Connectible(object):
         ssh = cls._get_ssh_connection(host, user)
         if not ssh:
             print "ERROR: No ssh connection"
-            return None
+            return False
 
         # TODO: catch exceptions thrown by SshMachine.upload()
         ssh.upload(localpath, remotepath)
@@ -384,7 +384,7 @@ class Connectible(object):
         ssh = cls._get_ssh_connection(host, user)
         if not ssh:
             print "ERROR: No ssh connection"
-            return None
+            return False
 
         # TODO: catch exceptions thrown by SshMachine.download()
         ssh.download(remotepath, localpath)
