@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='glusto',
-      version='0.2.1',
+      version='0.3',
       author='Jonathan Holloway',
       author_email='loadtheaccumulator@gmail.com',
       description=('A framework of commonly used tools for developing scripts '
@@ -20,5 +20,6 @@ setup(name='glusto',
             'glusto = glusto.main:main',
             ]
                     },
-      install_requires=['plumbum', 'decorator', 'rpyc', 'pytest', 'nose']
+      install_requires=['plumbum', 'rpyc', 'yaml', 'jinja2',
+                        'pytest', 'nose']
       )

@@ -34,7 +34,7 @@ class Configurable(object):
     """The default class attribute for storing configurations."""
 
     @staticmethod
-    def is_url(filename):
+    def _is_url(filename):
         if (filename.startswith('file://') or
             (filename.startswith('http://') or
              filename.startswith('https://'))):
@@ -68,7 +68,7 @@ class Configurable(object):
         Returns:
             A file descriptor object.
         """
-        if Configurable.is_url(filename):
+        if Configurable._is_url(filename):
             # TODO: can urllib handle https://
             httpfd = urllib.urlopen(filename)
 
@@ -152,7 +152,7 @@ class Configurable(object):
         """Reads an ini file into a dictionary"""
         ini_config = ConfigParser.SafeConfigParser(allow_no_value=True)
 
-        if Configurable.is_url(filename):
+        if Configurable._is_url(filename):
             configfd = Configurable._get_file_descriptor(filename)
             ini_config.readfp(configfd)
         else:
@@ -216,7 +216,7 @@ class Configurable(object):
             Dict of configuration items.
         """
         file_is_url = False
-        if Configurable.is_url(filename):
+        if Configurable._is_url(filename):
             file_is_url = True
         if os.path.exists(filename) or file_is_url:
             file_extension = Configurable._get_filename_extension(filename)
@@ -351,6 +351,7 @@ class Configurable(object):
         Returns:
             Nothing
         """
+        # TODO: either get rid of this or make it work with all formats
         cls.log.debug("Configuration for object type %s:\n%s" %
                       (type(obj), yaml.dump(obj, Dumper=GDumper)))
 
@@ -488,7 +489,7 @@ class Intraconfig(object):
         config = Configurable.load_config(filename)
         self.update_config(config)
 
-    def store_config(self, filename, config_type=None, order=None):
+    def store_config(self, filename, config_type=None):
         """Writes attributes of a class instance to a file in a config format.
             Automatically detects format based on filename extension.
 
@@ -504,6 +505,6 @@ class Intraconfig(object):
             Uses custom GDumper class to strip Python object formatting.
             This is not a utility function for serialization.
         """
-        Configurable.store_config(self, filename, config_type, order)
+        Configurable.store_config(self, filename, config_type)
 
 # TODO: only import what is needed

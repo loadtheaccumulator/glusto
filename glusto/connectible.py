@@ -20,9 +20,9 @@ NOTE:
     and not designed to be instantiated.
 """
 import subprocess
+import os
 
 from plumbum import SshMachine
-from decorator import contextmanager
 
 
 class Connectible(object):
@@ -31,8 +31,6 @@ class Connectible(object):
     _ssh_connections = {}
     """The dictionary of ssh connections used by the inheriting class"""
     # TODO: config override
-    # TODO: which of these do we really need?
-    #use_ssh = True
     use_controlpersist = True
     user = "root"
     #log_color = True
@@ -465,6 +463,24 @@ class Connectible(object):
             connection = cls._ssh_connections[key]
             del cls._ssh_connections[key]
             connection.close()
+
+    @classmethod
+    def ssh_set_keyfile(cls, keyfile):
+        if keyfile.startswith('~'):
+            keyfile = keyfile.replace('~', os.environ['HOME'])
+        if os.path.exists(keyfile):
+            cls.config['ssh_keyfile'] = keyfile
+
+            return True
+
+        cls.log.error("Keyfile %s does not exist" % keyfile)
+        return False
+
+    @classmethod
+    def ssh_get_keyfile(cls):
+
+        return cls.config.get('ssh_keyfile', None)
+
 
 # TODO: add color logging to all methods with retcode, rout, rerr
 # TODO: check connections to see if they are current.

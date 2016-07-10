@@ -27,17 +27,12 @@ import sys
 
 class Loggable(object):
     """The class providing logging functionality."""
-    # TODO: load default config(s)
-    # TODO: add ability to log to STDOUT instead of logfile
-    # setup logging
 
-    # Create file handler for logger
-    # TODO: set logfile from config (with default)
-    # setup default logging
+    handler_counter = 0
 
     @classmethod
     def create_log(cls, name='glustolog', filename='/tmp/glusto.log',
-                   level='DEBUG', allow_multiple=False):
+                   level='DEBUG', log_format=None, allow_multiple=False):
         """Creates a log object using the Python "logging" module.
 
         Args:
@@ -52,7 +47,10 @@ class Loggable(object):
         Returns:
             A logging object.
         """
-
+        # TODO: one call -> multiple levels
+        if not log_format:
+            log_format = ('%(asctime)s %(levelname)s '
+                          '(%(funcName)s) %(message)s')
         log = logging.getLogger(name)
         log.propagate = False
         _logfile = filename
@@ -62,7 +60,7 @@ class Loggable(object):
             if not os.path.exists(_logdir):
                 os.makedirs(_logfile)
 
-        # TODO: check for existing handler with same filename
+        # TODO: check for existing handler with same filename ???
         # cleanup existing handlers
         if not allow_multiple:
             for handler in log.handlers[:]:
@@ -72,37 +70,34 @@ class Loggable(object):
             _logfh = logging.StreamHandler(sys.stdout)
         else:
             _logfh = logging.FileHandler(_logfile)
-        num_handlers = len(log.handlers)
-        # TODO: handle name conflict when a log has been removed
+
+        # TODO: make this re-use deleted numbers
+        # num_handlers = len(log.handlers)
+        cls.handler_counter += 1
+
         # TODO: catch "OSError: [Errno 13] Permission denied: '/var/log/t.log'"
         # TODO: catch "IOError: [Errno 21] Is a directory: '/tmp/log/test.log'"
-        handler_name = "%s%i" % (name, num_handlers)
+        handler_name = "%s%i" % (name, cls.handler_counter)
         _logfh.set_name(handler_name)
 
         # Set log string format for logger
-        # TODO: set log string format from config (with default)
-        _formatter = logging.Formatter('%(asctime)s %(levelname)s '
-                                       '(%(funcName)s) %(message)s')
+        _formatter = logging.Formatter(log_format)
         _logfh.setFormatter(_formatter)
-
+        # Set log level
+        # TODO: catch illegal options???
+        _level = logging.getLevelName(level)
+        _logfh.level = _level
         # Add handler to logger
         log.addHandler(_logfh)
 
-        # Set log level
-        # TODO: verify all of the available options
-        # TODO: catch illegal options???
-        _level = {'DEBUG': logging.DEBUG,
-                  'INFO': logging.INFO,
-                  'WARNING': logging.WARNING,
-                  'ERROR': logging.ERROR,
-                  'CRITICAL': logging.CRITICAL}[level]
-        log.setLevel(_level)
+        if not allow_multiple:
+            log.setLevel(_level)
 
         return log
 
     @classmethod
     def add_log(cls, logobj, filename='/tmp/glusto.log',
-                level='INFO'):
+                level='INFO', log_format=None):
         """Add a logfile to the logobj
 
         Args:
@@ -112,7 +107,8 @@ class Loggable(object):
             level (optional[str]): The minimum log level. Defaults to "INFO".
         """
         name = logobj.name
-        log = cls.create_log(name=name, filename=filename, level=level,
+        log = cls.create_log(name=name, filename=filename,
+                             level=level, log_format=log_format,
                              allow_multiple=True)
 
         return log
@@ -142,6 +138,8 @@ class Loggable(object):
         Args:
             logobj (object): A logging object.
         """
+        log_name = logobj.name
+        print "Log: ", log_name
         for handler in logobj.handlers:
             name = handler.get_name()
             if handler.stream == sys.stdout:
@@ -149,4 +147,56 @@ class Loggable(object):
             else:
                 filename = handler.baseFilename
 
-            print "%s: %s" % (name, filename)
+            level = logging.getLevelName(handler.level)
+            print "... %s: %s (%s)" % (name, filename, level)
+
+    @classmethod
+    def disable_log_level(cls, level):
+        """Disable level (and lower) across all logs and handlers.
+        Handy if a method continually spams the logs.
+        Use reset_log_level() to return to normal logging.
+
+        .. Note::
+
+            See Python logging module docs for more information.
+
+        Args:
+            level (str): String name for the log level
+
+        Returns:
+            Nothing
+        """
+        logging.disable(logging.getLevelName(level))
+
+    @classmethod
+    def reset_log_level(cls):
+        """Reset logs to current handler levels.
+        Convenience method to undo disable_log_level()
+
+        Args:
+            None
+
+        Returns:
+            Nothing
+        """
+        logging.disable(logging.NOTSET)
+
+    @classmethod
+    def set_log_level(cls, log_name, handler_name, level):
+        """Set the log level for a specific handler.
+        Use show_logs() to get the list of log and handler names.
+
+        Args:
+            log_name (str): The name of the log.
+            handler_name (str): The name of the specific log handler.
+            level (str): The string representation of the log level.
+
+        Returns:
+            Nothing
+        """
+        log = logging.getLogger(log_name)
+
+        for handler in log.handlers:
+            if handler.name == handler_name:
+                handler.level = logging.getLevelName(level)
+                break
