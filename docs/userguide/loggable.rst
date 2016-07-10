@@ -31,6 +31,31 @@ To create a logging object with a severity level other than the default:
 
 The options are ``INFO``, ``WARNING``, ``ERROR``, ``CRITICAL``, and ``DEBUG``
 
+
+Sending a Log Event
+===================
+
+To write a message to a log, use the standard Python logging methods with your log object.
+
+	An example sending a warning to ``mylog``::
+
+		>>> mylog.warning('this is a test to my log')
+		>>> g.show_file('/tmp/my.log')
+		2016-07-10 09:07:11,591 WARNING (<module>) this is a test to my log
+
+Available options are:
+
+- <log>.debug
+
+- <log>.info
+
+- <log>.error
+
+- <log>.warning
+
+- <log>.critical
+
+
 Sending Log Events to Multiple Logfiles
 =======================================
 
@@ -42,13 +67,6 @@ To add an additional logfile to an existing log object:
 	::
 
 		>>> g.add_log(g.mylog, filename='/tmp/my_other.log', level='CRITICAL')
-
-.. Warning::
-
-	The level parameter sets the level at the logger, not the logfile, so all
-	handlers will log at the newly specified level. Leaving the parameter off
-	will change all handlers to the default logging level (currently ``INFO``).
-
 
 If 'STDOUT' is passed as the filename, a log will be added that prints to stdout.
 
