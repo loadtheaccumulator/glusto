@@ -8,6 +8,11 @@ File format can be specified explicitly or Glusto can determine the format based
 Loading Config Files
 ====================
 
+Config files can be loaded from the local filesystem as well as URLs.
+
+Loading Config Files From the Local Filesystem
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 To load configuration from a file, use the ``load_config()`` method.
 
 	Example config file ``examples/systems.yml``::
@@ -24,6 +29,16 @@ To load configuration from a file, use the ``load_config()`` method.
 		{'nodes': ['192.168.1.221', '192.168.1.222', '192.168.1.223', '192.168.1.224'], 'clients': ['192.168.1.225'], 'masternode': '192.168.1.221'}
 
 The ``config`` dictionary object now contains Python object representations of the config in the file.
+
+Loading Config Files from a URL
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To load configuration from a URL, pass the ``load_config()`` method a filename
+beginning with ``http://``, ``https://``, or ``file://``.
+
+	::
+
+		>>> config = g.load_config('http://myserver.com/example.yaml')
 
 
 Setting the Glusto Config Dictionary with a Config File
