@@ -21,5 +21,5 @@ setup(name='glusto',
             ]
                     },
       install_requires=['plumbum', 'rpyc', 'PyYAML', 'jinja2',
-                        'pytest', 'nose']
+                        'pytest', 'nose', 'unittest-xml-reporting']
       )
