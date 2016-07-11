@@ -10,7 +10,7 @@ There is more than one way to install Glusto.
 Cloning the Glusto Github Repo
 ==============================
 
-On the system where Glusto is to be installed, change directory and clone the repo...
+On the system where Glusto is to be installed, clone the repo...
 	::
 
 		# git clone https://github.com/loadtheaccumulator/glusto.git
