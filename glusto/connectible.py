@@ -51,8 +51,7 @@ class Connectible(object):
             user = cls.user
 
         ssh_opts = ()
-        ssh_opts += ('-T',
-                     '-oPasswordAuthentication=no',
+        ssh_opts += ('-oPasswordAuthentication=no',
                      '-oStrictHostKeyChecking=no',
                      '-oPort=22',
                      '-oConnectTimeout=10')
@@ -68,12 +67,17 @@ class Connectible(object):
                          '-oControlPersist=4h',
                          '-oControlPath=~/.ssh/glusto-ssh-%r@%h:%p')
 
+        scp_opts = ssh_opts
+
+        ssh_opts += ('-T',)
+
         conn_name = "%s@%s" % (user, host)
         # if no existing connection, create one
         if conn_name not in cls._ssh_connections:
             cls.log.debug("Creating connection: %s" % conn_name)
             try:
-                ssh = SshMachine(host, user, ssh_opts=ssh_opts)
+                ssh = SshMachine(host, user,
+                                 ssh_opts=ssh_opts, scp_opts=scp_opts)
             except:
                 cls.log.error("Exception trying to establish SshMachine")
                 return None
