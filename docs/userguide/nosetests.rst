@@ -63,7 +63,7 @@ Use the ``-n=`` or ``--nostests=`` parameter followed by the options normally pa
 		FAILED (SKIP=1, errors=2, failures=1)
 		Ending glusto via main()
 
-For a list of available options, pass ``--help`` to the ``pytest`` parameter or use the ``pytest`` command itself.
+For a list of available options, pass ``--help`` to the ``nosetests`` parameter or use the ``nosetests`` command itself.
 
 	::
 

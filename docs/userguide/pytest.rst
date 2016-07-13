@@ -5,7 +5,7 @@ PyTest and Glusto
 Running PyTests from the CLI
 ============================
 
-Use the ``-t=`` or ``--pytest=`` parameter followed by the options normally passed to ``pytest``
+Use the ``-t=`` or ``--pytest=`` parameter followed by the options normally passed to ``py.test``
 
 	::
 
@@ -27,12 +27,12 @@ Use the ``-t=`` or ``--pytest=`` parameter followed by the options normally pass
 		======================== 3 passed, 18 deselected in 0.62 seconds =========================
 		Ending glusto via main()
 
-For a list of available options, pass ``--help`` to the ``pytest`` parameter or use the ``pytest`` command itself.
+For a list of available options, pass ``--help`` to the ``pytest`` parameter or use the ``py.test`` command itself.
 
 	::
 
 		$ glusto --pytest='--help'
-		$ pytest --help
+		$ py.test --help
 
 
 Running PyTest from Python Interactive Interpreter
