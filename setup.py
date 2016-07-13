@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='glusto',
-      version='0.35',
+      version='0.36',
       author='Jonathan Holloway',
       author_email='loadtheaccumulator@gmail.com',
       description=('A framework of commonly used tools for developing scripts '
@@ -14,7 +14,7 @@ setup(name='glusto',
         'Programming Language :: Python :: 2.7',
         'Topic :: Software Development :: Quality Assurance',
         ],
-      packages=['glusto', 'tests'],
+      packages=['glusto'],
       entry_points={
         'console_scripts': [
             'glusto = glusto.main:main',
