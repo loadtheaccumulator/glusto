@@ -83,7 +83,7 @@ class CarteTestClass(object):
             if self.limits[i] == 'ALL':
                 self.limits[i] = self.available_options[i]
 
-        print
+        print('\n\n\n\n')
         print "available_options:"
         print self.available_options
         print "selections:"
@@ -123,14 +123,13 @@ class CarteTestClass(object):
         # pytest catches the original test class, so squelch it before loader
         obj = ''
 
-        loader = unittest.TestLoader()
-        generated_suite = \
-            loader.loadTestsFromModule(class_module, True)
+#        loader = unittest.TestLoader()
+#        generated_suite = loader.loadTestsFromModule(class_module, True)
 
         def load_tests(loader, standard_tests, pattern):
             print "LOAD TESTS"
 
-            return generated_suite
+            return standard_tests
 
         class_module.load_tests = load_tests
 
