@@ -35,15 +35,12 @@ from glusto.templatable import Templatable
 from glusto.unittestable import Unittestable
 from glusto.restable import Restable
 from glusto.rpycable import Rpycable
-from glusto.carteplex import CarteTestClass
+from glusto.carteplex import Carteplex
 
 
 class Glusto(Configurable, Connectible, Colorfiable, Loggable,
-             Templatable, Unittestable, Restable, Rpycable):
+             Templatable, Unittestable, Restable, Rpycable, Carteplex):
     """The locker for all things Glusto."""
-
-    # make the carteclass decorator available via the Glusto class import
-    CarteTestClass = CarteTestClass
 
     # TODO: figure out how we want to do this with cli options
     # TODO: call this after configs are read to be more effective

@@ -42,102 +42,104 @@ Carteprodplexorator (Cartesian Product Multiplexing Decorator).
 
 See docs for more information and use-case examples.
 """
-import unittest
 import sys
 import itertools
 import sets
 
 
-class CarteTestClass(object):
-    """Decorator providing cartesian product parameter-like capability
-    for unittest class"""
+class Carteplex(object):
+    """Main class for cartesian product classes"""
 
-    def __init__(self, value):
-        """Override to provide data specific to your tests.
+    class CarteTestClass(object):
+        """Decorator providing cartesian product parameter-like capability
+        for unittest class"""
 
-        Args:
-            value (object): data automatically provided by the decorator.
-        """
-        self.axis_names = ['cartesian', 'product']
+        def __init__(self, value):
+            """Override to provide data specific to your tests.
 
-        self.available_options = [['A', 'B', 'C', 'D', 'E'],
-                                  ['one', 'two', 'three', 'four']]
+            Args:
+                value (object): data automatically provided by the decorator.
+            """
+            self.axis_names = ['cartesian', 'product']
 
-        self.selections = [['A', 'C', 'E'], ['two', 'four']]
-        self.limits = value
+            self.available_options = [['A', 'B', 'C', 'D', 'E'],
+                                      ['one', 'two', 'three', 'four']]
 
-    def __call__(self, obj):
-        """The engine behind the cartesian product multiplexing (carteplex)
-        goodness. Do not override.
+            self.selections = [['A', 'C', 'E'], ['two', 'four']]
+            self.limits = value
 
-        Args:
-            obj (object): object automatically passed by the decorator.
+        def __call__(self, obj):
+            """The engine behind the cartesian product multiplexing (carteplex)
+            goodness. Do not override.
 
-        Returns:
-            An empty object. (removes original testclass from run)
-        """
-        # populate with available_options where selection is ALL
-        for i in range(0, len(self.selections)):
-            if self.selections[i] == 'ALL':
-                self.selections[i] = self.available_options[i]
-            if self.limits[i] == 'ALL':
-                self.limits[i] = self.available_options[i]
+            Args:
+                obj (object): object automatically passed by the decorator.
 
-        print('\n\n\n\n')
-        print "available_options:"
-        print self.available_options
-        print "selections:"
-        print self.selections
-        print "limits:"
-        print self.limits
+            Returns:
+                An empty object. (removes original testclass from run)
+            """
+            # populate with available_options where selection is ALL
+            for i in range(0, len(self.selections)):
+                if self.selections[i] == 'ALL':
+                    self.selections[i] = self.available_options[i]
+                if self.limits[i] == 'ALL':
+                    self.limits[i] = self.available_options[i]
 
-        intersect_set = []
-        for i in range(0, len(self.selections)):
-            selection_set = sets.Set(self.selections[i])
-            intersect_set.append(selection_set.intersection(self.limits[i]))
+            print('\n\n\n\n')
+            print "available_options:"
+            print self.available_options
+            print "selections:"
+            print self.selections
+            print "limits:"
+            print self.limits
 
-        self.iterables = list(intersect_set)
-        print "Iterables"
-        print self.iterables
+            intersect_set = []
+            for i in range(0, len(self.selections)):
+                selection_set = sets.Set(self.selections[i])
+                intersect_set.append(selection_set.intersection(self.limits[i]))
 
-        print "module name: %s" % __name__
-        print "object name: %s" % obj.__name__
-        print "object module name: %s" % obj.__module__
+            self.iterables = list(intersect_set)
+            print "Iterables"
+            print self.iterables
 
-        for t in itertools.product(*self.iterables):
-            print t
+            print "module name: %s" % __name__
+            print "object name: %s" % obj.__name__
+            print "object module name: %s" % obj.__module__
 
-            suffix = '_'.join(t)
+            for t in itertools.product(*self.iterables):
+                print t
 
-            class_name = "%s_%s" % (obj.__name__, suffix)
-            print "class_name: %s" % class_name
+                suffix = '_'.join(t)
 
-            new_class = type(class_name, (obj,), {})
-            # loop through lists and assign attributes to objects
-            for i in range(0, len(t)):
-                print "%s: %s" % (self.axis_names[i], t[i])
-                setattr(new_class, self.axis_names[i], t[i])
-            class_module = sys.modules[obj.__module__]
-            setattr(class_module, class_name, new_class)
+                class_name = "%s_%s" % (obj.__name__, suffix)
+                print "class_name: %s" % class_name
 
-        # pytest catches the original test class, so squelch it before loader
-        obj = ''
+                new_class = type(class_name, (obj,), {})
+                # loop through lists and assign attributes to objects
+                for i in range(0, len(t)):
+                    print "%s: %s" % (self.axis_names[i], t[i])
+                    setattr(new_class, self.axis_names[i], t[i])
+                class_module = sys.modules[obj.__module__]
 
-#        loader = unittest.TestLoader()
-#        generated_suite = loader.loadTestsFromModule(class_module, True)
+                # change the module name for the new class. it's created
+                # under carteplex and needs to be the test module in reports
+                new_class.__module__ = class_module.__name__
+                setattr(class_module, class_name, new_class)
 
-        def load_tests(loader, standard_tests, pattern):
-            print "LOAD TESTS"
+            # pytest catches the original test class. squelch it before loader
+            obj = ''
 
-            return standard_tests
+            # define load_tests here and then wire it to the module
+            def load_tests(loader, standard_tests, pattern):
+                print "LOAD TESTS"
 
-        class_module.load_tests = load_tests
+                return standard_tests
 
-        return obj
+            class_module.load_tests = load_tests
+
+            return obj
 
 # TODO: remove print statements.
 # TODO: graceful handling of missing attributes.
-# TODO: pull all __init__ instance vars from configs if wanted.
-# TODO: methods and functions
-# TODO: full pathname should reflect test module and not glusto.carteplex
+# TODO: cartemethod and cartefunction
 # TODO: load carteplex attributes from default config file
