@@ -3,37 +3,9 @@ Installing Glusto
 
 There is more than one way to install Glusto.
 
-* Cloning from github and installing via setuptools.
-* Installing the package directly from the github repo.
+* Installing the package directly from the github repo via the ``pip`` command.
 * Installing a docker image from Docker Hub.
-
-
-Cloning the Glusto Github Repo
-==============================
-
-On the system where Glusto is to be installed, clone the repo...
-
-	::
-
-		# git clone https://github.com/loadtheaccumulator/glusto.git
-
-
-Installing Glusto from a Git Clone
-==================================
-
-To install the Glusto package via setuptools.
-
-#. Change directory into the glusto directory.
-
-	::
-
-		# cd glusto
-
-#. Run the setuptools script.
-
-	::
-
-		# python setup.py
+* Cloning from github and installing via setuptools.
 
 
 Installing Glusto Directly from Git via Pip
@@ -66,7 +38,7 @@ A minimal Docker image is available to download and experiment with Glusto.
 .. Note::
 
 	The image has currently been tested on Fedora 23 and Mac OS X (El Capitan)
-	running *Docker for Mac* with no issues.
+	running *Docker for Mac* without issues.
 
 To use the Glusto Docker image, pull the image from Docker Hub and go.
 
@@ -86,3 +58,33 @@ on docker.com (or available all over the web now) for more information on using 
 	and tests available. The Dockerfile used to create the Glusto image is available
 	in the GitHub repo, so you can also just roll your own on the distro image of your choice.
 	More on Docker later, but for now... experiment.
+
+
+Cloning the Glusto Github Repo
+==============================
+
+On the system where Glusto is to be installed, clone the repo...
+
+	::
+
+		# git clone https://github.com/loadtheaccumulator/glusto.git
+
+
+Installing Glusto from a Git Clone
+==================================
+
+To install the Glusto package via setuptools.
+
+#. Change directory into the glusto directory.
+
+	::
+
+		# cd glusto
+
+#. Run the setuptools script.
+
+	::
+
+		# python setup.py
+
+
