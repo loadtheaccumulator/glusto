@@ -300,7 +300,7 @@ class Connectible(object):
 
     @classmethod
     def run_parallel(cls, hosts, command, user=None):
-        """Sequentially runs a command against a list of hosts.
+        """Runs a command against a list of hosts in parallel.
 
         Args:
             hosts (list): A list of hostnames to run command against.
@@ -368,7 +368,7 @@ class Connectible(object):
 
     @classmethod
     def download(cls, host, remotepath, localpath, user=None):
-        """Uploads a file to a remote system.
+        """Downloads a file from a remote system.
 
         Args:
             host (str): Hostname of the remote system.
