@@ -202,16 +202,14 @@ Storing the INI Formatted Config in a Specific Order
 To store the INI formatted object with the sections in a specific order,
 pass it to the ``store_config()`` method as an OrderedDict object.
 
-The argument to the ``order`` parameter should be a list of the names of the top-level
-dictionary keys in the object.
-
 	::
+
 		>>> from collections import OrderedDict
 		>>> config = OrderedDict()
 		>>> config.update('section1': {'this': 'yada'})
 		>>> config.update('section2': {'that': 'yada yada'})
 		>>> config.update('section3': {'the_other': 'yada yada yada'})
-        >>> g.store_config(config, '/tmp/ordered.ini')
+		>>> g.store_config(config, '/tmp/ordered.ini')
 
 	::
 
