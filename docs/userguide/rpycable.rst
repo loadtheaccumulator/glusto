@@ -235,7 +235,7 @@ To define a local module on the remote system, use the ``rpyc_define_module()`` 
 
 		>>> import mymodule
 		>>> connection = g.rpyc_get_connection('192.168.1.221')
-		>>> r = g.rpyc_define_module(connection)
+		>>> r = g.rpyc_define_module(connection, mymodule)
 		>>> r.get_uname()
 		('Linux', 'rhserver1', '2.6.32-431.29.2.el6.x86_64', '#1 SMP Sun Jul 27 15:55:46 EDT 2014', 'x86_64')
 
