@@ -62,6 +62,9 @@ def main():
                         help="Config file(s) to read.",
                         action="store", dest="config_list",
                         default=None)
+    parser.add_argument("--ssh-keyfile",
+                        help="SSH keyfile for connections.",
+                        action="store", dest="ssh_keyfile")
     parser.add_argument("-l", "--log",
                         help="Default logfile location.",
                         action="store", dest="log_filename",
@@ -90,8 +93,6 @@ def main():
     # read config files and update g.config attributes
     handle_configs(args.config_list)
 
-    g.show_config(g.config)
-
     # TODO: break everything into separate methods
 
     # handle actionable config items
@@ -116,6 +117,12 @@ def main():
 
     g.log.info("Starting glusto via main()")
     print "Starting glusto via main()"
+
+    # override ssh_keyfile @ CLI
+    if args.ssh_keyfile:
+        g.ssh_set_keyfile(args.ssh_keyfile)
+
+    g.show_config(g.config)
 
     # unittest
     # TODO: functionalize this so it can be used for standalone test scripts
