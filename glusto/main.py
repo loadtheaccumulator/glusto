@@ -15,7 +15,8 @@
 #
 """Glusto CLI wrapper"""
 import argparse
-from unittest import TestLoader, TestSuite, TextTestRunner
+#from unittest import TestLoader, TestSuite, TextTestRunner
+import unittest
 import pytest
 import nose
 import xmlrunner
@@ -33,7 +34,7 @@ def handle_configs(config_list):
     g.log.info("Loading default configuration files.")
     g.load_config_defaults()
 
-    # load user specified configs
+    # load user specified configs (can also override defaults)
     if (config_list):
         g.log.info("Loading user specified configuration files.")
         config_files = config_list.split()
@@ -52,9 +53,6 @@ def main():
     Example:
         # glusto run hostname.example.com "uname -a"
     """
-    g.log.info("Starting glusto via main()")
-    print "Starting glusto via main()"
-
     epilog = ('NOTE: If encountering an "unknown option" issue '
               'with the -t and -n options, use param=\'args\' syntax.'
               '(e.g., -t="-v -x tests")')
@@ -62,19 +60,31 @@ def main():
                                      epilog=epilog)
     parser.add_argument("-c", "--config",
                         help="Config file(s) to read.",
-                        action="store", dest="config_list")
-    parser.add_argument("-u", "--unittest",
-                        help="Run unittests per provided config file.",
-                        action="store_true", dest="run_unittest")
-    parser.add_argument("-d", "--discover",
-                        help="Discover unittests from directory",
-                        action="store", dest="discover_dir")
-    parser.add_argument("-t", "--pytest",
+                        action="store", dest="config_list",
+                        default=None)
+    parser.add_argument("-l", "--log",
+                        help="Default logfile location.",
+                        action="store", dest="log_filename",
+                        default=None)
+    parser.add_argument("--log-level",
+                        help="Default log level.",
+                        action="store", dest="log_level",
+                        default=None)
+    parser.add_argument("--pytest",
                         help="Run tests using the pytest framework.",
                         action="store", dest="run_pytest")
-    parser.add_argument("-n", "--nosetests",
+    parser.add_argument("--nosetests",
                         help="Run tests using the nose framework.",
                         action="store", dest="run_nosetests")
+    parser.add_argument("--unittest",
+                        help="Run tests using the unittest framework.",
+                        action="store", dest="run_unittest")
+    parser.add_argument("-u",
+                        help="Run unittests per provided config file.",
+                        action="store_true", dest="run_unittest_config")
+    parser.add_argument("-d", "--discover",
+                        help="Discover unittests from directory.",
+                        action="store", dest="discover_dir")
     args = parser.parse_args()
 
     # read config files and update g.config attributes
@@ -86,20 +96,31 @@ def main():
 
     # handle actionable config items
     # logging
-    log_name = g.config.get('log_name', 'glustomain')
-    log_filename = g.config.get('log_filename', '/tmp/glustomain.log')
-    log_level = g.config.get('log_level', 'INFO')
+    # set defaults
+    log_name = "glustomain"
+    log_filename = "/tmp/glustomain.log"
+    log_level = "INFO"
+    # override with config
+    log_filename = g.config.get('log_filename', log_filename)
+    log_level = g.config.get('log_level', log_level)
+    # override with CLI options
+    if args.log_filename:
+        log_filename = args.log_filename
+    if args.log_level:
+        log_level = args.log_level
 
-    if log_filename:
-        g.log = g.create_log(name=log_name, filename=log_filename,
-                             level=log_level)
-        g.log.info("Logfile %s created as %s "
-                   "with log level %s", log_name, log_filename, log_level)
+    g.log = g.create_log(name=log_name, filename=log_filename,
+                         level=log_level)
+    print("Log %s created as %s with log level %s" % (log_name, log_filename,
+                                                      log_level))
+
+    g.log.info("Starting glusto via main()")
+    print "Starting glusto via main()"
 
     # unittest
     # TODO: functionalize this so it can be used for standalone test scripts
-    if args.run_unittest or args.discover_dir:
-        tsuite = TestSuite()
+    if args.run_unittest_config or args.discover_dir:
+        tsuite = unittest.TestSuite()
         if args.discover_dir:
             unittest_config = {'cli_discover': 'true'}
         else:
@@ -113,9 +134,9 @@ def main():
         if output_junit:
             trunner = xmlrunner.XMLTestRunner(output='/tmp/glustoreports')
         else:
-            trunner = TextTestRunner(verbosity=2)
+            trunner = unittest.TextTestRunner(verbosity=2)
 
-        loader = TestLoader()
+        loader = unittest.TestLoader()
         loader.testMethodPrefix = unittest_config.get('test_method_prefix',
                                                       'test')
 
@@ -196,10 +217,15 @@ def main():
 
     if args.run_nosetests:
         print "nosetests: %s" % args.run_nosetests
-        argv = ['glusto']
         argv = args.run_nosetests.split(' ')
         argv.insert(0, 'glusto')
         nose.run(argv=argv)
+
+    if args.run_unittest:
+        print "unittest: %s" % args.run_unittest
+        argv = args.run_unittest.split(' ')
+        argv.insert(0, 'glusto')
+        unittest.main(argv=argv)
 
     g.log.info("Ending glusto via main()")
     print "Ending glusto via main()"

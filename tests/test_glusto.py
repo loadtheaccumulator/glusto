@@ -28,17 +28,18 @@ class TestGlustoBasics(unittest.TestCase):
         """
         print "Setting Up Class: %s" % cls.__name__
 
+        config = g.load_configs(["../examples/systems.yml",
+                                 "../examples/glusto.yml"])
+        g.update_config(config)
+
+        cls.masternode = g.config["nodes"][0]
+        cls.client = g.config["clients"][0]
+
     def setUp(self):
         """unittest standard setUp method
         Runs before each test_ method
         """
         print "Setting Up: %s" % self.id()
-        config = g.load_configs(["../examples/systems.yml",
-                                 "../examples/glusto.yml"])
-        g.update_config(config)
-
-        self.masternode = g.config["nodes"][0]
-        self.client = g.config["clients"][0]
 
     def test_stderr(self):
         """Testing output to stderr"""
@@ -96,8 +97,6 @@ class TestGlustoBasics(unittest.TestCase):
     def tearDown(self):
         """Unittest tearDown override"""
         print "Tearing Down: %s" % self.id()
-
-        return True
 
     @classmethod
     def tearDownClass(cls):

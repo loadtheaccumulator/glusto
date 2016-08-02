@@ -20,7 +20,7 @@ import pytest
 from glusto.core import Glusto as g
 
 
-class TestGlustoBasics(unittest.TestCase):
+class TestGlustoSsh(unittest.TestCase):
     """Glusto basics test class"""
     @classmethod
     def setUpClass(cls):
@@ -168,8 +168,8 @@ class TestGlustoBasics(unittest.TestCase):
         # compare the md5sums
         self.assertEqual(md5sum_orig, md5sum_copy, 'md5sums do not match')
 
-    #@unittest.skip('generates a lot of traffic on stdout')
-    @pytest.mark.skip(reason='generates a lot of traffic on stdout')
+    @unittest.skip('generates a lot of traffic on stdout')
+    #@pytest.mark.skip(reason='generates a lot of traffic on stdout')
     def test_stress_stdout(self):
         """"Send load of text output to stdout"""
         command = '''ls -Rail /etc > /tmp/railetc
@@ -186,8 +186,8 @@ class TestGlustoBasics(unittest.TestCase):
         self.assertNotEqual(rout, '', 'stdout has no content.')
         self.assertEqual(rerr, '', 'stderr has content.')
 
-    #@unittest.skip('generates a lot of traffic on stderr')
-    @pytest.mark.skip(reason='generates a lot of traffic on stderr')
+    @unittest.skip('generates a lot of traffic on stderr')
+    #@pytest.mark.skip(reason='generates a lot of traffic on stderr')
     def test_stress_stderr(self):
         """Send load of text output to stderr"""
         command = '''ls -Rail /etc > /tmp/railetc
