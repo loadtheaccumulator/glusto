@@ -36,6 +36,7 @@ class TestGlustoConfigs(unittest.TestCase):
         cls.yaml_file = '/tmp/testconfig.yml'
         cls.json_file = '/tmp/testconfig.json'
         cls.ini_file = '/tmp/testconfig.ini'
+        cls.ini_novalue_file = '/tmp/testconfig_novalue.ini'
         cls.ini_ordered_file = '/tmp/testconfig_ordered.ini'
 
         cls.yaml_noext = '/tmp/testyaml'
@@ -52,6 +53,12 @@ class TestGlustoConfigs(unittest.TestCase):
         cls.config['defaults']['this_and_that'] = '%(this)s and %(that)s'
 
         g.show_config(cls.config)
+
+        cls.config_novalue = {}
+        cls.config_novalue['defaults'] = ['this', 'that']
+        cls.config_novalue['globals'] = ['the_other', 'and_one_more_thing']
+
+        g.show_config(cls.config_novalue)
 
         cls.ordered_config = OrderedDict()
         cls.ordered_config['defaults'] = OrderedDict()
@@ -194,6 +201,25 @@ class TestGlustoConfigs(unittest.TestCase):
         self.assertEqual(config['defaults']['this_and_that'],
                          'yada1 and yada2')
         self.assertEqual(config['globals']['the_other'], 'yada3')
+
+    def test_ini_novalue(self):
+        """Testing ini config file(s) without values"""
+        print "Running: %s - %s" % (self.id(), self.shortDescription())
+
+        g.store_config(self.config_novalue, self.ini_novalue_file)
+        self.assertTrue(os.path.exists(self.ini_novalue_file))
+
+        print "--------------"
+        g.show_file(self.ini_novalue_file)
+        print "--------------"
+
+        # read the config file
+        config = g.load_config(self.ini_novalue_file)
+        g.show_config(config)
+        self.assertEqual(config['defaults'].get('this'), '')
+        self.assertEqual(config['defaults'].get('that'), '')
+        self.assertEqual(config['globals'].get('and_one_more_thing'), '')
+        self.assertEqual(config['globals'].get('the_other'), '')
 
     def test_ini_noext(self):
         """Testing ini config file(s) without extension"""

@@ -92,14 +92,22 @@ class Configurable(object):
         Currently uses the Legacy 2.x API with implicit get/set.
 
         Note:
-            Requires a dictionary of key:value dictionaries. It is currently
-            up to the developer to format the object accordingly.
+            Requires a dictionary of key:value dictionaries or
+            dictionary of lists. It is currently up to the developer to
+            format the object accordingly.
         """
-        config = ConfigParser.RawConfigParser()
+        config = ConfigParser.RawConfigParser(allow_no_value=True)
         for section_key in obj:
             config.add_section(section_key)
-            for item_key, item_value in obj[section_key].iteritems():
-                config.set(section_key, item_key, item_value)
+            if isinstance(obj[section_key], dict):
+                for item_key, item_value in obj[section_key].iteritems():
+                    if item_value == '' or item_value is None:
+                        config.set(section_key, item_key)
+                    else:
+                        config.set(section_key, item_key, item_value)
+            else:
+                for item_key in obj[section_key]:
+                    config.set(section_key, item_key)
 
         with open(filename, 'wb') as configfile:
             config.write(configfile)
@@ -159,6 +167,7 @@ class Configurable(object):
             ini_config.read(filename)
 
         # loop through the config sections
+        # TODO: allow user to force dict, ordereddict, or list
         config = OrderedDict()
         for section in ini_config.sections():
             config[section] = OrderedDict()
