@@ -22,6 +22,7 @@ from glusto.core import Glusto as g
 
 class TestGlustoTemplates(unittest.TestCase):
     """Glusto basics test class"""
+
     @classmethod
     def setUpClass(cls):
         """unittest standard setUpClass method
@@ -49,14 +50,17 @@ class TestGlustoTemplates(unittest.TestCase):
         """
         print "Setting Up: %s" % self.id()
         # render the template
-        g.render_template(self.template_file,
-                          self.template_vars,
-                          self.output_file,
-                          self.search_path)
+        self.returned_template = g.render_template(self.template_file,
+                                                   self.template_vars,
+                                                   self.output_file,
+                                                   self.search_path)
 
         # read the resulting config file built from template
         self.output_config = g.load_config(self.output_file)
         g.show_config(self.output_config)
+
+        self.returned_config = g.load_yaml_string(self.returned_template)
+        g.show_config(self.returned_config)
 
     def test_template_include(self):
         """Testing template include"""
@@ -67,7 +71,9 @@ class TestGlustoTemplates(unittest.TestCase):
         out_firstline = outfh.readline().strip()
 
         self.assertEqual(firstline, out_firstline,
-                         'first lines do not match')
+                         'file: include failed')
+        self.assertIn(firstline, self.returned_template,
+                      'returned: include failed')
 
     def test_template_scalar(self):
         """Testing template scalar"""
@@ -75,7 +81,10 @@ class TestGlustoTemplates(unittest.TestCase):
         # compare plain scalars
         self.assertEqual(g.config['templates']['plain_scalar'],
                          self.output_config['out_templates']['plain_scalar'],
-                         'plain scalars do not match')
+                         'file: plain scalars do not match')
+        self.assertEqual(g.config['templates']['plain_scalar'],
+                         self.returned_config['out_templates']['plain_scalar'],
+                         'returned: plain scalars do not match')
 
     def test_template_forloop(self):
         """Testing template for loop"""
@@ -84,9 +93,13 @@ class TestGlustoTemplates(unittest.TestCase):
         for i in range(0, 3):
             input_item = g.config['templates']['sequence'][i]
             output_item = self.output_config['out_templates']['sequence'][i]
+            returned_item = \
+                self.returned_config['out_templates']['sequence'][i]
 
             self.assertEqual(input_item, output_item,
-                             'sequence items (%i) do not match' % i)
+                             'file: sequence items (%i) do not match' % i)
+            self.assertEqual(input_item, returned_item,
+                             'returned: sequence items (%i) do not match' % i)
 
     def tearDown(self):
         """Unittest tearDown override"""
@@ -101,3 +114,5 @@ class TestGlustoTemplates(unittest.TestCase):
     def tearDownClass(cls):
         """unittest tearDownClass override"""
         print "Tearing Down Class: %s" % cls.__name__
+
+# TODO: do we really need to test the file???

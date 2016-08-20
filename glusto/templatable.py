@@ -26,28 +26,34 @@ class Templatable(object):
     """The class providing Jinja template functionality."""
 
     @staticmethod
-    def render_template(template_filename, template_vars, output_file,
-                        searchpath='.'):
+    def render_template(template_filename, template_vars={},
+                        output_file=None, searchpath=None):
         """Render a template into text file
 
         Args:
             template_filename (str): Fully qualified template filename.
             template_vars (dict): A dictionary of variables.
-            output_file (str): Fully qualified output filename.
-            searchpath (str): The root path to begin file searches.
+            output_file (str) [optional]: Fully qualified output filename.
+            searchpath (str) [optional]: The root path to begin file searches.
                 Default is the current path.
 
         Returns:
-            True if rendering of output file is successful.
-            False if rendering of output file fails.
+            String containing template rendering result if successful.
         """
+        if not searchpath:
+            if template_filename.startswith('/'):
+                searchpath = "/"
+            else:
+                searchpath = "."
+
         template_loader = jinja2.FileSystemLoader(searchpath=searchpath)
         template_env = jinja2.Environment(loader=template_loader)
         template = template_env.get_template(template_filename)
         output_text = template.render(template_vars)
 
-        with open(output_file, 'wb') as fh:
-            fh.write(output_text)
+        if output_file:
+            with open(output_file, 'wb') as fh:
+                fh.write(output_text)
 
         # TODO: return True or False. add error checking above
         return output_text
