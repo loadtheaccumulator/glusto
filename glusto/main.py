@@ -205,7 +205,7 @@ def main():
             tests_from_name = loader.loadTestsFromName(test_name)
             tsuite.addTests(tests_from_name)
 
-        # Load tests from a name (string)
+        # Load tests from names (list)
         # NOTE: only uses load_test() when name is module level
         #        e.g., tests.test_glusto
         test_name_list = unittest_config.get('load_tests_from_names')
@@ -218,25 +218,42 @@ def main():
         # TODO: Add a skip test option
         trunner.run(tsuite)
 
+    PYTEST_FAIL = 1
+    NOSETESTS_FAIL = 2
+    UNITTEST_FAIL = 4
+
+    retcode = 0
     if args.run_pytest:
         print "pytest: %s" % args.run_pytest
-        pytest.main(args.run_pytest)
+        result = pytest.main(args.run_pytest)
+        if result > 0:
+            retcode = retcode | PYTEST_FAIL
 
     if args.run_nosetests:
         print "nosetests: %s" % args.run_nosetests
         argv = args.run_nosetests.split(' ')
         argv.insert(0, 'glusto')
-        nose.run(argv=argv)
+        result = nose.run(argv=argv)
+        if not result:
+            retcode = retcode | NOSETESTS_FAIL
 
     if args.run_unittest:
         print "unittest: %s" % args.run_unittest
         argv = args.run_unittest.split(' ')
         argv.insert(0, 'glusto')
-        unittest.main(argv=argv)
+        test_object = unittest.main(exit=False, argv=argv)
+
+        num_errors = len(test_object.result.errors)
+        num_failures = len(test_object.result.failures)
+        if num_errors > 0 or num_failures > 0:
+            retcode = retcode | UNITTEST_FAIL
 
     g.log.info("Ending glusto via main()")
     print "Ending glusto via main()"
 
+    return retcode
 
 if __name__ == '__main__':
-    main()
+    exitcode = main()
+
+    sys.exit(exitcode)
