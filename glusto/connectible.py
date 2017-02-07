@@ -161,13 +161,13 @@ class Connectible(object):
             Nothing
         """
         # output command results
-        cls.log.debug(cls.colorfy(cls.COLOR_RCODE, "RETCODE (%s): %s" %
+        cls.log.info(cls.colorfy(cls.COLOR_RCODE, "RETCODE (%s): %s" %
                                   (identifier, retcode)))
         if stdout:
-            cls.log.debug(cls.colorfy(cls.COLOR_STDOUT, "STDOUT (%s)...\n%s" %
+            cls.log.info(cls.colorfy(cls.COLOR_STDOUT, "STDOUT (%s)...\n%s" %
                                       (identifier, stdout)))
         if stderr:
-            cls.log.debug(cls.colorfy(cls.COLOR_STDERR, "STDERR (%s)...\n%s" %
+            cls.log.info(cls.colorfy(cls.COLOR_STDERR, "STDERR (%s)...\n%s" %
                                       (identifier, stderr)))
 
     @classmethod
