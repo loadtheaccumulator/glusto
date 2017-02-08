@@ -134,7 +134,7 @@ class Connectible(object):
         ssh = cls._get_ssh_connection(host, user)
         if not ssh:
             cls.log.error("ERROR: No ssh connection")
-            return None
+            return (42, None, "ERROR: No ssh connection")
 
         p = ssh.popen(command)
         stdout, stderr = p.communicate()
