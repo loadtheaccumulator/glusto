@@ -42,6 +42,7 @@ Carteprodplexorator (Cartesian Product Multiplexing Decorator).
 
 See docs for more information and use-case examples.
 """
+# pylint: disable=too-few-public-methods
 import sys
 import itertools
 import sets
@@ -85,40 +86,55 @@ class Carteplex(object):
                 if self.limits[i] == 'ALL':
                     self.limits[i] = self.available_options[i]
 
-            print('\n\n\n\n')
+            # rebuild axis_names with none None list
+            updated_axis_names = []
+            for i in range(0, len(self.limits)):
+                if self.limits[i]:
+                    updated_axis_names.append(self.axis_names[i])
+
+            print "\n\n\n\n"
             print "available_options:"
             print self.available_options
             print "selections:"
             print self.selections
             print "limits:"
             print self.limits
+            print "axis names:"
+            print self.axis_names
+            print "updated axis_names:"
+            print updated_axis_names
 
             intersect_set = []
             for i in range(0, len(self.selections)):
-                selection_set = sets.Set(self.selections[i])
-                intersect_set.append(selection_set.intersection(self.limits[i]))
+                print 'self.limits = %s' % self.limits[i]
+                if self.limits[i]:
+                    selection_set = sets.Set(self.selections[i])
+                    ss_intersect = selection_set.intersection(self.limits[i])
+                    intersect_set.append(ss_intersect)
 
-            self.iterables = list(intersect_set)
+            iterables = list(intersect_set)
             print "Iterables"
-            print self.iterables
+            print iterables
 
             print "module name: %s" % __name__
             print "object name: %s" % obj.__name__
             print "object module name: %s" % obj.__module__
 
-            for t in itertools.product(*self.iterables):
-                print t
-
-                suffix = '_'.join(t)
+            for iterproduct in itertools.product(*iterables):
+                print iterproduct
+                print len(iterproduct)
+                suffix = '_'.join(iterproduct)
 
                 class_name = "%s_%s" % (obj.__name__, suffix)
                 print "class_name: %s" % class_name
 
                 new_class = type(class_name, (obj,), {})
                 # loop through lists and assign attributes to objects
-                for i in range(0, len(t)):
-                    print "%s: %s" % (self.axis_names[i], t[i])
-                    setattr(new_class, self.axis_names[i], t[i])
+                for i in range(0, len(iterproduct)):
+                    print "%s: %s" % (updated_axis_names[i],
+                                      iterproduct[i])
+                    setattr(new_class, updated_axis_names[i],
+                            iterproduct[i])
                 class_module = sys.modules[obj.__module__]
 
                 # change the module name for the new class. it's created
@@ -130,7 +146,14 @@ class Carteplex(object):
             obj = ''
 
             # define load_tests here and then wire it to the module
+            # pylint: disable=unused-argument
             def load_tests(loader, standard_tests, pattern):
+                """Carteplex injects this method into the calling test module.
+                The loader has already created a list of methods by the time
+                the Carteplex decorator is exec'd, so this is added
+                automatically to the test module to gen a new list on the fly--
+                and so the test script writer doesn't have to add it.
+                """
                 print "LOAD TESTS"
 
                 return standard_tests
@@ -140,6 +163,5 @@ class Carteplex(object):
             return obj
 
 # TODO: remove print statements.
-# TODO: graceful handling of missing attributes.
 # TODO: cartemethod and cartefunction
 # TODO: load carteplex attributes from default config file
