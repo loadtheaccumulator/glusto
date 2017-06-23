@@ -144,8 +144,12 @@ class Colorfiable(object):
             A color formatted string.
 
         Example:
-            >>> g.colorfy(g.BG_YELLOW | g.RED | g.BOLD, 'Bold red on yellow text')
+            >>> g.colorfy(g.BG_CYAN | g.RED | g.BOLD, 'Bold red text on cyan')
         """
+        log_color = cls.config.get('log_color', True)
+        if not log_color:
+            return message
+
         ansi_list = []
         for i in range(0, len(cls._ANSI) - 1):
             bitplace = 1 << i
