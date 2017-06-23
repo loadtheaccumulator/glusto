@@ -277,13 +277,13 @@ Enabling Color Logging for Built-In Commands
 
 Color output is enabled by default and some of the Glusto internal commands (e.g., ``g.run()``) already use color output for logging.
 
-To disable the built-in color logging, add a line to the Glusto ``/etc/glusto/defaults.log`` file.
+To disable the built-in color logging, add a line to the Glusto ``/etc/glusto/defaults.yml`` file.
 
 	::
 
 		log_color: False
 
-To enable the built-in color logging, add a line to the Glusto ``/etc/glusto/defaults.log`` file.
+To enable the built-in color logging, add a line to the Glusto ``/etc/glusto/defaults.yml`` file.
 
 	::
 
