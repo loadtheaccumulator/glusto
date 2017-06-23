@@ -272,23 +272,26 @@ commands to send the color text to logfiles.
 
 		>>> g.log.debug(g.colorfy(g.BOLD | g.RED | g.BG_YELLOW, 'This string is BOLD and RED on a YELLOW BACKGROUND.'))
 
-.. Enabling Color Logging for Built-In Commands
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Enabling Color Logging for Built-In Commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Some of the Glusto internal commands (e.g., ``g.run()``) already use color output for logging.
+Color output is enabled by default and some of the Glusto internal commands (e.g., ``g.run()``) already use color output for logging.
 
-  To enable the built-in color logging, add a line to the Glusto ``/etc/glusto/defaults.log`` file.
-
-	::
-
-		log_color: True
-
-  To disable the built-in color logging...
+To disable the built-in color logging, add a line to the Glusto ``/etc/glusto/defaults.log`` file.
 
 	::
 
 		log_color: False
 
+To enable the built-in color logging, add a line to the Glusto ``/etc/glusto/defaults.log`` file.
+
+	::
+
+		log_color: True
+
+Color output can also be disabled by adding the log_color option to a config file loaded via ``/usr/bin/glusto -c``.
+
+Another method is to set ``g.config['log_output'] = False`` directly in your code.
 
 Available Color Values
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -319,5 +322,4 @@ BG_LTMAGENTA  LTMAGENTA
 BG_LTCYAN     LTCYAN
 BG_WHITE      WHITE
 ============  ==========  ==========
-
 
