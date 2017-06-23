@@ -33,7 +33,7 @@ class Connectible(object):
     # TODO: config override
     use_controlpersist = True
     user = "root"
-    #log_color = True
+    # log_color = True
 
     @classmethod
     def _get_ssh_connection(cls, host, user=None):
@@ -93,13 +93,14 @@ class Connectible(object):
         return None
 
     @classmethod
-    def run(cls, host, command, user=None):
+    def run(cls, host, command, user=None, log_level=None):
         """Run a command on a remote host via ssh.
 
         Args:
             host (str): The hostname of the system.
             command (str): The command to run on the system.
             user (optional[str]): The user to use for connection.
+            log_level (optional[str]): only log stdout/stderr at this level.
 
         Returns:
             A tuple consisting of the command return code, stdout, and stderr.
@@ -142,42 +143,57 @@ class Connectible(object):
 
         # output command results
         identifier = "%s@%s" % (user, host)
-        cls._log_results(identifier, retcode, stdout, stderr)
+        cls._log_results(identifier, retcode, stdout, stderr,
+                         log_level=log_level)
 
         return (retcode, stdout, stderr)
 
     @classmethod
-    def _log_results(cls, identifier, retcode, stdout, stderr):
+    def _log_results(cls, identifier, retcode, stdout, stderr, log_level=None):
         """Logs the return code, stdout, and stderr returned from a command.
 
         Args:
             identifier (str): A representative name for the messages to be
                 displayed in the log entry.
-            retcode (str): the return code from the command resuls.
+            retcode (str): the return code from the command results.
             stdout (str): the stdout from the command results.
             stderr (str): the stderr from the command results.
+            log_level (optional[str]): only log stdout/stderr at this level.
 
         Returns:
             Nothing
         """
+        log_levels = {'CRITICAL': 50, 'ERROR': 40,
+                      'WARNING': 30, 'INFO': 20,
+                      'DEBUG': 10, 'NOTSET': 0}
+
+        if log_level is not None:
+            level = log_levels[log_level]
+        else:
+            level = log_levels['INFO']
+
         # output command results
         cls.log.info(cls.colorfy(cls.COLOR_RCODE, "RETCODE (%s): %s" %
-                                  (identifier, retcode)))
+                                 (identifier, retcode)))
         if stdout:
-            cls.log.info(cls.colorfy(cls.COLOR_STDOUT, "STDOUT (%s)...\n%s" %
-                                      (identifier, stdout)))
+            cls.log.log(level, cls.colorfy(cls.COLOR_STDOUT,
+                                           "STDOUT (%s)...\n%s" %
+                                           (identifier, stdout)))
+
         if stderr:
-            cls.log.info(cls.colorfy(cls.COLOR_STDERR, "STDERR (%s)...\n%s" %
-                                      (identifier, stderr)))
+            cls.log.log(level, cls.colorfy(cls.COLOR_STDERR,
+                                           "STDERR (%s)...\n%s" %
+                                           (identifier, stderr)))
 
     @classmethod
-    def run_async(cls, host, command, user=None):
+    def run_async(cls, host, command, user=None, log_level=None):
         """Run remote commands asynchronously.
 
         Args:
             host (str): The hostname of the system.
             command (str): The command to run on the system.
             user (optional[str]): The user to use for connection.
+            log_level (optional[str]): only log stdout/stderr at this level.
 
         Returns:
             An open connection descriptor to be used by the calling function.
@@ -233,7 +249,8 @@ class Connectible(object):
 
             # output command results
             identifier = "%s@%s" % (user, host)
-            cls._log_results(identifier, retcode, stdout, stderr)
+            cls._log_results(identifier, retcode, stdout, stderr,
+                             log_level=log_level)
 
             return (retcode, stdout, stderr)
 
@@ -241,11 +258,12 @@ class Connectible(object):
         return p
 
     @classmethod
-    def run_local(cls, command):
+    def run_local(cls, command, log_level=None):
         """Run a command on the local management system.
 
         Args:
             command (str): Command to run locally.
+            log_level (optional[str]): only log stdout/stderr at this level.
 
         Returns:
             A tuple consisting of the command return code, stdout, and stderr.
@@ -266,18 +284,20 @@ class Connectible(object):
         retcode = p.returncode
 
         # output command results
-        cls._log_results('local', retcode, stdout, stderr)
+        cls._log_results('local', retcode, stdout, stderr,
+                         log_level=log_level)
 
         return (retcode, stdout, stderr)
 
     @classmethod
-    def run_serial(cls, hosts, command, user=None):
+    def run_serial(cls, hosts, command, user=None, log_level=None):
         """Sequentially runs a command against a list of hosts.
 
         Args:
             hosts (list): A list of hostnames to run command against.
             command (str): The command to run on the system.
             user (optional[str]): The user to use for connection.
+            log_level (optional[str]): only log stdout/stderr at this level.
 
         Returns:
             A dictionary of tuples containing returncode, stdout, and stderr.
@@ -292,20 +312,22 @@ class Connectible(object):
         """
         results = {}
         for host in hosts:
-            rcode, rout, rerr = cls.run(host, command, user)
+            rcode, rout, rerr = cls.run(host, command, user=user,
+                                        log_level=log_level)
 
             results[host] = (rcode, rout, rerr)
 
         return results
 
     @classmethod
-    def run_parallel(cls, hosts, command, user=None):
+    def run_parallel(cls, hosts, command, user=None, log_level=None):
         """Runs a command against a list of hosts in parallel.
 
         Args:
             hosts (list): A list of hostnames to run command against.
             command (str): The command to run on the system.
             user (optional[str]): The user to use for connection.
+            log_level (optional[str]): only log stdout/stderr at this level.
 
         Returns:
             A dictionary of tuples containing returncode, stdout, and stderr.
@@ -331,7 +353,7 @@ class Connectible(object):
         rasyncs = {}
         # run the commands async and record the returned communicate object
         for host in hosts:
-            rasyncs[host] = cls.run_async(host, command, user)
+            rasyncs[host] = cls.run_async(host, command, user, log_level)
 
         # loop through communicate() calls and record results
         for host, proc in rasyncs.items():

@@ -198,7 +198,8 @@ class Loggable(object):
 
         for handler in log.handlers:
             if handler.name == handler_name:
-                handler.level = logging.getLevelName(level)
+                level_name = logging.getLevelName(level)
+                handler.setLevel(level_name)
                 break
 
     @classmethod
