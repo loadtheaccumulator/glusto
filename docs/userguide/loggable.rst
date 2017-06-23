@@ -291,7 +291,7 @@ To enable the built-in color logging, add a line to the Glusto ``/etc/glusto/def
 
 Color output can also be disabled by adding the log_color option to a config file loaded via ``/usr/bin/glusto -c``.
 
-Another method is to set ``g.config['log_output'] = False`` directly in your code.
+Another method is to set ``g.config['log_color'] = False`` directly in your code.
 
 Available Color Values
 ~~~~~~~~~~~~~~~~~~~~~~
