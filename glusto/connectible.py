@@ -21,6 +21,7 @@ NOTE:
 """
 import subprocess
 import os
+import signal
 
 from plumbum import SshMachine
 
@@ -36,7 +37,7 @@ class Connectible(object):
     # log_color = True
 
     @classmethod
-    def _get_ssh_connection(cls, host, user=None):
+    def _get_ssh_connection(cls, host, user=None, conntype=None):
         """Setup an SshMachine connection.
 
         Args:
@@ -69,9 +70,15 @@ class Connectible(object):
 
         scp_opts = ssh_opts
 
-        ssh_opts += ('-T',)
+        # switching to allow remote ssh terminate on local SIGINT
+        # test the snot out of this!!!
+        if conntype == 'async':
+            ssh_opts += ('-t', '-t')
+            conn_name = "%s@%s:%s" % (user, host, conntype)
+        else:
+            ssh_opts += ('-T',)
+            conn_name = "%s@%s" % (user, host)
 
-        conn_name = "%s@%s" % (user, host)
         # if no existing connection, create one
         if conn_name not in cls._ssh_connections:
             cls.log.debug("Creating connection: %s" % conn_name)
@@ -236,7 +243,7 @@ class Connectible(object):
             cls.log.info(cls.colorfy(cls.COLOR_COMMAND, "%s@%s%s: %s" %
                                      (user, host, ctlpersist, command)))
             # run the command
-            ssh = cls._get_ssh_connection(host, user)
+            ssh = cls._get_ssh_connection(host, user, conntype='async')
             if not ssh:
                 print "ERROR: No ssh connection"
                 return None
@@ -506,6 +513,38 @@ class Connectible(object):
     def ssh_get_keyfile(cls):
 
         return cls.config.get('ssh_keyfile', None)
+
+    @classmethod
+    def ssh_async_kill(cls, async_proc, signal=signal.SIGINT):
+        """Terminate an async process and return tuple
+
+        Args:
+            async_proc (obj): the proc returned from run_async()
+            signal (optional[int]): use this signal instead of SIGINT
+
+        Returns:
+            A tuple consisting of the command return code, stdout, and stderr.
+            Return code always returns an error (255) for a killed process.
+
+        Example:
+            To run an async command, kill it, and get a result tuple
+
+                >>> from glusto.core import Glusto as g
+                >>> proc = g.run_async('192.168.1.221',
+                                       'while [ 1 == 1 ]; do ls -Rail /; done)
+                >>> rcode, stdout, stderr = g.ssh_async_kill(proc)
+        """
+
+        if not async_proc.poll():
+            print "sending signal %d" % signal
+            async_proc.send_signal(signal)
+
+        async_proc.wait()
+
+# TODO: gracefully catch error here (e.g., killing already dead proc)
+        retcode, stdout, stderr = async_proc.async_communicate()
+
+        return (retcode, stdout, stderr)
 
 
 # TODO: add color logging to all methods with retcode, rout, rerr
