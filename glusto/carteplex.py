@@ -120,6 +120,8 @@ class Carteplex(object):
             print "object name: %s" % obj.__name__
             print "object module name: %s" % obj.__module__
 
+            class_module = sys.modules[obj.__module__]
+
             for iterproduct in itertools.product(*iterables):
                 print iterproduct
                 print len(iterproduct)
@@ -135,7 +137,7 @@ class Carteplex(object):
                                       iterproduct[i])
                     setattr(new_class, updated_axis_names[i],
                             iterproduct[i])
-                class_module = sys.modules[obj.__module__]
+                # class_module = sys.modules[obj.__module__]
 
                 # change the module name for the new class. it's created
                 # under carteplex and needs to be the test module in reports
