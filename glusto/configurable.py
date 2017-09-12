@@ -23,6 +23,7 @@ import os
 import yaml
 import json
 import ConfigParser
+import csv
 import urllib
 from collections import OrderedDict
 
@@ -119,12 +120,35 @@ class Configurable(object):
         json.dump(obj, configfd, indent=4, separators=(',', ':'))
 
     @staticmethod
-    def store_config(obj, filename, config_type=None):
+    def _store_csv(obj, filename, header=True, fieldnames=None,
+                   delimiter=','):
+        """Write a list of dictionaries to csv file"""
+        # TODO: determine type of object and use appropriate writer
+        if fieldnames:
+            field_names = fieldnames
+        else:
+            field_names = list(obj[0])
+
+        with open(filename, 'w') as csvf:
+            # TODO: pass in csv metadata with data or KISS ???
+            if isinstance(obj[0], dict):
+                writer = csv.DictWriter(csvf, fieldnames=field_names,
+                                        delimiter=delimiter)
+                if header:
+                    writer.writeheader()
+            else:
+                writer = csv.writer(csvf, delimiter=delimiter)
+
+            for row in obj:
+                writer.writerow(row)
+
+    @staticmethod
+    def store_config(obj, filename, config_type=None, **kwargs):
         """Writes an object to a file format.
             Automatically detects format based on filename extension.
 
         Args:
-            obj (object): The Python object to store in yaml format.
+            obj (object): The Python object to store in file.
             filename (str): Filename for output of configuration.
             config_type (optional[str]): The type of config file.
                 Use when extension needs to differ from actual type.
@@ -148,6 +172,8 @@ class Configurable(object):
             Configurable._store_json(obj, filename)
         elif file_extension == "yaml" or file_extension == "yml":
             Configurable._store_yaml(obj, filename)
+        elif file_extension == "csv":
+            Configurable._store_csv(obj, filename, **kwargs)
         else:
             print "Filetype not recognized"
             # TODO: serialize the object and store! make serialized a type
@@ -199,6 +225,24 @@ class Configurable(object):
         return None
 
     @staticmethod
+    def _load_csv(filename, delimiter=',', header=True):
+        """Read a csv file into a dictionary"""
+        config = []
+        with open(filename) as csvfile:
+            if header:
+                reader = csv.DictReader(csvfile, delimiter=',')
+            else:
+                reader = csv.reader(csvfile, delimiter=delimiter)
+
+            for row in reader:
+                config.append(row)
+
+        if config:
+            return config
+
+        return None
+
+    @staticmethod
     def _load_text(filename):
         """Read a text file into a string"""
         configfd = Configurable._get_file_descriptor(filename)
@@ -210,16 +254,18 @@ class Configurable(object):
         return None
 
     @staticmethod
-    def load_config(filename, config_type=None):
+    def load_config(filename, config_type=None, **kwargs):
         """Reads a config from file.
         Defaults to yaml, but will detect other config formats based on
-        filename extension. Currently reads yaml, json, ini, and text files.
+        filename extension. Currently reads yaml, json, ini, csv,
+        and text files.
 
         Args:
             filename (str): Filename of configuration to be read.
             config_type (optional[str]): The type of config file.
                 Use when extension needs to differ from actual type.
                 (e.g., .conf instead of .yml)
+            **kwargs (optional[dict]): keyword arguments specific to formats
 
         Returns:
             Dict of configuration items.
@@ -238,6 +284,8 @@ class Configurable(object):
                 config = Configurable._load_json(filename)
             elif file_extension == "yaml" or file_extension == "yml":
                 config = Configurable._load_yaml(filename)
+            elif file_extension == "csv":
+                config = Configurable._load_csv(filename, **kwargs)
             else:
                 config = Configurable._load_text(filename)
 
