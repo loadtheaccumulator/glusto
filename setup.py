@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='glusto',
-      version='0.55',
+      version='0.56',
       author='Jonathan Holloway',
       author_email='loadtheaccumulator@gmail.com',
       description=('A framework of commonly used tools for developing scripts '
@@ -9,7 +9,7 @@ setup(name='glusto',
                    'easy-to-access object.'),
       url='http://github.com/loadtheaccumulator/glusto',
       classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 2.7',
         'Topic :: Software Development :: Quality Assurance',
