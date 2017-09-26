@@ -125,9 +125,12 @@ class Carteplex(object):
             for iterproduct in itertools.product(*iterables):
                 print iterproduct
                 print len(iterproduct)
+                # string representation of cartesian product values
                 suffix = '_'.join(iterproduct)
+                # name to inject before suffix (can be set in decorator)
+                cplex_name = getattr(self, 'cplex_name', 'cplex')
 
-                class_name = "%s_%s" % (obj.__name__, suffix)
+                class_name = "%s_%s_%s" % (obj.__name__, cplex_name, suffix)
                 print "class_name: %s" % class_name
 
                 new_class = type(class_name, (obj,), {})
