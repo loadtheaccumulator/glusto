@@ -322,6 +322,31 @@ class Configurable(object):
         return config
 
     @staticmethod
+    def load_csv_string(csv_string, delimiter=',', header=True):
+        """Reads a csv formatted string into a list of dictionaries
+
+        Args:
+            csv_string (str): A string containing csv formatted text
+
+        Returns:
+            List of dicts
+
+        Example:
+            _, out, _ = g.run(myhost, 'lvs --separator ,')
+            g.load_csv_string(out)
+        """
+        csv_list = []
+        csv_string = csv_string.strip()
+        if header:
+            for row in csv.DictReader(csv_string.split('\n')):
+                csv_list.append(row)
+        else:
+            for row in csv.reader(csv_string.split('\n')):
+                csv_list.append(row)
+
+        return csv_list
+
+    @staticmethod
     def load_configs(filelist):
         """Reads multiple configs from a list of filenames
         into a single configuration.
