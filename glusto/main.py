@@ -225,7 +225,7 @@ def main():
     retcode = 0
     if args.run_pytest:
         print "pytest: %s" % args.run_pytest
-        result = pytest.main(args.run_pytest)
+        result = pytest.main(args.run_pytest.split('/'))
         if result > 0:
             retcode = retcode | PYTEST_FAIL
 
