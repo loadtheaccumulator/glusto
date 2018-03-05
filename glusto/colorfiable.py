@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
+# pylint: disable=too-few-public-methods, no-member
 """All things ANSI color text output.
 
 NOTE:
@@ -21,9 +22,9 @@ NOTE:
 """
 
 
-class Colorfiable(object):
+class Colorfiable():
     """Defines and displays ANSI-compatible colors for string formatting."""
-    # TODO: insert pep8/pylint ignore (python is all about readability, right?)
+    # pylint: disable=bad-whitespace
 
     # ANSI Background Bitwise Constants
     BG_DEFAULT =    1 << 0
@@ -146,6 +147,7 @@ class Colorfiable(object):
         Example:
             >>> g.colorfy(g.BG_CYAN | g.RED | g.BOLD, 'Bold red text on cyan')
         """
+        # pylint: disable=no-member
         log_color = cls.config.get('log_color', True)
         if not log_color:
             return message

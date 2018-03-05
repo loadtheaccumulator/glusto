@@ -19,14 +19,15 @@ NOTE:
     Templatable is inherited by the Glusto class
     and not designed to be instantiated.
 """
+# pylint: disable=too-few-public-methods
 import jinja2
 
 
-class Templatable(object):
+class Templatable():
     """The class providing Jinja template functionality."""
 
     @staticmethod
-    def render_template(template_filename, template_vars={},
+    def render_template(template_filename, template_vars=None,
                         output_file=None, searchpath=None):
         """Render a template into text file
 
@@ -40,6 +41,8 @@ class Templatable(object):
         Returns:
             String containing template rendering result if successful.
         """
+        if template_vars is None:
+            template_vars = {}
         if not searchpath:
             if template_filename.startswith('/'):
                 searchpath = "/"
@@ -52,8 +55,7 @@ class Templatable(object):
         output_text = template.render(template_vars)
 
         if output_file:
-            with open(output_file, 'wb') as fh:
-                fh.write(output_text)
+            with open(output_file, 'w') as filehandle:
+                filehandle.write(output_text)
 
-        # TODO: return True or False. add error checking above
         return output_text

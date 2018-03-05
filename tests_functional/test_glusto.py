@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ class TestGlustoBasics(unittest.TestCase):
         """unittest standard setUpClass method
         Runs before all test_ methods in the class
         """
-        print "Setting Up Class: %s" % cls.__name__
+        print("Setting Up Class: %s" % cls.__name__)
 
         config = g.load_configs(["../examples/systems.yml",
                                  "../examples/glusto.yml"])
@@ -39,11 +39,11 @@ class TestGlustoBasics(unittest.TestCase):
         """unittest standard setUp method
         Runs before each test_ method
         """
-        print "Setting Up: %s" % self.id()
+        print("Setting Up: %s" % self.id())
 
     def test_stderr(self):
         """Testing output to stderr"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         rcode, rout, rerr = g.run(self.masternode, "uname -a >&2")
         self.assertEqual(rcode, 0)
         self.assertFalse(rout)
@@ -51,7 +51,7 @@ class TestGlustoBasics(unittest.TestCase):
 
     def test_stdout(self):
         """Testing output to stdout"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         # add a cleanup method to run after tearDown()
         self.addCleanup(self.cleanup_remote_commands)
         for node in g.config["nodes"]:
@@ -64,11 +64,11 @@ class TestGlustoBasics(unittest.TestCase):
         """Cleanup remote commands method
         Called after teardown for additional cleanup specific to this test
         """
-        print "Cleaning up after setup on fail or after teardown"
+        print("Cleaning up after setup on fail or after teardown")
 
     def test_return_code(self):
         """Testing the return code"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         rcode, rout, rerr = g.run(self.masternode, "cat /etc/fstab")
         self.assertEqual(rcode, 0)
         self.assertTrue(rout)
@@ -77,31 +77,31 @@ class TestGlustoBasics(unittest.TestCase):
     @unittest.skip("Example test skip")
     def test_skip_me(self):
         """Testing the unittest skip feature"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         rcode, _, _ = g.run(self.masternode, "cat /etc/hosts")
         self.assertEqual(rcode, 0)
 
     def test_negative_test(self):
         """Testing an expected failure as negative test"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         rcode, _, _ = g.run(self.masternode, "false")
         self.assertEqual(rcode, 1)
 
     @unittest.expectedFailure
     def test_expected_fail(self):
         """Testing an expected failure. This test should fail"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         rcode, _, _ = g.run(self.masternode, "false")
         self.assertEqual(rcode, 0)
 
     def tearDown(self):
         """Unittest tearDown override"""
-        print "Tearing Down: %s" % self.id()
+        print("Tearing Down: %s" % self.id())
 
     @classmethod
     def tearDownClass(cls):
         """unittest tearDownClass override"""
-        print "Tearing Down Class: %s" % cls.__name__
+        print("Tearing Down Class: %s" % cls.__name__)
 
 
 def load_tests(loader, standard_tests, pattern):

@@ -28,27 +28,28 @@ class TestGlustoTemplates(unittest.TestCase):
         """unittest standard setUpClass method
         Runs before all test_ methods in the class
         """
-        print "Setting Up Class: %s" % cls.__name__
+        print("Setting Up Class: %s" % cls.__name__)
 
         # Setting class attributes for use across all test methods
-        cls.config_file = ('supporting_files/templates/'
-                           'glusto_templates-vars.yml')
+        cls.script_dir = os.path.dirname(os.path.realpath(__file__))
+        cls.config_file = ('%s/supporting_files/templates/'
+                           'glusto_templates-vars.yml' % cls.script_dir)
+
         config = g.load_config(cls.config_file)
         g.show_config(config)
         if config:
             g.update_config(config)
 
         cls.template_vars = g.config['templates']
-        cls.template_file = ('templates/'
-                             'glusto_templates-template.jinja')
-        cls.search_path = 'supporting_files'
+        cls.template_file = 'templates/glusto_templates-template.jinja'
+        cls.search_path = '%s/supporting_files' % cls.script_dir
         cls.output_file = '/tmp/glusto_templates-output.yml'
 
     def setUp(self):
         """unittest standard setUp method
         Runs before each test_ method
         """
-        print "Setting Up: %s" % self.id()
+        print("Setting Up: %s" % self.id())
         # render the template
         self.returned_template = g.render_template(self.template_file,
                                                    self.template_vars,
@@ -77,7 +78,7 @@ class TestGlustoTemplates(unittest.TestCase):
 
     def test_template_scalar(self):
         """Testing template scalar"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         # compare plain scalars
         self.assertEqual(g.config['templates']['plain_scalar'],
                          self.output_config['out_templates']['plain_scalar'],
@@ -88,7 +89,7 @@ class TestGlustoTemplates(unittest.TestCase):
 
     def test_template_forloop(self):
         """Testing template for loop"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         # compare sequence items
         for i in range(0, 3):
             input_item = g.config['templates']['sequence'][i]
@@ -103,7 +104,7 @@ class TestGlustoTemplates(unittest.TestCase):
 
     def tearDown(self):
         """Unittest tearDown override"""
-        print "Tearing Down: %s" % self.id()
+        print("Tearing Down: %s" % self.id())
 
         # removing output file
         os.unlink(self.output_file)
@@ -113,6 +114,4 @@ class TestGlustoTemplates(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """unittest tearDownClass override"""
-        print "Tearing Down Class: %s" % cls.__name__
-
-# TODO: do we really need to test the file???
+        print("Tearing Down Class: %s" % cls.__name__)

@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,14 +15,14 @@
 #
 """Glusto CLI wrapper"""
 import argparse
-#from unittest import TestLoader, TestSuite, TextTestRunner
-import unittest
-import pytest
-import nose
-import xmlrunner
 import importlib
 import inspect
 import sys
+import unittest
+
+import nose
+import pytest
+import xmlrunner
 
 from glusto.core import Glusto as g
 
@@ -35,7 +35,7 @@ def handle_configs(config_list):
     g.load_config_defaults()
 
     # load user specified configs (can also override defaults)
-    if (config_list):
+    if config_list:
         g.log.info("Loading user specified configuration files.")
         config_files = config_list.split()
         config = g.load_configs(config_files)
@@ -53,6 +53,9 @@ def main():
     Example:
         # glusto run hostname.example.com "uname -a"
     """
+    # pylint: disable=invalid-name,too-many-locals,too-many-branches
+    # pylint: disable=too-many-statements
+    # TODO: try to eliminate above pylint disables where possible
     epilog = ('NOTE: If encountering an "unknown option" issue '
               'with the -t and -n options, use param=\'args\' syntax.'
               '(e.g., -t="-v -x tests")')
@@ -116,7 +119,7 @@ def main():
                                                       log_level))
 
     g.log.info("Starting glusto via main()")
-    print "Starting glusto via main()"
+    print("Starting glusto via main()")
 
     # override ssh_keyfile @ CLI
     if args.ssh_keyfile:
@@ -134,7 +137,7 @@ def main():
             unittest_config = g.config.get('unittest', False)
 
         if not unittest_config:
-            print ("ERROR: Unittest option requires a unittest configuration.")
+            print("ERROR: Unittest option requires a unittest configuration.")
             return False
 
         output_junit = unittest_config.get('output_junit', False)
@@ -176,8 +179,6 @@ def main():
                                                      test_module_obj)
 
             tsuite.addTests(tests_to_run)
-            #result = unittest.TestResult()
-            #suite.run(result)
 
         run_module = unittest_config.get('load_tests_from_module')
         if run_module:
@@ -224,13 +225,13 @@ def main():
 
     retcode = 0
     if args.run_pytest:
-        print "pytest: %s" % args.run_pytest
-        result = pytest.main(args.run_pytest)
+        print("pytest: %s" % args.run_pytest)
+        result = pytest.main(args.run_pytest.split(' '))
         if result > 0:
             retcode = retcode | PYTEST_FAIL
 
     if args.run_nosetests:
-        print "nosetests: %s" % args.run_nosetests
+        print("nosetests: %s" % args.run_nosetests)
         argv = args.run_nosetests.split(' ')
         argv.insert(0, 'glusto')
         result = nose.run(argv=argv)
@@ -238,7 +239,7 @@ def main():
             retcode = retcode | NOSETESTS_FAIL
 
     if args.run_unittest:
-        print "unittest: %s" % args.run_unittest
+        print("unittest: %s" % args.run_unittest)
         argv = args.run_unittest.split(' ')
         argv.insert(0, 'glusto')
         test_object = unittest.main(exit=False, argv=argv)
@@ -249,10 +250,12 @@ def main():
             retcode = retcode | UNITTEST_FAIL
 
     g.log.info("Ending glusto via main()")
-    print "Ending glusto via main()"
+    print("Ending glusto via main()")
 
     return retcode
 
+
+# pylint: disable=invalid-name
 if __name__ == '__main__':
     exitcode = main()
 

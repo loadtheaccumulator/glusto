@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,10 +19,11 @@ NOTE:
     Unittestable is inherited by the Glusto class
     and not designed to be instantiated.
 """
+# pylint: disable=too-few-public-methods,too-many-locals
 import unittest
 
 
-class Unittestable(object):
+class Unittestable():
     """The class providing unittest functionality."""
 
     @staticmethod
@@ -46,7 +47,7 @@ class Unittestable(object):
         module_name = test_class.__module__
         class_name = test_class.__name__
         prefix = "%s.%s" % (module_name, class_name)
-        print "PREFIX: %s" % prefix
+        print("PREFIX: %s" % prefix)
 
         suite = unittest.TestSuite()
         # Add tests that need to be run in a specific order

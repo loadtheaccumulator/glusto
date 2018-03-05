@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,16 +42,16 @@ Carteprodplexorator (Cartesian Product Multiplexing Decorator).
 
 See docs for more information and use-case examples.
 """
-# pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods,too-many-locals
 import sys
 import itertools
-import sets
+import copy
 
 
-class Carteplex(object):
+class Carteplex():
     """Main class for cartesian product classes"""
 
-    class CarteTestClass(object):
+    class CarteTestClass():
         """Decorator providing cartesian product parameter-like capability
         for unittest class"""
 
@@ -92,54 +92,59 @@ class Carteplex(object):
                 if self.limits[i]:
                     updated_axis_names.append(self.axis_names[i])
 
-            print "\n\n\n\n"
-            print "available_options:"
-            print self.available_options
-            print "selections:"
-            print self.selections
-            print "limits:"
-            print self.limits
-            print "axis names:"
-            print self.axis_names
-            print "updated axis_names:"
-            print updated_axis_names
+            print("\n\n\n\navailable_options:\n", self.available_options)
+            print("selections:\n", self.selections)
+            print("limits:\n", self.limits)
+            print("axis names:\n", self.axis_names)
+            print("updated axis_names:\n", updated_axis_names)
 
             intersect_set = []
             for i in range(0, len(self.selections)):
-                print 'self.limits = %s' % self.limits[i]
+                print('self.limits = %s' % self.limits[i])
                 if self.limits[i]:
-                    selection_set = sets.Set(self.selections[i])
+                    selection_set = set(self.selections[i])
                     ss_intersect = selection_set.intersection(self.limits[i])
                     intersect_set.append(ss_intersect)
 
             iterables = list(intersect_set)
-            print "Iterables"
-            print iterables
+            print("Iterables\n", iterables)
 
-            print "module name: %s" % __name__
-            print "object name: %s" % obj.__name__
-            print "object module name: %s" % obj.__module__
+            print("module name: %s" % __name__)
+            print("object name: %s" % obj.__name__)
+            print("object module name: %s" % obj.__module__)
 
             class_module = sys.modules[obj.__module__]
 
             for iterproduct in itertools.product(*iterables):
-                print iterproduct
-                print len(iterproduct)
+                print(iterproduct)
+                print(len(iterproduct))
                 # string representation of cartesian product values
                 suffix = '_'.join(iterproduct)
                 # name to inject before suffix (can be set in decorator)
                 cplex_name = getattr(self, 'cplex_name', 'cplex')
 
                 class_name = "%s_%s_%s" % (obj.__name__, cplex_name, suffix)
-                print "class_name: %s" % class_name
-
+                print()
+                print()
+                print("class_name: %s" % class_name)
+                print("obj: ", obj)
+                print("obj.__mro__[1]: ", obj.__mro__[1])
                 new_class = type(class_name, (obj,), {})
+                print("obj.__dict__: ", obj.__dict__)
+#                new_class = type(class_name, obj.__mro__, dict(obj.__dict__))
+                #new_class = copy.copy(obj)
+                print("new_class: ", new_class)
+                print("new_class.__mro__: ", new_class.__mro__)
+                #new_class.__dict__ = dict(obj.__dict__)
+                print("new_class.__dict__:", new_class.__dict__)
+                print()
+                print()
+                #new_class = type(class_name, obj.__bases__,
+                #                 dict(obj.__dict__))
                 # loop through lists and assign attributes to objects
-                for i in range(0, len(iterproduct)):
-                    print "%s: %s" % (updated_axis_names[i],
-                                      iterproduct[i])
-                    setattr(new_class, updated_axis_names[i],
-                            iterproduct[i])
+                for i, iproduct in enumerate(iterproduct):
+                    print("%s: %s" % (updated_axis_names[i], iproduct))
+                    setattr(new_class, updated_axis_names[i], iproduct)
                 # class_module = sys.modules[obj.__module__]
 
                 # change the module name for the new class. it's created
@@ -159,14 +164,10 @@ class Carteplex(object):
                 automatically to the test module to gen a new list on the fly--
                 and so the test script writer doesn't have to add it.
                 """
-                print "LOAD TESTS"
+                print("LOAD TESTS")
 
                 return standard_tests
 
             class_module.load_tests = load_tests
 
             return obj
-
-# TODO: remove print statements.
-# TODO: cartemethod and cartefunction
-# TODO: load carteplex attributes from default config file

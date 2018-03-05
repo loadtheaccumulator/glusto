@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ class TestGlustoConfigs(unittest.TestCase):
         """unittest standard setUpClass method
         Runs before all test methods in the class
         """
-        print "Setting Up Class: %s" % cls.__name__
+        print("Setting Up Class: %s" % cls.__name__)
         # Setting class attributes for use across all test methods
         cls.yaml_file = '/tmp/testconfig.yml'
         cls.json_file = '/tmp/testconfig.json'
@@ -84,11 +84,11 @@ class TestGlustoConfigs(unittest.TestCase):
         """unittest standard setUp method
         Runs before each test method
         """
-        print "Setting Up: %s" % self.id()
+        print("Setting Up: %s" % self.id())
 
     def test_yaml(self):
         """Testing yaml config file"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         g.show_config(self.config)
 
@@ -105,7 +105,7 @@ class TestGlustoConfigs(unittest.TestCase):
 
     def test_yaml_noext(self):
         """Testing yaml config file without extension"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         g.show_config(self.config)
 
@@ -115,11 +115,11 @@ class TestGlustoConfigs(unittest.TestCase):
         g.store_config(self.config, self.yaml_noext, config_type='yaml')
         self.assertTrue(os.path.exists(self.yaml_noext))
 
-        print "--------------"
+        print("--------------")
         g.show_file(self.yaml_file)
-        print "--------------"
+        print("--------------")
         g.show_file(self.yaml_noext)
-        print "--------------"
+        print("--------------")
 
         # read the config file
         config = g.load_config(self.yaml_file)
@@ -138,7 +138,7 @@ class TestGlustoConfigs(unittest.TestCase):
 
     def test_json(self):
         """Testing json config file"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         g.show_config(self.config)
 
@@ -155,7 +155,7 @@ class TestGlustoConfigs(unittest.TestCase):
 
     def test_json_noext(self):
         """Testing json config file without extension"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         g.show_config(self.config)
 
@@ -165,11 +165,11 @@ class TestGlustoConfigs(unittest.TestCase):
         g.store_config(self.config, self.json_noext, config_type='json')
         self.assertTrue(os.path.exists(self.json_noext))
 
-        print "--------------"
+        print("--------------")
         g.show_file(self.json_file)
-        print "--------------"
+        print("--------------")
         g.show_file(self.json_noext)
-        print "--------------"
+        print("--------------")
 
         # read the config file
         config = g.load_config(self.json_file)
@@ -188,7 +188,7 @@ class TestGlustoConfigs(unittest.TestCase):
 
     def test_ini(self):
         """Testing ini config file(s)"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         g.store_config(self.config, self.ini_file)
         self.assertTrue(os.path.exists(self.ini_file))
@@ -204,14 +204,14 @@ class TestGlustoConfigs(unittest.TestCase):
 
     def test_ini_novalue(self):
         """Testing ini config file(s) without values"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         g.store_config(self.config_novalue, self.ini_novalue_file)
         self.assertTrue(os.path.exists(self.ini_novalue_file))
 
-        print "--------------"
+        print("--------------")
         g.show_file(self.ini_novalue_file)
-        print "--------------"
+        print("--------------")
 
         # read the config file
         config = g.load_config(self.ini_novalue_file)
@@ -223,18 +223,18 @@ class TestGlustoConfigs(unittest.TestCase):
 
     def test_ini_noext(self):
         """Testing ini config file(s) without extension"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         g.store_config(self.config, self.ini_file)
         self.assertTrue(os.path.exists(self.ini_file))
         g.store_config(self.config, self.ini_noext, config_type='ini')
         self.assertTrue(os.path.exists(self.ini_noext))
 
-        print "--------------"
+        print("--------------")
         g.show_file(self.ini_file)
-        print "--------------"
+        print("--------------")
         g.show_file(self.ini_noext)
-        print "--------------"
+        print("--------------")
 
         # read the config file
         config = g.load_config(self.ini_file)
@@ -257,7 +257,7 @@ class TestGlustoConfigs(unittest.TestCase):
 
     def test_ini_ordered(self):
         """Testing ordered ini config file(s)"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         g.show_config(self.ordered_config)
         # ordered ini
@@ -275,14 +275,14 @@ class TestGlustoConfigs(unittest.TestCase):
 
     def tearDown(self):
         """Unittest tearDown override"""
-        print "Tearing Down: %s" % self.id()
+        print("Tearing Down: %s" % self.id())
 
         return True
 
     @classmethod
     def tearDownClass(cls):
         """unittest tearDownClass override"""
-        print "Tearing Down Class: %s" % cls.__name__
+        print("Tearing Down Class: %s" % cls.__name__)
 
         if os.path.exists(cls.yaml_file):
             os.unlink(cls.yaml_file)

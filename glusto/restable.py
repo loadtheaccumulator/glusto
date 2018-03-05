@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,12 +20,15 @@ NOTE:
     and not designed to be instantiated.
 """
 
-from urllib import urlencode
-from urllib2 import Request, urlopen, URLError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen, URLError
 
 
-class Restable(object):
-    """The class providing REST API functionality."""
+class Restable():
+    """The class providing REST API functionality.
+    The primary purpose of this wrapper, at this time, is to provide a result
+    tuple similar to the SSH and RPyC modules.
+    """
 
     @classmethod
     def rest_get(cls, url):
@@ -40,20 +43,18 @@ class Restable(object):
             response output (str): The output text from the response.
             response error (str): The error text on failure.
         """
-        #request = Request('http://placekitten.com/')
         request = Request(url)
 
         try:
             response = urlopen(request)
             # TODO: catch other error
             restout = response.read()
-            #print kittens[559:1000]
             retcode = 0
             resterr = None
-        except URLError, e:
-            resterr = e.reason
+        except URLError as urlerr:
+            resterr = urlerr.reason
             restout = None
-            retcode = e.code
+            retcode = urlerr.code
 
         # return a connectible-like tuple
         return (retcode, restout, resterr)
@@ -80,10 +81,10 @@ class Restable(object):
             restout = response.read()
             retcode = 0
             resterr = None
-        except URLError, e:
-            resterr = e.reason
+        except URLError as urlerr:
+            resterr = urlerr.reason
             restout = None
-            retcode = e.code
+            retcode = urlerr.code
 
         # return a connectible-like tuple
         return (retcode, restout, resterr)
@@ -110,10 +111,10 @@ class Restable(object):
             restout = response.read()
             retcode = 0
             resterr = None
-        except URLError, e:
-            resterr = e.reason
+        except URLError as urlerr:
+            resterr = urlerr.reason
             restout = None
-            retcode = e.code
+            retcode = urlerr.code
 
         # return a connectible-like tuple
         return (retcode, restout, resterr)
@@ -140,10 +141,10 @@ class Restable(object):
             restout = response.read()
             retcode = 0
             resterr = None
-        except URLError, e:
-            resterr = e.reason
+        except URLError as urlerr:
+            resterr = urlerr.reason
             restout = None
-            retcode = e.code
+            retcode = urlerr.code
 
         # return a connectible-like tuple
         return (retcode, restout, resterr)

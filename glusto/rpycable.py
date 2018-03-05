@@ -31,7 +31,10 @@ import types
 from rpyc.utils.zerodeploy import DeployedServer
 
 
-class Rpycable(object):
+class Rpycable():
+    """Provides an RPyC object for managing connections and remote execs"""
+    # pylint: disable=no-member,bare-except
+    # TODO: try to handle possible exceptions RPyC might throw
 
     _rpyc_connections = {}
     _deployed_servers = {}
@@ -200,13 +203,21 @@ class Rpycable(object):
         Returns:
             Nothing
         """
-        for name in cls._rpyc_connections.keys():
-            print (name)
+        for name in cls._rpyc_connections:
+            print(name)
 
     @classmethod
     def rpyc_list_deployed_servers(cls):
-        for name in cls._deployed_servers.keys():
-            print (name)
+        """Display the list of deployed servers
+
+        Args:
+            None
+
+        Returns:
+            Nothing
+        """
+        for name in cls._deployed_servers:
+            print(name)
 
     @classmethod
     def rpyc_check_connection(cls, host, user=None, instance=1):
@@ -227,7 +238,7 @@ class Rpycable(object):
         status = "open"
         if connection.closed:
             status = "closed"
-        print "%s is %s" % (conn_name, status)
+        print("%s is %s" % (conn_name, status))
 
     @classmethod
     def rpyc_ping_connection(cls, host, user=None, instance=1):
@@ -246,10 +257,10 @@ class Rpycable(object):
         try:
             connection.ping()
 
-            print "connection is alive"
+            print("connection is alive")
             return True
-        except:
-            print "connection is dead"
+        except:  # noqa: E722
+            print("connection is dead")
             return False
 
     @classmethod
@@ -281,7 +292,7 @@ class Rpycable(object):
         Returns:
             Nothing
         """
-        for key in cls._rpyc_connections.keys():
+        for key in list(cls._rpyc_connections):
             cls.log.debug("closing rpyc connection %s" % key)
             connection = cls._rpyc_connections[key]
             del cls._rpyc_connections[key]
@@ -299,7 +310,7 @@ class Rpycable(object):
         """
         cls.rpyc_close_connections()
 
-        for key in cls._deployed_servers.keys():
+        for key in list(cls._deployed_servers):
             cls.log.debug("closing rpyc deployed server %s" % key)
             deployed_server = cls._deployed_servers[key]
             del cls._deployed_servers[key]
@@ -319,7 +330,7 @@ class Rpycable(object):
         name = cls._rpyc_get_connection_name(host, user)
         ds_search = '%s:' % name
 
-        for rpyckey in cls._rpyc_connections.keys():
+        for rpyckey in cls._rpyc_connections:
             if ds_search in rpyckey:
                 connection = cls._rpyc_connections[rpyckey]
                 del cls._rpyc_connections[rpyckey]
@@ -350,7 +361,7 @@ class Rpycable(object):
             try:
                 robject = connection.namespace[name]
                 setattr(remote_module, name, robject)
-            except:
+            except:  # noqa: E722
                 pass
 
         return remote_module

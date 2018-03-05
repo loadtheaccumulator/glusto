@@ -14,6 +14,7 @@
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
 """Test glusto rpyc functionality"""
+import os
 import unittest
 
 from glusto.core import Glusto as g
@@ -26,23 +27,26 @@ class TestGlustoRpyc(unittest.TestCase):
         """unittest standard setUpClass method
         Runs before all test_ methods in the class
         """
-        print "Setting Up Class: %s" % cls.__name__
-        config = g.load_configs(["../examples/systems.yml",
-                                 "../examples/glusto.yml"])
+        print("Setting Up Class: %s" % cls.__name__)
+        cls.script_dir = os.path.dirname(os.path.realpath(__file__))
+        config = g.load_config('%s/supporting_files/remote_tests/systems.yml'
+                               % cls.script_dir)
         g.update_config(config)
 
     def setUp(self):
         """unittest standard setUp method
         Runs before each test_ method
         """
-        print "Setting Up: %s" % self.id()
+        print("Setting Up: %s" % self.id())
 
         self.masternode = g.config["nodes"][0]
         self.client = g.config["clients"][0]
+        g.log.info('masternode: %s ' % self.masternode)
+        g.log.info('ssh keyfile: %s' % g.config['ssh_keyfile'])
 
     def test_connection(self):
         """Testing rpyc connection"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         g.rpyc_get_connection(self.masternode)
         pingable = g.rpyc_ping_connection(self.masternode)
@@ -52,9 +56,9 @@ class TestGlustoRpyc(unittest.TestCase):
     def test_local_module_on_remote(self):
         """Testing local module definition on remote system"""
         connection = g.rpyc_get_connection(self.masternode)
-        import supporting_files.rpyc.local_module
+        import tests_functional.supporting_files.rpyc.local_module
         r = g.rpyc_define_module(connection,
-                                 supporting_files.rpyc.local_module)
+                                 tests_functional.supporting_files.rpyc.local_module)
 
         # test global variable
         self.assertEqual(r.myvariable, 'yada yada yada')
@@ -80,18 +84,18 @@ class TestGlustoRpyc(unittest.TestCase):
         rpyc_conn = g.rpyc_get_connection(self.masternode)
         platform = rpyc_conn.modules.sys.platform
 
-        self.assertEqual(platform, 'linux2')
+        self.assertEqual(platform, 'linux')
 
     def tearDown(self):
         """Unittest tearDown override"""
-        print "Tearing Down: %s" % self.id()
+        print("Tearing Down: %s" % self.id())
 
         return True
 
     @classmethod
     def tearDownClass(cls):
         """unittest tearDownClass override"""
-        print "Tearing Down Class: %s" % cls.__name__
+        print("Tearing Down Class: %s" % cls.__name__)
 
         # rpyc should do this on script exit, but for cleanliness sake...
         g.rpyc_close_deployed_servers()

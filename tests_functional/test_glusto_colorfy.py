@@ -26,7 +26,7 @@ class TestGlustoBasics(unittest.TestCase):
         """unittest standard setUpClass method
         Runs before all test_ methods in the class
         """
-        print "Setting Up Class: %s" % cls.__name__
+        print("Setting Up Class: %s" % cls.__name__)
 
         cls.non_color_message = 'this is a test'
         cls.color_message = '\x1b[43;31;1mthis is a test\x1b[0m'
@@ -35,7 +35,7 @@ class TestGlustoBasics(unittest.TestCase):
         """unittest standard setUp method
         Runs before each test_ method
         """
-        print "Setting Up: %s" % self.id()
+        print("Setting Up: %s" % self.id())
 
     def test_log_color_true(self):
         g.config['log_color'] = True
@@ -56,9 +56,9 @@ class TestGlustoBasics(unittest.TestCase):
 
     def tearDown(self):
         """Unittest tearDown override"""
-        print "Tearing Down: %s" % self.id()
+        print("Tearing Down: %s" % self.id())
 
     @classmethod
     def tearDownClass(cls):
         """unittest tearDownClass override"""
-        print "Tearing Down Class: %s" % cls.__name__
+        print("Tearing Down Class: %s" % cls.__name__)

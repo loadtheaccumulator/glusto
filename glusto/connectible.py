@@ -1,4 +1,4 @@
-# Copyright 2014 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2014-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,14 +19,15 @@ NOTE:
     Connectible is inherited by the Glusto class
     and not designed to be instantiated.
 """
-import subprocess
 import os
+import subprocess
 
 from plumbum import SshMachine
 
 
-class Connectible(object):
+class Connectible():
     """The class provding remote connections and local commands."""
+    # pylint: disable=no-member,too-many-arguments,bare-except
 
     _ssh_connections = {}
     """The dictionary of ssh connections used by the inheriting class"""
@@ -78,7 +79,7 @@ class Connectible(object):
             try:
                 ssh = SshMachine(host, user,
                                  ssh_opts=ssh_opts, scp_opts=scp_opts)
-            except:
+            except:  # noqa: E722
                 cls.log.error("Exception trying to establish SshMachine")
                 return None
             cls._ssh_connections[conn_name] = ssh
@@ -89,7 +90,7 @@ class Connectible(object):
         if ssh:
             return ssh
 
-        print("oops. did not get ssh for %s", conn_name)
+        cls.log.error("oops. did not get ssh for %s", conn_name)
         return None
 
     @classmethod
@@ -112,16 +113,6 @@ class Connectible(object):
                 >>> from glusto.core import Glusto as g
                 >>> results = g.run("bunkerhill", "uname -a")
         """
-        '''
-        if isinstance(hosts, str):
-            ssh = cls._get_ssh_connection(hosts, user)
-
-
-        results = {}
-        for host in hosts:
-            ssh = cls._get_ssh_connection(host, user)
-            results[ssh] = "result from %s on %s" % (command, ssh)
-        '''
         if not user:
             user = cls.user
 
@@ -137,9 +128,9 @@ class Connectible(object):
             cls.log.error("ERROR: No ssh connection")
             return (42, None, "ERROR: No ssh connection")
 
-        p = ssh.popen(command)
-        stdout, stderr = p.communicate()
-        retcode = p.returncode
+        proc = ssh.popen(command, universal_newlines=True)
+        stdout, stderr = proc.communicate()
+        retcode = proc.returncode
 
         # output command results
         identifier = "%s@%s" % (user, host)
@@ -238,14 +229,15 @@ class Connectible(object):
             # run the command
             ssh = cls._get_ssh_connection(host, user)
             if not ssh:
-                print "ERROR: No ssh connection"
+                print("ERROR: No ssh connection")
                 return None
 
-            p = ssh.popen(command)
+            proc = ssh.popen(command, universal_newlines=True)
 
         def async_communicate():
-            stdout, stderr = p.communicate()
-            retcode = p.returncode
+            """async_communicate function returned to get later results"""
+            stdout, stderr = proc.communicate()
+            retcode = proc.returncode
 
             # output command results
             identifier = "%s@%s" % (user, host)
@@ -254,8 +246,8 @@ class Connectible(object):
 
             return (retcode, stdout, stderr)
 
-        p.async_communicate = async_communicate
-        return p
+        proc.async_communicate = async_communicate
+        return proc
 
     @classmethod
     def run_local(cls, command, log_level=None):
@@ -277,11 +269,12 @@ class Connectible(object):
         # output command
         cls.log.info("local: %s" % command)
 
-        p = subprocess.Popen(command, shell=True,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate()
-        retcode = p.returncode
+        proc = subprocess.Popen(command, shell=True,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                universal_newlines=True)
+        stdout, stderr = proc.communicate()
+        retcode = proc.returncode
 
         # output command results
         cls._log_results('local', retcode, stdout, stderr,
@@ -340,15 +333,6 @@ class Connectible(object):
                 >>> hosts = ["bunkerhill", "breedshill"]
                 >>> results = g.run_serial(hosts, "ls -Rail /etc")
         """
-        '''
-        results = {}
-        for host in hosts:
-            rcode, rout, rerr = cls.run(host, command, user)
-
-            results[host] = (rcode, rout, rerr)
-
-        return results
-        '''
         results = {}
         rasyncs = {}
         # run the commands async and record the returned communicate object
@@ -372,7 +356,7 @@ class Connectible(object):
             user (optional[str]): The user to use for the remote connection.
 
         Returns:
-            None on failure.
+            False on failure.
         """
         # TODO: consider a noclobber option to backup existing files
 
@@ -382,11 +366,13 @@ class Connectible(object):
         # run the command
         ssh = cls._get_ssh_connection(host, user)
         if not ssh:
-            print "ERROR: No ssh connection"
+            print("ERROR: No ssh connection")
             return False
 
         # TODO: catch exceptions thrown by SshMachine.upload()
         ssh.upload(localpath, remotepath)
+
+        return True
 
     @classmethod
     def download(cls, host, remotepath, localpath, user=None):
@@ -399,7 +385,7 @@ class Connectible(object):
             user (optional[str]): The user to use for the remote connection.
 
         Returns:
-            None on failure.
+            False on failure.
         """
         # TODO: consider a noclobber option to backup existing files
 
@@ -409,11 +395,13 @@ class Connectible(object):
         # run the command
         ssh = cls._get_ssh_connection(host, user)
         if not ssh:
-            print "ERROR: No ssh connection"
+            print("ERROR: No ssh connection")
             return False
 
         # TODO: catch exceptions thrown by SshMachine.download()
         ssh.download(remotepath, localpath)
+
+        return True
 
     @classmethod
     def transfer(cls, sourcehost, sourcefile,
@@ -443,8 +431,8 @@ class Connectible(object):
     @classmethod
     def ssh_list_connections(cls):
         """Display the list of existing ssh connections on stdout."""
-        for name in cls._ssh_connections.keys():
-            print (name)
+        for name, _ in cls._ssh_connections:
+            print(name)
 
     @classmethod
     def ssh_get_connections(cls):
@@ -484,14 +472,23 @@ class Connectible(object):
         Returns:
             Nothing
         """
-        for key in cls._ssh_connections.keys():
-            print "closing ssh connection %s" % key
+        for key, _ in list(cls._ssh_connections):
+            print("closing ssh connection %s" % key)
             connection = cls._ssh_connections[key]
             del cls._ssh_connections[key]
             connection.close()
 
     @classmethod
     def ssh_set_keyfile(cls, keyfile):
+        """Set the ssh keyfile for use in connectible and rpycable methods
+
+        Args:
+            keyfile (str): Path to ssh keyfile
+
+        Returns:
+            True on success. False on failure.
+        """
+        print(os.environ)
         if keyfile.startswith('~'):
             keyfile = keyfile.replace('~', os.environ['HOME'])
         if os.path.exists(keyfile):
@@ -504,9 +501,9 @@ class Connectible(object):
 
     @classmethod
     def ssh_get_keyfile(cls):
+        """Return the keyfile from config object"""
 
         return cls.config.get('ssh_keyfile', None)
 
 
-# TODO: add color logging to all methods with retcode, rout, rerr
 # TODO: check connections to see if they are current.

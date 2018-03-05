@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,13 +33,14 @@ from glusto.colorfiable import Colorfiable
 from glusto.loggable import Loggable
 from glusto.templatable import Templatable
 from glusto.unittestable import Unittestable
-from glusto.restable import Restable
+#from glusto.restable import Restable
 from glusto.rpycable import Rpycable
 from glusto.carteplex import Carteplex
 
 
+# pylint: disable=too-many-ancestors
 class Glusto(Configurable, Connectible, Colorfiable, Loggable,
-             Templatable, Unittestable, Restable, Rpycable, Carteplex):
+             Templatable, Unittestable, Rpycable, Carteplex):
     """The locker for all things Glusto."""
 
     # TODO: figure out how we want to do this with cli options

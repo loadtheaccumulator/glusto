@@ -1,4 +1,4 @@
-# Copyright 2014,2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2014-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,16 +19,17 @@ NOTE:
     Configurable is inherited by the Glusto class
     and not designed to be instantiated.
 """
-import os
-import yaml
-import json
-import ConfigParser
-import csv
-import urllib
 from collections import OrderedDict
+import configparser
+import csv
+import json
+import os
+#from urllib import request
+import urllib.request
+import yaml
 
 
-class Configurable(object):
+class Configurable():
     """The class providing all things configuration."""
 
     config = {}
@@ -37,8 +38,8 @@ class Configurable(object):
     @staticmethod
     def _is_url(filename):
         if (filename.startswith('file://') or
-            (filename.startswith('http://') or
-             filename.startswith('https://'))):
+                (filename.startswith('http://') or
+                 filename.startswith('https://'))):
 
             return True
 
@@ -71,20 +72,17 @@ class Configurable(object):
         """
         if Configurable._is_url(filename):
             # TODO: can urllib handle https://
-            httpfd = urllib.urlopen(filename)
+            httpfd = urllib.request.urlopen(filename)
 
             return httpfd
-        else:
-            fd = file(filename, 'r')
 
-            return fd
-
-        return None
+        file_descriptor = open(filename, 'r')
+        return file_descriptor
 
     @staticmethod
     def _store_yaml(obj, filename):
         """Write an object to a yaml config file"""
-        configfd = file(filename, 'w')
+        configfd = open(filename, 'w')
         yaml.dump(obj, configfd, Dumper=GDumper)
 
     @staticmethod
@@ -97,11 +95,12 @@ class Configurable(object):
             dictionary of lists. It is currently up to the developer to
             format the object accordingly.
         """
-        config = ConfigParser.RawConfigParser(allow_no_value=True)
+        config = configparser.ConfigParser(allow_no_value=True,
+                                           interpolation=None)
         for section_key in obj:
             config.add_section(section_key)
             if isinstance(obj[section_key], dict):
-                for item_key, item_value in obj[section_key].iteritems():
+                for item_key, item_value in obj[section_key].items():
                     if item_value == '' or item_value is None:
                         config.set(section_key, item_key)
                     else:
@@ -110,13 +109,13 @@ class Configurable(object):
                 for item_key in obj[section_key]:
                     config.set(section_key, item_key)
 
-        with open(filename, 'wb') as configfile:
+        with open(filename, 'w') as configfile:
             config.write(configfile)
 
     @staticmethod
     def _store_json(obj, filename):
         """Write an object to a json formatted config file."""
-        configfd = file(filename, 'w')
+        configfd = open(filename, 'w')
         json.dump(obj, configfd, indent=4, separators=(',', ':'))
 
     @staticmethod
@@ -166,16 +165,16 @@ class Configurable(object):
         if config_type:
             file_extension = config_type
 
-        if file_extension == "ini":
+        if file_extension == 'ini':
             Configurable._store_ini(obj, filename)
-        elif file_extension == "json":
+        elif file_extension == 'json':
             Configurable._store_json(obj, filename)
-        elif file_extension == "yaml" or file_extension == "yml":
+        elif file_extension in ('yaml', 'yml'):
             Configurable._store_yaml(obj, filename)
-        elif file_extension == "csv":
+        elif file_extension == 'csv':
             Configurable._store_csv(obj, filename, **kwargs)
         else:
-            print "Filetype not recognized"
+            print('Filetype not recognized')
             # TODO: serialize the object and store! make serialized a type
             return False
 
@@ -184,11 +183,11 @@ class Configurable(object):
     @staticmethod
     def _load_ini(filename):
         """Reads an ini file into a dictionary"""
-        ini_config = ConfigParser.SafeConfigParser(allow_no_value=True)
+        ini_config = configparser.SafeConfigParser(allow_no_value=True)
 
         if Configurable._is_url(filename):
             configfd = Configurable._get_file_descriptor(filename)
-            ini_config.readfp(configfd)
+            ini_config.read_file(configfd)
         else:
             ini_config.read(filename)
 
@@ -282,7 +281,7 @@ class Configurable(object):
                 config = Configurable._load_ini(filename)
             elif file_extension == "json":
                 config = Configurable._load_json(filename)
-            elif file_extension == "yaml" or file_extension == "yml":
+            elif file_extension in ('yaml', 'yml'):
                 config = Configurable._load_yaml(filename)
             elif file_extension == "csv":
                 config = Configurable._load_csv(filename, **kwargs)
@@ -345,6 +344,7 @@ class Configurable(object):
 
     @classmethod
     def load_config_defaults(cls):
+        """Loads the default Glusto-based configs"""
         if os.path.exists('/etc/glusto'):
             # TODO: discover list of files named "/etc/glusto/defaults*"
             config_list = ["/etc/glusto/defaults.yml",
@@ -409,6 +409,7 @@ class Configurable(object):
             Nothing
         """
         # TODO: either get rid of this or make it work with all formats
+        # pylint: disable=no-member
         cls.log.debug("Configuration for object type %s:\n%s" %
                       (type(obj), yaml.dump(obj, Dumper=GDumper)))
 
@@ -434,7 +435,7 @@ class Configurable(object):
         Returns:
             Nothing
         """
-        print yaml.dump(obj, Dumper=GDumper)
+        print(yaml.dump(obj, Dumper=GDumper))
 
     @classmethod
     def clear_config(cls):
@@ -455,11 +456,13 @@ class Configurable(object):
         Returns:
             Nothing
         """
+        # pylint: disable=invalid-name
         fd = Configurable._get_file_descriptor(filename)
         data = fd.read()
-        print data
+        print(data)
 
 
+# pylint: disable=too-many-ancestors
 class GDumper(yaml.Dumper):
     """Override the alias junk normally output by Dumper.
     This is necessary because PyYaml doesn't give a simple option to
@@ -478,7 +481,7 @@ class GDumper(yaml.Dumper):
 
 
 # TODO: see if Python3 makes possible for Configurable to handle all objects
-class Intraconfig(object):
+class Intraconfig():
     """Class to provide instances with simple configuration
     utility and introspection in yaml config format.
 
@@ -563,5 +566,3 @@ class Intraconfig(object):
             This is not a utility function for serialization.
         """
         Configurable.store_config(self, filename, config_type)
-
-# TODO: only import what is needed

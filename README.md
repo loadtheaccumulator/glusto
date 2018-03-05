@@ -1,11 +1,11 @@
-Glusto
-======
+Glusto (Python3 Beta)
+=====================
 
-Glusto is a framework designed to provide features commonly used in a
+Glusto is a suite of modules designed to provide features commonly used in a
 remote/distributed environment via a single and easy-to-access object.
 
 It started out as a port of some shell ssh functions I had written
-and was meant for use in PyUnit* tests for Gluster.
+and was adopted for use in PyUnit* tests for Gluster.
 
 Some of the key concepts and features of Glusto:
 
@@ -14,6 +14,12 @@ Some of the key concepts and features of Glusto:
 * Glusto also acts as a global class for maintaining state and configuration data across multiple modules and classes.
 
 * Glusto provides a wrapper utility (``/usr/bin/glusto``) to help make configuration files available to test cases from the command-line.
+
+This is the Python3 port and will, for the near future, be maintained as a separate branch.
+Eventually, the Python3 branch will become master and Python2 will be moved to a branch for availability.
+
+Note:
+    The Python3 requests library has become even more straight-forward to use, so Glusto restable may be deprecated in a future version.
 
 
 #### How to Use Glusto

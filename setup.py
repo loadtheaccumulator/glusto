@@ -11,7 +11,7 @@ setup(name='glusto',
       classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Quality Assurance',
         ],
       packages=['glusto'],

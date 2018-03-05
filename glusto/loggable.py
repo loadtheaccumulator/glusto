@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,11 +25,12 @@ import os
 import sys
 
 
-class Loggable(object):
+class Loggable():
     """The class providing logging functionality."""
 
     handler_counter = 0
 
+    # pylint: disable=too-many-arguments
     @classmethod
     def create_log(cls, name='glustolog', filename='/tmp/glusto.log',
                    level='DEBUG', log_format=None, allow_multiple=False):
@@ -139,7 +140,7 @@ class Loggable(object):
             logobj (object): A logging object.
         """
         log_name = logobj.name
-        print "Log: ", log_name
+        print("Log: ", log_name)
         for handler in logobj.handlers:
             name = handler.get_name()
             if handler.stream == sys.stdout:
@@ -148,7 +149,7 @@ class Loggable(object):
                 filename = handler.baseFilename
 
             level = logging.getLevelName(handler.level)
-            print "- %s: %s (%s)" % (name, filename, level)
+            print("- %s: %s (%s)" % (name, filename, level))
 
     @classmethod
     def disable_log_levels(cls, level):
@@ -245,6 +246,6 @@ class Loggable(object):
         for handler in log.handlers:
             if handler.name == handler_name:
                 handler.close()
-                fd = open(handler.baseFilename, 'r+')
-                fd.truncate()
-                fd.close()
+                file_descriptor = open(handler.baseFilename, 'r+')
+                file_descriptor.truncate()
+                file_descriptor.close()

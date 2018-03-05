@@ -14,22 +14,29 @@
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
 """Test glusto SSH functionality"""
+import os
 import unittest
-import pytest
 
 from glusto.core import Glusto as g
 
 
 class TestGlustoSsh(unittest.TestCase):
-    """Glusto basics test class"""
+    """Glusto basics test class
+
+    Requires ssh_keyfile to be set in /etc/glusto/defaults.yml and
+    supporting_files/remote_tests/systems.yml to be updated with IP addresses
+    of systems in your environment.
+    """
     @classmethod
     def setUpClass(cls):
         """unittest standard setUpClass method
         Runs before all test_ methods in the class
         """
-        print "Setting Up Class: %s" % cls.__name__
-        config = g.load_configs(["../examples/systems.yml",
-                                 "../examples/glusto.yml"])
+        print("Setting Up Class: %s" % cls.__name__)
+        cls.script_dir = os.path.dirname(os.path.realpath(__file__))
+        config = g.load_config('%s/supporting_files/remote_tests/systems.yml'
+                               % cls.script_dir)
+
         g.update_config(config)
 
         cls.hosts = g.config['nodes']
@@ -42,61 +49,61 @@ class TestGlustoSsh(unittest.TestCase):
         """unittest standard setUp method
         Runs before each test_ method
         """
-        print "Setting Up: %s" % self.id()
+        print("Setting Up: %s" % self.id())
 
     def test_run_local(self):
         """Testing SSH run_local() method"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         rcode, rout, rerr = g.run_local('echo -n %s' % self.test_string)
         self.assertEqual(rcode, 0)
         self.assertEqual(rout, self.test_string)
-        print rout
+        print(rout)
         self.assertEqual(rerr, '')
 
     def test_run(self):
         """Testing SSH run() method"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         rcode, rout, rerr = g.run(self.primary_host,
                                   'echo -n %s' % self.test_string)
         self.assertEqual(rcode, 0)
         self.assertEqual(rout, self.test_string)
-        print rout
+        print(rout)
         self.assertEqual(rerr, '')
 
     def test_run_serial(self):
         """Testing SSH run_serial() method"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         results = g.run_serial(self.hosts, 'echo -n %s' % self.test_string)
-        for host, result in results.iteritems():
+        for host, result in results.items():
             self.assertIn(host, self.hosts)
-            print host
+            print(host)
             rcode, rout, rerr = result
             self.assertEqual(rcode, 0)
             self.assertEqual(rout, self.test_string)
-            print rout
+            print(rout)
             self.assertEqual(rerr, '')
 
     def test_run_parallel(self):
         """Testing SSH run_parallel() method"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         results = g.run_parallel(self.hosts, 'echo -n %s' % self.test_string)
         hosts_already_tested = []
-        for host, result in results.iteritems():
+        for host, result in results.items():
             # test host is in list of hosts to test
             self.assertIn(host, self.hosts)
             # test host has not already been tested
             self.assertNotIn(host, hosts_already_tested)
             hosts_already_tested.append(host)
-            print host
+            print(host)
             rcode, rout, rerr = result
             self.assertEqual(rcode, 0)
             self.assertEqual(rout, self.test_string)
-            print rout
+            print(rout)
             self.assertEqual(rerr, '')
 
     def test_upload(self):
         """Testing SSH upload() method"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
         g.run(self.primary_host, 'rm -f /tmp/upload_test_file')
         rcode, rout, _ = g.run_local('md5sum /etc/hosts | awk \'{print $1}\'')
         if rcode == 0:
@@ -111,7 +118,7 @@ class TestGlustoSsh(unittest.TestCase):
 
     def test_download(self):
         """Testing SSH download() method"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         remote_file = '/etc/hosts'
         local_file = '/tmp/download_test_file'
@@ -140,7 +147,7 @@ class TestGlustoSsh(unittest.TestCase):
 
     def test_transfer(self):
         """Testing SSH transfer() method"""
-        print "Running: %s - %s" % (self.id(), self.shortDescription())
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
 
         remote_file = '/etc/hosts'
         remote_file_copy = '/tmp/transfer_test_file'
@@ -206,14 +213,14 @@ class TestGlustoSsh(unittest.TestCase):
 
     def tearDown(self):
         """Unittest tearDown override"""
-        print "Tearing Down: %s" % self.id()
+        print("Tearing Down: %s" % self.id())
 
         return True
 
     @classmethod
     def tearDownClass(cls):
         """unittest tearDownClass override"""
-        print "Tearing Down Class: %s" % cls.__name__
+        print("Tearing Down Class: %s" % cls.__name__)
         g.run(cls.primary_host, 'rm -f /tmp/railetc')
         g.run(cls.primary_host, 'rm -f /tmp/upload_test_file')
         g.run(cls.hosts[1], 'rm -f /tmp/transfer_test_file')
