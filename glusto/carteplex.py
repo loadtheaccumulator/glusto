@@ -46,6 +46,7 @@ See docs for more information and use-case examples.
 import sys
 import itertools
 import sets
+import copy
 
 
 class Carteplex(object):
@@ -146,6 +147,9 @@ class Carteplex(object):
                 # under carteplex and needs to be the test module in reports
                 new_class.__module__ = class_module.__name__
                 setattr(class_module, class_name, new_class)
+                # shallow copy the original obj to the new class as ._original
+                # so that you can use cls._original when calling super
+                new_class._original = copy.copy(obj)
 
             # pytest catches the original test class. squelch it before loader
             obj = ''
