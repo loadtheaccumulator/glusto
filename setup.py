@@ -1,10 +1,10 @@
 from setuptools import setup
 
 setup(name='glusto',
-      version='0.59',
+      version='0.60',
       author='Jonathan Holloway',
       author_email='loadtheaccumulator@gmail.com',
-      description=('A framework of commonly used tools for developing scripts '
+      description=('A library of commonly used tools for developing scripts '
                    'in a remote/distributed environment via a single and '
                    'easy-to-access object.'),
       url='http://github.com/loadtheaccumulator/glusto',

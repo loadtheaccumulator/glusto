@@ -1,0 +1,14 @@
+shooting_with_camera : ['nikon', 'olympus']
+shooting_with_lens : ['35mm', '50mm', '85mm']
+
+available_options :
+    - 
+        - nikon
+        - olympus'
+        - fuji
+
+    -
+        - 20mm
+        - 35mm
+        - 50mm
+        - 85mm
