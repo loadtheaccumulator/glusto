@@ -133,14 +133,32 @@ class Carteplex(object):
                 class_name = "%s_%s_%s" % (obj.__name__, cplex_name, suffix)
                 print "class_name: %s" % class_name
 
-                new_class = type(class_name, (obj,), {})
+                """Create the new classes with the obj super instead of
+                    the object. Also copy the class dict from obj to the
+                    new class. This retains the guts of obj and allows
+                    existing im_func() calls as well as Python2 super() calls
+                    that return the true super and not the obj class used
+                    as a template.
+
+                    Usage examples:
+                        In a classmethod:
+                            super(cls, cls).setUpClass()
+                        In an instance method:
+                            super(self.__class__, self).setUp()
+
+                    Previous type call that used object as super...
+                        new_class = type(class_name, (obj,), {})
+                """
+                # TODO: test under Python3
+                new_class = type(class_name, (obj.__bases__),
+                                 dict(obj.__dict__))
+
                 # loop through lists and assign attributes to objects
                 for i in range(0, len(iterproduct)):
                     print "%s: %s" % (updated_axis_names[i],
                                       iterproduct[i])
                     setattr(new_class, updated_axis_names[i],
                             iterproduct[i])
-                # class_module = sys.modules[obj.__module__]
 
                 # change the module name for the new class. it's created
                 # under carteplex and needs to be the test module in reports
