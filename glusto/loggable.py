@@ -50,7 +50,7 @@ class Loggable(object):
         # TODO: one call -> multiple levels
         if not log_format:
             log_format = ('%(asctime)s %(levelname)s '
-                          '(%(funcName)s) %(message)s')
+                          '%(pathname)s.%(funcName)s:%(lineno)d %(message)s')
         log = logging.getLogger(name)
         log.propagate = False
         _logfile = filename
