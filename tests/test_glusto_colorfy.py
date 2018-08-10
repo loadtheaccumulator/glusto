@@ -19,7 +19,7 @@ import unittest
 from glusto.core import Glusto as g
 
 
-class TestGlustoBasics(unittest.TestCase):
+class TestGlustoColorfy(unittest.TestCase):
     """Glusto basics test class"""
     @classmethod
     def setUpClass(cls):

@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016,2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,13 +15,14 @@
 #
 """Glusto CLI wrapper"""
 import argparse
-#from unittest import TestLoader, TestSuite, TextTestRunner
+# from unittest import TestLoader, TestSuite, TextTestRunner
 import unittest
 import pytest
 import nose
 import xmlrunner
 import importlib
 import inspect
+import shlex
 import sys
 
 from glusto.core import Glusto as g
@@ -176,8 +177,6 @@ def main():
                                                      test_module_obj)
 
             tsuite.addTests(tests_to_run)
-            #result = unittest.TestResult()
-            #suite.run(result)
 
         run_module = unittest_config.get('load_tests_from_module')
         if run_module:
@@ -225,22 +224,26 @@ def main():
     retcode = 0
     if args.run_pytest:
         print "pytest: %s" % args.run_pytest
-        result = pytest.main(args.run_pytest)
+        # using shlex.split() to handle quoted arguments with spaces
+        argv = shlex.split(args.run_pytest)
+        result = pytest.main(argv)
         if result > 0:
             retcode = retcode | PYTEST_FAIL
 
     if args.run_nosetests:
         print "nosetests: %s" % args.run_nosetests
-        argv = args.run_nosetests.split(' ')
-        argv.insert(0, 'glusto')
+        argv = shlex.split(args.run_nosetests)
+        argv.insert(0, 'glusto-nosetests')
+        print(argv)
         result = nose.run(argv=argv)
         if not result:
             retcode = retcode | NOSETESTS_FAIL
 
     if args.run_unittest:
         print "unittest: %s" % args.run_unittest
-        argv = args.run_unittest.split(' ')
-        argv.insert(0, 'glusto')
+        argv = shlex.split(args.run_unittest)
+        argv.insert(0, 'glusto-unittest')
+        print(argv)
         test_object = unittest.main(exit=False, argv=argv)
 
         num_errors = len(test_object.result.errors)
@@ -252,6 +255,7 @@ def main():
     print "Ending glusto via main()"
 
     return retcode
+
 
 if __name__ == '__main__':
     exitcode = main()
