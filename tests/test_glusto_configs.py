@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ class TestGlustoConfigs(unittest.TestCase):
         cls.ini_file = '/tmp/testconfig.ini'
         cls.ini_novalue_file = '/tmp/testconfig_novalue.ini'
         cls.ini_ordered_file = '/tmp/testconfig_ordered.ini'
+        cls.ini_mixedcase_file = '/tmp/testconfig_mixedcase.ini'
+        cls.ini_lowercase_file = '/tmp/testconfig_lowercase.ini'
 
         cls.yaml_noext = '/tmp/testyaml'
         cls.json_noext = '/tmp/testjson'
@@ -51,6 +53,9 @@ class TestGlustoConfigs(unittest.TestCase):
         cls.config['globals']['the_other'] = 'yada3'
         # to test ini substitution
         cls.config['defaults']['this_and_that'] = '%(this)s and %(that)s'
+        # to test mixedcase
+        cls.config['mixed'] = {}
+        cls.config['mixed']['mixed_CASE'] = "mixedCaseValue"
 
         g.show_config(cls.config)
 
@@ -273,6 +278,32 @@ class TestGlustoConfigs(unittest.TestCase):
                          'yada1 and yada2')
         self.assertEqual(config['globals']['the_other'], 'yada3')
 
+    def test_ini_mixedcase(self):
+        """Testing ini mixed case in config file(s)"""
+        print "Running: %s - %s" % (self.id(), self.shortDescription())
+
+        g.store_config(self.config, self.ini_mixedcase_file)
+        self.assertTrue(os.path.exists(self.ini_mixedcase_file))
+
+        # read the config file
+        config = g.load_config(self.ini_mixedcase_file)
+        g.show_config(config)
+        self.assertEqual(config['mixed']['mixed_CASE'], 'mixedCaseValue')
+
+    def test_ini_lowercase(self):
+        """Testing ini mixed case in config file(s)"""
+        print "Running: %s - %s" % (self.id(), self.shortDescription())
+
+        g.store_config(self.config, self.ini_lowercase_file,
+                       allow_mixed_case=False)
+        self.assertTrue(os.path.exists(self.ini_lowercase_file))
+
+        # read the config file
+        config = g.load_config(self.ini_lowercase_file,
+                               allow_mixed_case=False)
+        g.show_config(config)
+        self.assertEqual(config['mixed']['mixed_case'], 'mixedCaseValue')
+
     def tearDown(self):
         """Unittest tearDown override"""
         print "Tearing Down: %s" % self.id()
@@ -299,6 +330,11 @@ class TestGlustoConfigs(unittest.TestCase):
             os.unlink(cls.json_noext)
         if os.path.exists(cls.ini_noext):
             os.unlink(cls.ini_noext)
+
+        if os.path.exists(cls.ini_mixedcase_file):
+            os.unlink(cls.ini_mixedcase_file)
+        if os.path.exists(cls.ini_lowercase_file):
+            os.unlink(cls.ini_lowercase_file)
 
 
 if __name__ == '__main__':

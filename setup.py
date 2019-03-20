@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='glusto',
-      version='0.60',
+      version='0.61',
       author='Jonathan Holloway',
       author_email='loadtheaccumulator@gmail.com',
       description=('A library of commonly used tools for developing scripts '
