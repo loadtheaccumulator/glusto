@@ -36,12 +36,22 @@ class TestGlustoConfigs(unittest.TestCase):
         cls.yaml_file = '/tmp/testconfig.yml'
         cls.json_file = '/tmp/testconfig.json'
         cls.ini_file = '/tmp/testconfig.ini'
+        cls.csv_file = '/tmp/testconfig.csv'
+
         cls.ini_novalue_file = '/tmp/testconfig_novalue.ini'
         cls.ini_ordered_file = '/tmp/testconfig_ordered.ini'
 
         cls.yaml_noext = '/tmp/testyaml'
         cls.json_noext = '/tmp/testjson'
         cls.ini_noext = '/tmp/testini'
+
+        cls.ini_mixedcase_file = '/tmp/testconfig_mixedcase.ini'
+        cls.ini_lowercase_file = '/tmp/testconfig_lowercase.ini'
+
+        cls.csv_delimiter_file = '/tmp/testconfig_delimiter.csv'
+        cls.csv_noheader_file = '/tmp/testconfig_noheader.csv'
+        cls.csv_fieldnames_file = '/tmp/testconfig_fieldnames.csv'
+        cls.csv_delimiter_noheader_file = '/tmp/testconfig_delim_noheader.csv'
 
         cls.config = {}
         cls.config['defaults'] = {}
@@ -51,6 +61,9 @@ class TestGlustoConfigs(unittest.TestCase):
         cls.config['globals']['the_other'] = 'yada3'
         # to test ini substitution
         cls.config['defaults']['this_and_that'] = '%(this)s and %(that)s'
+        # to test mixedcase
+        cls.config['mixed'] = {}
+        cls.config['mixed']['mixed_CASE'] = "mixedCaseValue"
 
         g.show_config(cls.config)
 
@@ -71,6 +84,14 @@ class TestGlustoConfigs(unittest.TestCase):
             '%(this)s and %(that)s'
 
         g.show_config(cls.ordered_config)
+
+        cls.csv_config = [{'A': 'z', 'B': 'y', 'C': 'x'},
+                          {'A': 'a', 'B': 'b', 'C': 'c'},
+                          {'A': '1', 'B': '2', 'C': 3},
+                          {'A': 'one', 'B': 'two', 'C': 'three'}]
+        cls.csv_fieldnames = ['A', 'B', 'C']
+
+        g.show_config(cls.csv_config)
 
         # cleanup files if they exist
         '''
@@ -273,6 +294,135 @@ class TestGlustoConfigs(unittest.TestCase):
                          'yada1 and yada2')
         self.assertEqual(config['globals']['the_other'], 'yada3')
 
+    def test_ini_mixedcase(self):
+        """Testing ini mixed case in config file(s)"""
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
+
+        g.store_config(self.config, self.ini_mixedcase_file)
+        self.assertTrue(os.path.exists(self.ini_mixedcase_file))
+
+        # read the config file
+        config = g.load_config(self.ini_mixedcase_file)
+        g.show_config(config)
+        self.assertEqual(config['mixed']['mixed_CASE'], 'mixedCaseValue')
+
+    def test_ini_lowercase(self):
+        """Testing ini mixed case in config file(s)"""
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
+
+        g.store_config(self.config, self.ini_lowercase_file,
+                       allow_mixed_case=False)
+        self.assertTrue(os.path.exists(self.ini_lowercase_file))
+
+        # read the config file
+        config = g.load_config(self.ini_lowercase_file,
+                               allow_mixed_case=False)
+        g.show_config(config)
+        self.assertEqual(config['mixed']['mixed_case'], 'mixedCaseValue')
+
+    def test_csv(self):
+        """Testing csv config file"""
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
+
+        g.show_config(self.config)
+
+        # write the config file
+        g.store_config(self.csv_config, self.csv_file)
+        self.assertTrue(os.path.exists(self.csv_file))
+
+        # read the config file
+        config = g.load_config(self.csv_file)
+        g.show_config(config)
+        self.assertTrue('A' in config[0].keys())
+        self.assertTrue('B' in config[0].keys())
+        self.assertTrue('C' in config[0].keys())
+        self.assertTrue('1' in config[2]['A'])
+        self.assertTrue('x' in config[0]['C'])
+        self.assertTrue('two' in config[3]['B'])
+        self.assertTrue('c' in config[1]['C'])
+
+    def test_csv_delimiter(self):
+        """Testing csv config file with delimiter"""
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
+
+        g.show_config(self.config)
+
+        # write the config file
+        g.store_config(self.csv_config, self.csv_delimiter_file,
+                       delimiter=':')
+        self.assertTrue(os.path.exists(self.csv_delimiter_file))
+
+        # read the config file
+        config = g.load_config(self.csv_delimiter_file, delimiter=':')
+        g.show_config(config)
+        self.assertTrue('A' in config[0].keys())
+        self.assertTrue('B' in config[0].keys())
+        self.assertTrue('C' in config[0].keys())
+        self.assertTrue('1' in config[2]['A'])
+        self.assertTrue('x' in config[0]['C'])
+        self.assertTrue('two' in config[3]['B'])
+        self.assertTrue('c' in config[1]['C'])
+
+    def test_csv_fieldnames(self):
+        """Testing csv config file"""
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
+
+        g.show_config(self.config)
+
+        # write the config file
+        g.store_config(self.csv_config, self.csv_fieldnames_file,
+                       fieldnames=self.csv_fieldnames)
+        self.assertTrue(os.path.exists(self.csv_fieldnames_file))
+
+        # read the config file
+        config = g.load_config(self.csv_fieldnames_file)
+        g.show_config(config)
+        self.assertTrue('A' in config[0].keys())
+        self.assertTrue('B' in config[0].keys())
+        self.assertTrue('C' in config[0].keys())
+        self.assertTrue('1' in config[2]['A'])
+        self.assertTrue('x' in config[0]['C'])
+        self.assertTrue('two' in config[3]['B'])
+        self.assertTrue('c' in config[1]['C'])
+
+    def test_csv_noheader(self):
+        """Testing csv config file without headers"""
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
+
+        g.show_config(self.config)
+
+        # write the config file
+        g.store_config(self.csv_config, self.csv_noheader_file, header=False)
+        self.assertTrue(os.path.exists(self.csv_noheader_file))
+
+        # read the config file
+        config = g.load_config(self.csv_noheader_file, header=False)
+        g.show_config(config)
+        self.assertTrue('z' in config[0])
+        self.assertTrue('two' in config[3])
+        self.assertTrue('1' in config[2])
+        self.assertTrue('c' in config[1])
+
+    def test_csv_delimiter_noheader(self):
+        """Testing csv config file with delimiter without headers"""
+        print("Running: %s - %s" % (self.id(), self.shortDescription()))
+
+        g.show_config(self.config)
+
+        # write the config file
+        g.store_config(self.csv_config, self.csv_delimiter_noheader_file,
+                       header=False, delimiter=':')
+        self.assertTrue(os.path.exists(self.csv_delimiter_noheader_file))
+
+        # read the config file
+        config = g.load_config(self.csv_delimiter_noheader_file,
+                               header=False, delimiter=':')
+        g.show_config(config)
+        self.assertTrue('z' in config[0])
+        self.assertTrue('two' in config[3])
+        self.assertTrue('1' in config[2])
+        self.assertTrue('c' in config[1])
+
     def tearDown(self):
         """Unittest tearDown override"""
         print("Tearing Down: %s" % self.id())
@@ -300,12 +450,18 @@ class TestGlustoConfigs(unittest.TestCase):
         if os.path.exists(cls.ini_noext):
             os.unlink(cls.ini_noext)
 
+        if os.path.exists(cls.ini_mixedcase_file):
+            os.unlink(cls.ini_mixedcase_file)
+        if os.path.exists(cls.ini_lowercase_file):
+            os.unlink(cls.ini_lowercase_file)
 
-if __name__ == '__main__':
-    output_junit = False
-    tsuite = unittest.TestLoader().loadTestsFromTestCase(TestGlustoConfigs)
-    if output_junit:
-        trunner = xmlrunner.XMLTestRunner(output='/tmp/glustoreports')
-    else:
-        trunner = unittest.TextTestRunner(verbosity=2)
-    trunner.run(tsuite)
+        if os.path.exists(cls.csv_file):
+            os.unlink(cls.csv_file)
+        if os.path.exists(cls.csv_fieldnames_file):
+            os.unlink(cls.csv_fieldnames_file)
+        if os.path.exists(cls.csv_noheader_file):
+            os.unlink(cls.csv_noheader_file)
+        if os.path.exists(cls.csv_delimiter_file):
+            os.unlink(cls.csv_delimiter_file)
+        if os.path.exists(cls.csv_delimiter_noheader_file):
+            os.unlink(cls.csv_delimiter_noheader_file)

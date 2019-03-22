@@ -86,7 +86,7 @@ class Configurable():
         yaml.dump(obj, configfd, Dumper=GDumper)
 
     @staticmethod
-    def _store_ini(obj, filename):
+    def _store_ini(obj, filename, allow_mixed_case=True):
         """Write an object to an ini formatted config file.
         Currently uses the Legacy 2.x API with implicit get/set.
 
@@ -97,6 +97,9 @@ class Configurable():
         """
         config = configparser.ConfigParser(allow_no_value=True,
                                            interpolation=None)
+        if allow_mixed_case:
+            config.optionxform = str
+
         for section_key in obj:
             config.add_section(section_key)
             if isinstance(obj[section_key], dict):
@@ -166,7 +169,7 @@ class Configurable():
             file_extension = config_type
 
         if file_extension == 'ini':
-            Configurable._store_ini(obj, filename)
+            Configurable._store_ini(obj, filename, **kwargs)
         elif file_extension == 'json':
             Configurable._store_json(obj, filename)
         elif file_extension in ('yaml', 'yml'):
@@ -181,9 +184,12 @@ class Configurable():
         return None
 
     @staticmethod
-    def _load_ini(filename):
+    def _load_ini(filename, allow_mixed_case=True):
         """Reads an ini file into a dictionary"""
         ini_config = configparser.SafeConfigParser(allow_no_value=True)
+
+        if allow_mixed_case:
+            ini_config.optionxform = str
 
         if Configurable._is_url(filename):
             configfd = Configurable._get_file_descriptor(filename)
@@ -229,7 +235,7 @@ class Configurable():
         config = []
         with open(filename) as csvfile:
             if header:
-                reader = csv.DictReader(csvfile, delimiter=',')
+                reader = csv.DictReader(csvfile, delimiter=delimiter)
             else:
                 reader = csv.reader(csvfile, delimiter=delimiter)
 
@@ -278,7 +284,7 @@ class Configurable():
                 file_extension = config_type
 
             if file_extension == "ini":
-                config = Configurable._load_ini(filename)
+                config = Configurable._load_ini(filename, **kwargs)
             elif file_extension == "json":
                 config = Configurable._load_json(filename)
             elif file_extension in ('yaml', 'yml'):
