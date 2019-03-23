@@ -14,6 +14,7 @@
 # along with this software. If not, see <http://www.gnu.org/licenses/>.
 #
 """Test glusto basic functionality"""
+import os
 import unittest
 
 from glusto.core import Glusto as g
@@ -27,9 +28,17 @@ class TestGlustoBasics(unittest.TestCase):
         Runs before all test_ methods in the class
         """
         print("Setting Up Class: %s" % cls.__name__)
+        cls.script_dir = os.path.dirname(os.path.realpath(__file__))
 
-        config = g.load_configs(["../examples/systems.yml",
-                                 "../examples/glusto.yml"])
+        config_files = ['%s/supporting_files/remote_tests/systems.yml'
+                        % cls.script_dir]
+        config_files.append('%s/supporting_files/remote_tests/glusto.yml'
+                            % cls.script_dir)
+#        config = g.load_config('%s/supporting_files/remote_tests/systems.yml'
+#                               % cls.script_dir)
+#        config = g.load_config('%s/supporting_files/remote_tests/glusto.yml'
+#                               % cls.script_dir)
+        config = g.load_configs(config_files)
         g.update_config(config)
 
         cls.masternode = g.config["nodes"][0]

@@ -1,4 +1,4 @@
-# Copyright 2016 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016,2019 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ import unittest
 from glusto.core import Glusto as g
 
 
-class TestGlustoBasics(unittest.TestCase):
+class TestGlustoColorfy(unittest.TestCase):
     """Glusto basics test class"""
     @classmethod
     def setUpClass(cls):

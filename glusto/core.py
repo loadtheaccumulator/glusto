@@ -33,14 +33,14 @@ from glusto.colorfiable import Colorfiable
 from glusto.loggable import Loggable
 from glusto.templatable import Templatable
 from glusto.unittestable import Unittestable
-#from glusto.restable import Restable
+from glusto.restable import Restable
 from glusto.rpycable import Rpycable
 from glusto.carteplex import Carteplex
 
 
 # pylint: disable=too-many-ancestors
 class Glusto(Configurable, Connectible, Colorfiable, Loggable,
-             Templatable, Unittestable, Rpycable, Carteplex):
+             Templatable, Unittestable, Rpycable, Carteplex, Restable):
     """The locker for all things Glusto."""
 
     # TODO: figure out how we want to do this with cli options

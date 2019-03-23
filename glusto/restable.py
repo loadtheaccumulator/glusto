@@ -29,6 +29,7 @@ class Restable():
     The primary purpose of this wrapper, at this time, is to provide a result
     tuple similar to the SSH and RPyC modules.
     """
+    # pylint: disable=no-member
 
     @classmethod
     def rest_get(cls, url):
@@ -73,7 +74,7 @@ class Restable():
             response output (str): The output text from the response.
             response error (str): The error text on failure.
         """
-        post_data = urlencode(data)
+        post_data = urlencode(data).encode('utf-8')
         request = Request(url, post_data)
 
         try:
@@ -103,7 +104,7 @@ class Restable():
             response output (str): The output text from the response.
             response error (str): The error text on failure.
         """
-        put_data = urlencode(data)
+        put_data = urlencode(data).encode('utf-8')
         request = Request(url, put_data)
         request.get_method = lambda: 'PUT'
         try:
@@ -133,7 +134,7 @@ class Restable():
             response output (str): The output text from the response.
             response error (str): The error text on failure.
         """
-        delete_data = urlencode(data)
+        delete_data = urlencode(data).encode('utf-8')
         request = Request(url, delete_data)
         request.get_method = lambda: 'DELETE'
         try:

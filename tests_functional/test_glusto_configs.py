@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Jonathan Holloway <loadtheaccumulator@gmail.com>
+# Copyright 2016-2019 Jonathan Holloway <loadtheaccumulator@gmail.com>
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 #
 """Test glusto config functionality"""
 import unittest
-import xmlrunner
+#import xmlrunner
 
 import os
 from collections import OrderedDict

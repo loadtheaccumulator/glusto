@@ -45,7 +45,7 @@ See docs for more information and use-case examples.
 # pylint: disable=too-few-public-methods,too-many-locals
 import sys
 import itertools
-import copy
+# import copy
 
 
 class Carteplex():
