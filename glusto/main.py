@@ -17,6 +17,7 @@
 import argparse
 import importlib
 import inspect
+import shlex
 import sys
 import unittest
 
@@ -226,22 +227,28 @@ def main():
     retcode = 0
     if args.run_pytest:
         print("pytest: %s" % args.run_pytest)
-        result = pytest.main(args.run_pytest.split(' '))
+        # using shlex.split() to handle quoted arguments with spaces
+        argv = shlex.split(args.run_pytest)
+        result = pytest.main(argv)
+
         if result > 0:
             retcode = retcode | PYTEST_FAIL
 
     if args.run_nosetests:
         print("nosetests: %s" % args.run_nosetests)
-        argv = args.run_nosetests.split(' ')
-        argv.insert(0, 'glusto')
+        argv = shlex.split(args.run_nosetests)
+        argv.insert(0, 'glusto-nosetests')
+        print(argv)
         result = nose.run(argv=argv)
         if not result:
             retcode = retcode | NOSETESTS_FAIL
 
     if args.run_unittest:
         print("unittest: %s" % args.run_unittest)
-        argv = args.run_unittest.split(' ')
-        argv.insert(0, 'glusto')
+        argv = shlex.split(args.run_unittest)
+        argv.insert(0, 'glusto-unittest')
+        print(argv)
+
         test_object = unittest.main(exit=False, argv=argv)
 
         num_errors = len(test_object.result.errors)
