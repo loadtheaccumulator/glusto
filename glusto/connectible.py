@@ -176,14 +176,32 @@ class Connectible(object):
         cls.log.info(cls.colorfy(cls.COLOR_RCODE, "RETCODE (%s): %s" %
                                  (identifier, retcode)))
         if stdout:
-            cls.log.log(level, cls.colorfy(cls.COLOR_STDOUT,
-                                           "STDOUT (%s)...\n%s" %
-                                           (identifier, stdout)))
+            try:
+                message = "STDOUT (%s)...\n%s" % (identifier, stdout)
+            except UnicodeDecodeError:
+                cls.log.info('STDOUT unicode characters replaced with ? marks')
+                message = ("STDOUT (%s)...\n%s" %
+                           (identifier, stdout.encode(encoding='ascii',
+                                                      errors='replace')))
+
+            cls.log.log(level,
+                        cls.colorfy(cls.COLOR_STDOUT, message))
 
         if stderr:
-            cls.log.log(level, cls.colorfy(cls.COLOR_STDERR,
-                                           "STDERR (%s)...\n%s" %
-                                           (identifier, stderr)))
+            try:
+                err_message = "STDERR (%s)...\n%s" % (identifier, stderr)
+            except UnicodeDecodeError:
+                cls.log.info('STDERR unicode characters replaced with ? marks')
+                err_message = ("STDERR (%s)...\n%s" %
+                               (identifier, stderr.encode(encoding='ascii',
+                                                          errors='replace')))
+
+            cls.log.log(level,
+                        cls.colorfy(cls.COLOR_STDERR, err_message))
+
+            #cls.log.log(level, cls.colorfy(cls.COLOR_STDERR,
+            #                               "STDERR (%s)...\n%s" %
+            #                               (identifier, stderr)))
 
     @classmethod
     def run_async(cls, host, command, user=None, log_level=None):

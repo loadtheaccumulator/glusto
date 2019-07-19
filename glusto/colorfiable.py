@@ -158,6 +158,11 @@ class Colorfiable(object):
 
         color_mod = ";".join(ansi_list)
         color_string = "\033[%sm{0}\033[0m" % color_mod
-        color_message = "".join(color_string.format(message))
+        try:
+            color_message = "".join(color_string.format(message))
+        except UnicodeEncodeError:
+            encoded_message = message.encode(encoding='ascii',
+                                             errors='replace')
+            color_message = "".join(color_string.format(encoded_message))
 
         return color_message
