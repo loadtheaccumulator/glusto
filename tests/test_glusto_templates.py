@@ -31,18 +31,22 @@ class TestGlustoTemplates(unittest.TestCase):
         print "Setting Up Class: %s" % cls.__name__
 
         # Setting class attributes for use across all test methods
-        cls.config_file = ('supporting_files/templates/'
+        cls.config_file = ('tests/supporting_files/templates/'
                            'glusto_templates-vars.yml')
-        config = g.load_config(cls.config_file)
-        g.show_config(config)
-        if config:
-            g.update_config(config)
+        if os.path.exists(cls.config_file):
+            config = g.load_config(cls.config_file)
+            g.show_config(config)
+            if config:
+                g.update_config(config)
 
-        cls.template_vars = g.config['templates']
-        cls.template_file = ('templates/'
-                             'glusto_templates-template.jinja')
-        cls.search_path = 'supporting_files'
-        cls.output_file = '/tmp/glusto_templates-output.yml'
+            cls.template_vars = g.config['templates']
+            cls.template_file = ('templates/'
+                                 'glusto_templates-template.jinja')
+            cls.search_path = 'tests/supporting_files'
+            cls.output_file = '/tmp/glusto_templates-output.yml'
+        else:
+            print('template vars file does not exist')
+            return False
 
     def setUp(self):
         """unittest standard setUp method

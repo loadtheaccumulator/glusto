@@ -28,8 +28,8 @@ class TestGlustoBasics(unittest.TestCase):
         """
         print "Setting Up Class: %s" % cls.__name__
 
-        config = g.load_configs(["../examples/systems.yml",
-                                 "../examples/glusto.yml"])
+        config = g.load_configs(["examples/systems.yml",
+                                 "examples/glusto.yml"])
         g.update_config(config)
 
         cls.masternode = g.config["nodes"][0]

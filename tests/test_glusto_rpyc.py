@@ -27,9 +27,9 @@ class TestGlustoRpyc(unittest.TestCase):
         Runs before all test_ methods in the class
         """
         print "Setting Up Class: %s" % cls.__name__
-        config = g.load_configs(["../examples/systems.yml",
-                                 "../examples/glusto.yml"])
-        g.update_config(config)
+        config = g.load_configs(["examples/systems.yml",
+                                 "examples/glusto.yml"])
+#        g.update_config(config)
 
     def setUp(self):
         """unittest standard setUp method

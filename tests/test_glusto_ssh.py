@@ -28,11 +28,12 @@ class TestGlustoSsh(unittest.TestCase):
         Runs before all test_ methods in the class
         """
         print "Setting Up Class: %s" % cls.__name__
-        config = g.load_configs(["../examples/systems.yml",
-                                 "../examples/glusto.yml"])
+        config = g.load_configs(["examples/systems.yml",
+                                 "examples/glusto.yml"])
         g.update_config(config)
 
         cls.hosts = g.config['nodes']
+        cls.transfer_hosts = g.config['transfer_nodes']
         cls.primary_host = g.config['nodes'][0]
         cls.client = g.config["clients"][0]
 
@@ -144,8 +145,8 @@ class TestGlustoSsh(unittest.TestCase):
 
         remote_file = '/etc/hosts'
         remote_file_copy = '/tmp/transfer_test_file'
-        host1 = self.hosts[0]
-        host2 = self.hosts[1]
+        host1 = self.transfer_hosts[0]
+        host2 = self.transfer_hosts[1]
 
         # remove remote test file copy(ignore error if not exist)
         g.run(host2, 'rm -f %s' % remote_file_copy)
@@ -165,6 +166,7 @@ class TestGlustoSsh(unittest.TestCase):
         if rcode == 0:
             md5sum_copy = rout.strip()
 
+        g.log.info('md5sums... %s : %s' % (md5sum_orig, md5sum_copy))
         # compare the md5sums
         self.assertEqual(md5sum_orig, md5sum_copy, 'md5sums do not match')
 
