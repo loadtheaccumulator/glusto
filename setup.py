@@ -20,6 +20,6 @@ setup(name='glusto',
             'glusto = glusto.main:main',
             ]
                     },
-      install_requires=['plumbum', 'rpyc', 'PyYAML', 'jinja2',
+      install_requires=['plumbum', 'rpyc', 'PyYAML==5.4.1', 'jinja2',
                         'pytest', 'nose', 'unittest-xml-reporting']
       )
